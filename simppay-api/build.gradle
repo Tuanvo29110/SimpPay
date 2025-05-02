@@ -1,0 +1,28 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    // Shared dependencies can be placed here.
+    // For example, Lombok if you use it across modules:
+    compileOnly 'com.j256.ormlite:ormlite-jdbc:6.1'
+//    implementation 'org.xerial:sqlite-jdbc:3.42.0.0'
+//    implementation 'com.h2database:h2:2.3.232'
+    compileOnly 'com.zaxxer:HikariCP:5.0.1'
+
+    // JSON processing
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // Redis for PubSub
+    implementation 'redis.clients:jedis:4.3.1'
+
+    // HTTP client
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+
+    // PayOS SDK - this would need to be replaced with actual PayOS SDK dependency if available
+    implementation 'vn.payos:payos-java:1.0.3'
+
+
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+}

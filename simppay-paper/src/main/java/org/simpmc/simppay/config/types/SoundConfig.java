@@ -1,0 +1,29 @@
+package org.simpmc.simppay.config.types;
+
+import de.exlll.configlib.Configuration;
+import de.exlll.configlib.SerializeWith;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.Sound;
+import org.simpmc.simppay.config.serializers.KeySerializer;
+
+@Configuration
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class SoundConfig {
+    public Key key;
+    public float volume;
+    public float pitch;
+
+    public Sound toSound() {
+        return Sound.sound(
+                key,
+                Sound.Source.valueOf("MASTER"),
+                volume,
+                pitch
+        );
+    }
+}

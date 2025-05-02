@@ -1,0 +1,22 @@
+package org.simpmc.simppay.handler.banking.payos;
+
+import lombok.NoArgsConstructor;
+import org.simpmc.simppay.data.PaymentStatus;
+import org.simpmc.simppay.handler.PaymentHandler;
+import org.simpmc.simppay.model.Payment;
+import org.simpmc.simppay.model.detail.PaymentDetail;
+
+@NoArgsConstructor
+public class PayosHandler implements PaymentHandler {
+
+    @Override
+    public PaymentStatus processPayment(Payment payment) {
+
+        return null;
+    }
+
+    @Override
+    public PaymentStatus getTransactionStatus(PaymentDetail detail) {
+        return null;
+    }
+}

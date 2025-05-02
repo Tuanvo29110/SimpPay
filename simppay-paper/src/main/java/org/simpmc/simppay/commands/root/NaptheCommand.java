@@ -1,0 +1,67 @@
+package org.simpmc.simppay.commands.root;
+
+import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
+import dev.jorel.commandapi.arguments.StringArgument;
+import org.simpmc.simppay.SPPlugin;
+import org.simpmc.simppay.config.ConfigManager;
+import org.simpmc.simppay.config.types.MessageConfig;
+import org.simpmc.simppay.data.PaymentStatus;
+import org.simpmc.simppay.data.card.CardPrice;
+import org.simpmc.simppay.data.card.CardType;
+import org.simpmc.simppay.model.Payment;
+import org.simpmc.simppay.model.detail.CardDetail;
+import org.simpmc.simppay.model.detail.PaymentDetail;
+import org.simpmc.simppay.util.MessageUtil;
+import org.simpmc.simppay.util.SoundUtil;
+
+import java.util.UUID;
+
+// ignore unboxing create NPE
+@SuppressWarnings("unboxing") // ignore unboxing create NPE
+public class NaptheCommand {
+
+    public NaptheCommand() {
+        new CommandAPICommand("napthe")
+                .withPermission("simppay.napthe")
+                .withArguments(
+                        new StringArgument("serial"),
+                        new StringArgument("pin"),
+                        new StringArgument("amount").replaceSuggestions(
+                                ArgumentSuggestions.strings(
+                                        CardPrice.getAllCardPrices()
+                                )
+                        ),
+                        new StringArgument("telco").replaceSuggestions(ArgumentSuggestions.strings(
+                                CardType.getAllCardTypes()
+                        ))
+                )
+                .executesPlayer((player, args) -> {
+                    // start a new napthe session
+                    MessageConfig messageConfig = (MessageConfig) ConfigManager.configs.get(MessageConfig.class);
+                    String serial = (String) args.get("serial");
+                    String pin = (String) args.get("pin");
+
+                    CardPrice amount = CardPrice.fromString((String) args.get("amount"));
+                    CardType type = CardType.fromString((String) args.get("telco"));
+
+
+                    UUID uuid = UUID.randomUUID();
+                    PaymentDetail detail = CardDetail.builder()
+                            .serial(serial)
+                            .pin(pin)
+                            .price(amount)
+                            .type(type)
+                            .build();
+                    Payment payment = new Payment(uuid, player.getUniqueId(), detail);
+
+                    PaymentStatus status = SPPlugin.getInstance().getPaymentService().sendCard(payment);
+
+                    if (status == PaymentStatus.FAILED) {
+                        MessageUtil.sendMessage(player, messageConfig.failedCard);
+                        SoundUtil.sendSound(player, messageConfig.soundEffect.get(PaymentStatus.FAILED).toSound());
+                    }
+                })
+                .register();
+    }
+}

@@ -1,0 +1,15 @@
+name: SimpPay
+version: '$version'
+main: org.simpmc.simppay.SPPlugin
+api-version: '1.21'
+author: 'typical.smc'
+libraries:
+  - com.h2database:h2:2.3.232
+  - com.zaxxer:HikariCP:5.0.1
+  - com.j256.ormlite:ormlite-jdbc:6.1
+permission:
+  simppay.napthe:
+    default: true
+    description: Allow player to use /simppay command
+  simppay.banking:
+    default: op
