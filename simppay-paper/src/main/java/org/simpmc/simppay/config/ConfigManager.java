@@ -1,14 +1,14 @@
 package org.simpmc.simppay.config;
 
-import de.exlll.configlib.*;
+import de.exlll.configlib.ConfigLib;
+import de.exlll.configlib.NameFormatters;
+import de.exlll.configlib.YamlConfigurationProperties;
+import de.exlll.configlib.YamlConfigurationStore;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.config.serializers.KeySerializer;
 import org.simpmc.simppay.config.serializers.SoundComponentSerializer;
-import org.simpmc.simppay.config.serializers.TextComponentSerializer;
 import org.simpmc.simppay.config.types.*;
 import org.simpmc.simppay.config.types.banking.PayosConfig;
 import org.simpmc.simppay.config.types.card.ThesieutocConfig;
@@ -39,7 +39,6 @@ public class ConfigManager {
     private final YamlConfigurationProperties properties = ConfigLib.BUKKIT_DEFAULT_PROPERTIES.toBuilder()
             .addSerializer(Key.class, new KeySerializer())
             .addSerializer(Sound.class, new SoundComponentSerializer())
-            .addSerializer(Component.class, new TextComponentSerializer())
             .setNameFormatter(NameFormatters.LOWER_KEBAB_CASE)
             .header("""
                     SimpPay @ 2025

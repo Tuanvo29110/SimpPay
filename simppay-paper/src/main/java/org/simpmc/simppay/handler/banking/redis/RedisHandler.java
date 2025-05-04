@@ -16,4 +16,9 @@ public class RedisHandler implements PaymentHandler {
     public PaymentStatus getTransactionStatus(PaymentDetail detail) {
         return null;
     }
+
+    @Override
+    public PaymentStatus cancel(Payment payment) {
+        return null;
+    }
 }

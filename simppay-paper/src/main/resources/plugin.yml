@@ -7,6 +7,10 @@ libraries:
   - com.h2database:h2:2.3.232
   - com.zaxxer:HikariCP:5.0.1
   - com.j256.ormlite:ormlite-jdbc:6.1
+  - commons-codec:commons-codec:1.18.0
+  - com.squareup.okhttp3:okhttp:4.10.0
+#  - redis.clients:jedis:4.3.1
+
 permission:
   simppay.napthe:
     default: true

@@ -1,11 +1,19 @@
-package org.simpmc.simppay.utils;
+package org.simpmc.simppay.util;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
-public class HashUtil {
+public class HashUtils {
     public static String randomMD5() {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -70,4 +78,56 @@ public class HashUtil {
     public static int ri(String s) {
         return Integer.valueOf(s);
     }
+
+    public static boolean isValidData(JsonObject jsonObject, String expectedSignature, String checksumKey) {
+        try {
+
+            // Extract keys and sort
+            List<String> keys = new ArrayList<>(jsonObject.keySet());
+            Collections.sort(keys);
+
+            // Build the data string: key1=value1&key2=value2...
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < keys.size(); i++) {
+                String key = keys.get(i);
+                JsonElement elem = jsonObject.get(key);
+                String value = elem.isJsonNull() ? "" : elem.getAsString();
+                sb.append(key).append('=').append(value);
+                if (i < keys.size() - 1) {
+                    sb.append('&');
+                }
+            }
+            String dataToSign = sb.toString();
+
+            // Compute HMAC-SHA256
+            String actualSignature = hmacSha256Hex(checksumKey, dataToSign);
+
+            // Compare
+            return actualSignature.equalsIgnoreCase(expectedSignature);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Computes HMAC-SHA256 and returns the result as a lowercase hex string.
+     */
+    public static String hmacSha256Hex(String key, String data) throws Exception {
+        Mac mac = Mac.getInstance("HmacSHA256");
+        mac.init(new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA256"));
+        byte[] rawHmac = mac.doFinal(data.getBytes("UTF-8"));
+
+        // Convert to hex
+        StringBuilder hex = new StringBuilder(2 * rawHmac.length);
+        for (byte b : rawHmac) {
+            String h = Integer.toHexString(Byte.toUnsignedInt(b));
+            if (h.length() == 1) {
+                hex.append('0');
+            }
+            hex.append(h);
+        }
+        return hex.toString();
+    }
+
 }

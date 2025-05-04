@@ -28,6 +28,9 @@ napthe-root/
 Note:
 
 - [ ] implementation database to save payment history
-- [ ] implement payos
-- [ ] test thesieutoc
+- [ ] find a way to generate unique order id for payos
+- [ ] get order id cross server, use redis caching for cross server, on one server, use atomiclong
+-
+- [x] implement payos
+- [x] test thesieutoc
 - [x] idea: always have a timer task that check on the queue and process the payment

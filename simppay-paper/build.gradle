@@ -8,13 +8,9 @@ version = getRootProject().version
 dependencies {
     // Include the common module
     implementation project(':simppay-api')
-// https://mvnrepository.com/artifact/mysql/mysql-connector-java
-    // Lombok if used
     compileOnly 'org.projectlombok:lombok:1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
-// https://mvnrepository.com/artifact/com.h2database/h2
     compileOnly 'com.h2database:h2:2.3.232'
-    // Example Velocity dependencies
     compileOnly "io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT"
     compileOnly 'com.j256.ormlite:ormlite-jdbc:6.1'
 
@@ -24,17 +20,16 @@ dependencies {
     compileOnly('me.clip:placeholderapi:2.11.6') {
         exclude group: 'me.clip.placeholderapi', module: 'libs'
     }
-
-
-    implementation "de.exlll:configlib-paper:4.5.0"
-    compileOnly "net.kyori:adventure-text-minimessage:4.20.0"
+    implementation("de.exlll:configlib-paper:4.5.0") {
+        exclude group: 'org.yaml', module: 'snakeyaml-engine'
+    }
     implementation "dev.jorel:commandapi-bukkit-shade:9.7.0"
-    implementation "com.github.technicallycoded:FoliaLib:main-SNAPSHOT"
-    implementation 'me.devnatan:inventory-framework-platform-bukkit:3.2.0'
-    implementation 'me.devnatan:inventory-framework-platform-paper:3.2.0'
-    compileOnly "net.kyori:adventure-text-minimessage:4.20.0"
-
-//    implementation("com.github.retrooper:packetevents-velocity:2.7.0")
+    implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
+//    implementation('me.devnatan:inventory-framework-platform-bukkit:3.2.0')
+//    implementation('me.devnatan:inventory-framework-platform-paper:3.2.0')
+    implementation("com.github.retrooper:packetevents-spigot:2.7.0") {
+        exclude group: 'net.kyori'
+    }
 }
 
 shadowJar {
@@ -48,8 +43,10 @@ shadowJar {
     relocate("dev.jorel.commandapi", "me.typical.lib.commandapi")
     relocate("com.tcoded.folialib", "me.typical.lib.folialib")
     relocate("me.devnatan.inventoryframework", "me.typical.lib.inventoryframework")
-//    relocate("io.github.retrooper.packetevents", "me.typical.lib.io.packetevents")
-//    relocate("com.github.retrooper.packetevents", "me.typical.lib.com.packetevents")
+    relocate("org.json.json", "me.typical.lib.json")
+    relocate("io.github.retrooper.packetevents", "me.typical.lib.io.packetevents")
+    relocate("com.github.retrooper.packetevents", "me.typical.lib.com.packetevents")
+    relocate("kotlin", "me.typical.lib.kotlin")
 }
 tasks.register('sendRconCommand') {
     description = 'Sends "res" command to the Minecraft server via RCON'

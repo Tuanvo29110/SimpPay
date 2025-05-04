@@ -1,17 +1,21 @@
 package org.simpmc.simppay.model.detail;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class BankingDetail implements PaymentDetail {
 
-    private double amount;
+    private long amount;
     private String refID;
+    private String description;
+    private String QRCode;
 
     @Override
-    public double getAmount() {
+    public long getAmount() {
         return amount;
     }
 

@@ -46,7 +46,7 @@ public class NaptheCommand {
                     CardType type = CardType.fromString((String) args.get("telco"));
 
 
-                    UUID uuid = UUID.randomUUID();
+                    UUID uuid = UUID.nameUUIDFromBytes(serial.getBytes()); // payment uuid is based on serial number of the card
                     PaymentDetail detail = CardDetail.builder()
                             .serial(serial)
                             .pin(pin)
@@ -54,6 +54,12 @@ public class NaptheCommand {
                             .type(type)
                             .build();
                     Payment payment = new Payment(uuid, player.getUniqueId(), detail);
+
+                    if (SPPlugin.getInstance().getPaymentService().getPayments().containsKey(payment.getPaymentID())) {
+                        MessageUtil.sendMessage(player, messageConfig.pendingCard);
+                        SoundUtil.sendSound(player, messageConfig.soundEffect.get(PaymentStatus.PENDING).toSound());
+                        return;
+                    }
 
                     PaymentStatus status = SPPlugin.getInstance().getPaymentService().sendCard(payment);
 

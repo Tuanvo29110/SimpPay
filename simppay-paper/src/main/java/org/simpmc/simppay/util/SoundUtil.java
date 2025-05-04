@@ -13,6 +13,7 @@ public class SoundUtil {
             player.playSound(sound, Sound.Emitter.self());
         });
     }
+
     public static void sendSound(UUID playerUUID, Sound sound) {
         Player player = Bukkit.getPlayer(playerUUID);
         if (player == null) {

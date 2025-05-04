@@ -1,36 +1,38 @@
 package org.simpmc.simppay.config.types;
 
 import de.exlll.configlib.Configuration;
-import de.exlll.configlib.SerializeWith;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.simpmc.simppay.config.serializers.SoundComponentSerializer;
-import org.simpmc.simppay.config.serializers.TextComponentSerializer;
 import org.simpmc.simppay.data.PaymentStatus;
 
 import java.util.Map;
 
 @Configuration
 public class MessageConfig {
-    private final MiniMessage mm = MiniMessage.miniMessage();
 
     // <gradient:#f9535c:#FCD05C>SimpPay</gradient>
-    public Component prefix = mm.deserialize("<gray>[<gradient:#f9535c:#FCD05C>SimpPay</gradient><gray>] <reset>");
+    public String prefix = "<gray>[<gradient:#f9535c:#FCD05C>SimpPay</gradient><gray>] <reset>";
 
-    public Component configReloaded = mm.deserialize("<green>Đã reload config thành công!");
+    public String configReloaded = "<green>Đã reload config thành công!";
 
-    public Component successQueueCard = mm.deserialize("<green>Thẻ của bạn đang được xử lý, vui lòng chờ trong giây lát...");
+    public String successQueueCard = "<green>Thẻ của bạn đang được xử lý, vui lòng chờ trong giây lát...";
 
-    public Component failedCard = mm.deserialize("<red>Nạp thẻ thất bại!");
+    public String failedCard = "<red>Nạp thẻ thất bại!";
 
-    public Component successBanking = mm.deserialize("<green>Nạp qua ngân hàng thành công với mệnh giá {amount}đ!");
+    public String pendingCard = "<yellow>Thẻ của bạn đang được xử lý, vui lòng chờ trong giây lát...";
 
-    public Component cancelBanking = mm.deserialize("<red>Đã hủy yêu cầu thanh toán ngân hàng!");
+    public String successPayment = "<green>Nạp thành công với mệnh giá <amount>đ!";
 
-    public Component successQueueBanking = mm.deserialize("&aHãy quét mã QR ở bên tay trái của bạn để thanh toán!");
+    public String cancelBanking = "<red>Đã hủy yêu cầu thanh toán ngân hàng!";
 
+    public String existBankingSession = "<red>Bạn đã tạo lệnh nạp trước đó rồi! Nếu muốn tạo lệnh nạp mới, hãy gõ /bank cancel";
+
+    public String noExistBankingSession = "<red>Bạn chưa tạo lệnh nạp nào cả! Hãy gõ /bank <số tiền> để tạo lệnh nạp mới!";
+
+    public String successQueueBanking = "<green>Hãy quét mã QR ở bên tay của bạn để thanh toán!";
+
+    public String promptPaymentLink = "<green>Bạn có thể thanh toán qua đường dẫn sau nếu QR trên tay bị lỗi: <link>";
+
+    public String mustDivisibleBy1000 = "<red>Số tiền phải chia hết cho 1000!";
 
     // TODO: store sound directly or have a toSound method
     public Map<PaymentStatus, SoundConfig> soundEffect = Map.of(

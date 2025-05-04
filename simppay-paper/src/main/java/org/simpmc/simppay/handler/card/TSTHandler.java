@@ -15,9 +15,9 @@ import org.simpmc.simppay.handler.PaymentHandler;
 import org.simpmc.simppay.model.Payment;
 import org.simpmc.simppay.model.detail.CardDetail;
 import org.simpmc.simppay.model.detail.PaymentDetail;
+import org.simpmc.simppay.util.HashUtils;
+import org.simpmc.simppay.util.HttpUtils;
 import org.simpmc.simppay.util.MessageUtil;
-import org.simpmc.simppay.utils.HashUtil;
-import org.simpmc.simppay.utils.HttpUtils;
 
 import java.text.MessageFormat;
 import java.util.concurrent.CompletableFuture;
@@ -65,7 +65,7 @@ public class TSTHandler implements PaymentHandler, CardAdapter {
                 throw new CardProcessException("API key or secret key is not set");
             }
             String base = "http://vnpt.thesieutoc.net/API/transaction?APIkey={0}&APIsecret={1}&mathe={2}&seri={3}&type={4}&menhgia={5}";
-            String rnd = HashUtil.randomMD5();
+            String rnd = HashUtils.randomMD5();
             String url = MessageFormat.format(base,
                     config.apiKey,
                     config.secretKey,
@@ -105,6 +105,11 @@ public class TSTHandler implements PaymentHandler, CardAdapter {
         int status = json.get("status").getAsInt();
         PaymentStatus paymentStatus = TSTCardAdapter.getCardStatus(status);
         return paymentStatus;
+    }
+
+    @Override
+    public PaymentStatus cancel(Payment payment) {
+        throw new UnsupportedOperationException("Cannot cancel card payment");
     }
 
     @Override

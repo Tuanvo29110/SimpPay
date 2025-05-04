@@ -1,11 +1,8 @@
 package org.simpmc.simppay.config.serializers;
 
 import de.exlll.configlib.Serializer;
-import lombok.NoArgsConstructor;
 import net.kyori.adventure.key.Key;
 import org.intellij.lang.annotations.Subst;
-
-import java.util.Objects;
 
 public class KeySerializer implements Serializer<Key, String> {
     @Override

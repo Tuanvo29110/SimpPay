@@ -1,7 +1,6 @@
 package org.simpmc.simppay.config.serializers;
 
 import de.exlll.configlib.Serializer;
-import lombok.NoArgsConstructor;
 import net.kyori.adventure.sound.Sound;
 import org.simpmc.simppay.config.types.SoundConfig;
 

@@ -17,12 +17,22 @@ public class CardDetail implements PaymentDetail {
     public double trueAmount;
 
     @Override
-    public double getAmount() {
+    public long getAmount() {
         return price.getValue();
     }
 
     @Override
     public String getRefID() {
         return refID;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public String getQRCode() {
+        return null;
     }
 }

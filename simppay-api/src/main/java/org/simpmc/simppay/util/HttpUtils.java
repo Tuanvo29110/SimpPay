@@ -1,4 +1,4 @@
-package org.simpmc.simppay.utils;
+package org.simpmc.simppay.util;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -9,6 +9,7 @@ import java.net.*;
 import java.util.stream.Collectors;
 
 public class HttpUtils {
+    // TODO: Recode this for Card to be like banking, utlize Gson
     public static JsonObject getJsonResponse(String url) {
         try {
             CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));

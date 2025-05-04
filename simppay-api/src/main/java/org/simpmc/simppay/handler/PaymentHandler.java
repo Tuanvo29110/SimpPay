@@ -10,4 +10,5 @@ public interface PaymentHandler {
 
     PaymentStatus getTransactionStatus(PaymentDetail detail);
 
+    PaymentStatus cancel(Payment payment);
 }

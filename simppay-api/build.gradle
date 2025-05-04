@@ -11,16 +11,15 @@ dependencies {
     compileOnly 'com.zaxxer:HikariCP:5.0.1'
 
     // JSON processing
-    implementation 'com.google.code.gson:gson:2.10.1'
+    compileOnly 'com.google.code.gson:gson:2.10.1'
 
     // Redis for PubSub
-    implementation 'redis.clients:jedis:4.3.1'
+    compileOnly 'redis.clients:jedis:4.3.1'
 
     // HTTP client
-    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
-
-    // PayOS SDK - this would need to be replaced with actual PayOS SDK dependency if available
-    implementation 'vn.payos:payos-java:1.0.3'
+    compileOnly 'com.squareup.okhttp3:okhttp:4.10.0'
+    compileOnly 'com.google.code.gson:gson:2.13.1'
+    compileOnly 'commons-codec:commons-codec:1.18.0'
 
 
     compileOnly 'org.projectlombok:lombok:1.18.36'

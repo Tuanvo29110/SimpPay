@@ -9,4 +9,6 @@ public class BankingConfig {
     @Comment("Dịch vụ cổng banking: REDIS, PAYOS")
     public BankAPI bankAPI = BankAPI.PAYOS;
 
+    @Comment("Thời gian chờ thanh toán ngân hàng (giây)")
+    public int bankingTimeout = 60 * 5; // 5 minutes
 }
