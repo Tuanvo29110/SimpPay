@@ -22,7 +22,7 @@ public class BankPromptListener implements Listener {
     @EventHandler
     public void paymentPrompt(PaymentBankPromptEvent event) {
 
-        MessageConfig config = (MessageConfig) ConfigManager.configs.get(MessageConfig.class);
+        MessageConfig config = ConfigManager.getInstance().getConfig(MessageConfig.class);
         BankingData bankingData = event.getBankingData();
         MessageUtil.sendMessage(event.getPlayerUUID(), config.promptPaymentLink.replace("<link>", bankingData.getUrl()));
 

@@ -4,8 +4,7 @@ import org.simpmc.simppay.handler.CoinsHandler;
 import org.simpmc.simppay.handler.coins.PlayerPointsHandler;
 
 public enum CoinsAPI {
-    PLAYERPOINTS(PlayerPointsHandler.class),
-    ;
+    PLAYERPOINTS(PlayerPointsHandler.class);
 
     public final Class<?> handlerClass;
 

@@ -9,7 +9,7 @@ public class PayosPayment {
     private int orderCode;
 
     @SerializedName("amount")
-    private long amount;
+    private double amount;
 
     @SerializedName("description")
     private String description;

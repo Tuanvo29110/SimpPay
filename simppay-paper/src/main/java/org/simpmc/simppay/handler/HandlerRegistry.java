@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.simpmc.simppay.config.ConfigManager;
 import org.simpmc.simppay.config.types.BankingConfig;
 import org.simpmc.simppay.config.types.CardConfig;
+import org.simpmc.simppay.config.types.CoinsConfig;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -12,6 +13,8 @@ public class HandlerRegistry {
 
     private PaymentHandler cardHandler;
     private PaymentHandler bankHandler;
+
+    private CoinsHandler coinHandler;
 
     public HandlerRegistry() {
         try {
@@ -25,12 +28,13 @@ public class HandlerRegistry {
     // Only call this once
     private void init() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
-        CardConfig cardConfig = (CardConfig) ConfigManager.configs.get(CardConfig.class);
-        BankingConfig bankingConfig = (BankingConfig) ConfigManager.configs.get(BankingConfig.class);
+        CardConfig cardConfig = ConfigManager.getInstance().getConfig(CardConfig.class);
+        BankingConfig bankingConfig = ConfigManager.getInstance().getConfig(BankingConfig.class);
+        CoinsConfig coinsConfig = ConfigManager.getInstance().getConfig(CoinsConfig.class);
 
-        cardHandler = (PaymentHandler) cardConfig.cardAPI.handlerClass.getDeclaredConstructor().newInstance();
-        bankHandler = (PaymentHandler) bankingConfig.bankAPI.handlerClass.getDeclaredConstructor().newInstance();
-
+        cardHandler = (PaymentHandler) cardConfig.cardApi.handlerClass.getDeclaredConstructor().newInstance();
+        bankHandler = (PaymentHandler) bankingConfig.bankApi.handlerClass.getDeclaredConstructor().newInstance();
+        coinHandler = (CoinsHandler) coinsConfig.pointsProvider.handlerClass.getDeclaredConstructor().newInstance();
     }
 
 }

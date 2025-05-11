@@ -16,13 +16,13 @@ public class CancelCommand {
 
     public static void execute(Player player, CommandArguments args) {
         SPPlugin plugin = SPPlugin.getInstance();
-        MessageConfig messageConfig = (MessageConfig) ConfigManager.configs.get(MessageConfig.class);
+        MessageConfig messageConfig = ConfigManager.getInstance().getConfig(MessageConfig.class);
 
         if (!plugin.getPaymentService().getPlayerBankingSessionPayment().containsKey(player.getUniqueId())) {
             MessageUtil.sendMessage(player, messageConfig.noExistBankingSession);
         } else {
             MessageUtil.sendMessage(player, messageConfig.cancelBanking);
-            plugin.getPaymentService().removePlayerQRSession(player.getUniqueId()); // nice
+            plugin.getPaymentService().clearPlayerBankCache(player.getUniqueId());
             player.updateInventory(); // remove qr map
         }
     }

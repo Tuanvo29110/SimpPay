@@ -3,19 +3,20 @@ package org.simpmc.simppay.model.detail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
 @AllArgsConstructor
 @Builder
 public class BankingDetail implements PaymentDetail {
 
-    private long amount;
+    private double amount;
     private String refID;
     private String description;
     private String QRCode;
 
     @Override
-    public long getAmount() {
+    public double getAmount() {
         return amount;
     }
 
@@ -25,7 +26,9 @@ public class BankingDetail implements PaymentDetail {
     }
 
     @Override
-    public double getTrueAmount() {
-        return amount;
+    public PaymentDetail setAmount(int amount) {
+        this.amount = amount;
+        return this;
     }
+
 }

@@ -14,6 +14,8 @@ import org.simpmc.simppay.event.PaymentFailedEvent;
 import org.simpmc.simppay.event.PaymentQueueSuccessEvent;
 import org.simpmc.simppay.event.PaymentSuccessEvent;
 import org.simpmc.simppay.handler.banking.redis.RedisHandler;
+import org.simpmc.simppay.model.PaymentResult;
+import org.simpmc.simppay.model.detail.CardDetail;
 import org.simpmc.simppay.util.MessageUtil;
 
 import java.time.Duration;
@@ -43,17 +45,20 @@ public class PaymentHandlingListener implements Listener {
 
     private void addTaskChecking(PaymentQueueSuccessEvent event) {
         SPPlugin plugin = SPPlugin.getInstance();
-        long interval = ((MainConfig) ConfigManager.configs.get(MainConfig.class)).intervalAPICall;
+        long interval = (ConfigManager.getInstance().getConfig(MainConfig.class)).intervalApiCall;
         plugin.getFoliaLib().getScheduler().runTimerAsync(task -> {
 
             // check card status
             PaymentStatus status = null;
+            PaymentResult result = null;
             if (event.getPaymentType() == PaymentType.CARD) {
-                status = plugin.getPaymentService().getHandlerRegistry().getCardHandler().getTransactionStatus(event.getPaymentDetail());
+                result = plugin.getPaymentService().getHandlerRegistry().getCardHandler().getTransactionResult(event.getPaymentDetail());
+                status = plugin.getPaymentService().getHandlerRegistry().getCardHandler().getTransactionResult(event.getPaymentDetail()).getStatus();
             }
             if (event.getPaymentType() == PaymentType.BANKING) {
                 // check banking status
-                status = plugin.getPaymentService().getHandlerRegistry().getBankHandler().getTransactionStatus(event.getPaymentDetail());
+                result = plugin.getPaymentService().getHandlerRegistry().getBankHandler().getTransactionResult(event.getPaymentDetail());
+                status = plugin.getPaymentService().getHandlerRegistry().getBankHandler().getTransactionResult(event.getPaymentDetail()).getStatus();
             }
 
             switch (status) {
@@ -75,7 +80,8 @@ public class PaymentHandlingListener implements Listener {
                 }
                 case WRONG_PRICE -> {
                     // handle invalid
-                    callEventSync(new PaymentSuccessEvent(event.getPayment(), true));
+                    CardDetail detail = (CardDetail) event.getPaymentDetail().setAmount(result.getAmount());
+                    callEventSync(new PaymentSuccessEvent(event.getPayment().setDetail(detail), true));
                     plugin.getPaymentService().getPollingPayments().remove(event.getPayment().getPaymentID());
                     task.cancel();
                 }
@@ -85,6 +91,8 @@ public class PaymentHandlingListener implements Listener {
                     MessageUtil.debug("[Payment-Poller] Payment status is null");
                     task.cancel();
                 }
+
+                // Bank Zone
                 case INVALID -> {
                     callEventSync(new PaymentFailedEvent(event.getPayment()));
                     plugin.getPaymentService().getPollingPayments().remove(event.getPayment().getPaymentID());

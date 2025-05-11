@@ -30,9 +30,22 @@ public class MessageUtil {
         taskMessage(message, player);
     }
 
+    public static Component getComponentParsed(String message, Player player) {
+        MiniMessage mm = MiniMessage.builder()
+                .tags(TagResolver.builder()
+                        .resolver(StandardTags.defaults())
+                        .resolver(papiTag(player))
+                        .build()
+                )
+                .build();
+
+        Component s = mm.deserialize(message);
+        return s;
+    }
+
     private static void taskMessage(String message, Player player) {
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAtEntity(player, task -> {
-            MessageConfig messageConfig = (MessageConfig) ConfigManager.configs.get(MessageConfig.class);
+            MessageConfig messageConfig = ConfigManager.getInstance().getConfig(MessageConfig.class);
             MiniMessage mm = MiniMessage.builder()
                     .tags(TagResolver.builder()
                             .resolver(StandardTags.defaults())
@@ -49,7 +62,7 @@ public class MessageUtil {
 
     public static void debug(String message) {
 
-        MainConfig mainConfig = (MainConfig) ConfigManager.configs.get(MainConfig.class);
+        MainConfig mainConfig = ConfigManager.getInstance().getConfig(MainConfig.class);
         if (mainConfig.debug) {
             SPPlugin.getInstance().getLogger().info(message);
         }
@@ -62,7 +75,7 @@ public class MessageUtil {
      * @param player the player
      * @return the tag resolver
      */
-    public static @NotNull TagResolver papiTag(final @NotNull Player player) {
+    private static @NotNull TagResolver papiTag(final @NotNull Player player) {
         return TagResolver.resolver("papi", (argumentQueue, context) -> {
             // Get the string placeholder that they want to use.
             final String papiPlaceholder = argumentQueue.popOr("papi tag requires an argument").value();

@@ -25,8 +25,9 @@ dependencies {
     }
     implementation "dev.jorel:commandapi-bukkit-shade:9.7.0"
     implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
-//    implementation('me.devnatan:inventory-framework-platform-bukkit:3.2.0')
-//    implementation('me.devnatan:inventory-framework-platform-paper:3.2.0')
+    implementation('me.devnatan:inventory-framework-platform-bukkit:3.3.8')
+    implementation 'me.devnatan:inventory-framework-anvil-input:3.3.1'
+    implementation('me.devnatan:inventory-framework-platform-paper:3.3.8')
     implementation("com.github.retrooper:packetevents-spigot:2.7.0") {
         exclude group: 'net.kyori'
     }

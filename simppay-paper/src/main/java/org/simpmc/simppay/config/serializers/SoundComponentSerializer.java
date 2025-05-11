@@ -2,7 +2,7 @@ package org.simpmc.simppay.config.serializers;
 
 import de.exlll.configlib.Serializer;
 import net.kyori.adventure.sound.Sound;
-import org.simpmc.simppay.config.types.SoundConfig;
+import org.simpmc.simppay.config.types.data.SoundConfig;
 
 public class SoundComponentSerializer implements Serializer<Sound, SoundConfig> {
 

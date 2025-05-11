@@ -6,6 +6,7 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.simpmc.simppay.data.PaymentType;
 import org.simpmc.simppay.model.Payment;
+import org.simpmc.simppay.model.detail.CardDetail;
 import org.simpmc.simppay.model.detail.PaymentDetail;
 
 import java.util.UUID;
@@ -32,7 +33,7 @@ public class PaymentSuccessEvent extends Event {
         this.paymentDetail = payment.getDetail();
         this.payment = payment;
         this.wrongPrice = false;
-        this.trueAmount = paymentType.equals(PaymentType.BANKING) ? amount : payment.getDetail().getTrueAmount();
+        this.trueAmount = paymentType.equals(PaymentType.BANKING) ? amount : ((CardDetail) payment.getDetail()).getTrueAmount();
     }
 
     public PaymentSuccessEvent(Payment payment, boolean wrongPrice) {
@@ -43,7 +44,7 @@ public class PaymentSuccessEvent extends Event {
         this.paymentDetail = payment.getDetail();
         this.payment = payment;
         this.wrongPrice = wrongPrice;
-        this.trueAmount = paymentType.equals(PaymentType.BANKING) ? amount : payment.getDetail().getTrueAmount();
+        this.trueAmount = paymentType.equals(PaymentType.BANKING) ? amount : ((CardDetail) payment.getDetail()).getTrueAmount();
     }
 
 

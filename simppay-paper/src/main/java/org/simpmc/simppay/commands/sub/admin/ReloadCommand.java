@@ -19,7 +19,7 @@ public class ReloadCommand {
         SPPlugin plugin = SPPlugin.getInstance();
         plugin.getFoliaLib().getScheduler().runAsync(task -> {
             plugin.getConfigManager().reloadAll();
-            MessageConfig messageConfig = (MessageConfig) ConfigManager.configs.get(MessageConfig.class);
+            MessageConfig messageConfig = ConfigManager.getInstance().getConfig(MessageConfig.class);
             MessageUtil.sendMessage(player, messageConfig.configReloaded);
         });
     }

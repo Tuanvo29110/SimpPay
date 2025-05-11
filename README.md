@@ -27,10 +27,26 @@ napthe-root/
 
 Note:
 
-- [ ] implementation database to save payment history
-- [ ] find a way to generate unique order id for payos
+* Cross Tasks
+
 - [ ] get order id cross server, use redis caching for cross server, on one server, use atomiclong
--
+
+* Normal task
+
+- [x] implement giving coins
+- [ ] implement server milestone / need async cache thinggy
+- [x] implement cache for placeholder, get player current số tiền đã nạp / also async cache thing
+- [ ] migrate to okhttp connection pool, also handle when server cant connect to the internet(get ddosed, dns issues) ->
+  mark payment as failed, the payment on psp should expire on their own. For card transaction, they should be cached to
+  db somehow
+- [x] implementation database to save payment history
+- [ ] implement menu nạp thẻ
+- [ ] implement menu xem lịch sử nạp admin và player
+- [ ] implement menu nạp thẻ floodgate
+- [ ] implement lệnh xem số liệu cho admin
+    + [ ] xem tổng nạp hôm nay, chia thẻ và bank, số liệu cộng ở cuối
+- [ ] fix lỗi chuyển trang của menu xem lịch sử nạp
+- [x] find a way to generate unique order id for payos
 - [x] implement payos
 - [x] test thesieutoc
 - [x] idea: always have a timer task that check on the queue and process the payment

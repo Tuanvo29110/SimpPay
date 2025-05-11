@@ -7,7 +7,7 @@ public class TSTCardAdapter {
     public static PaymentStatus getCardStatus(int statusCode) {
         return switch (statusCode) {
             case 00 -> PaymentStatus.SUCCESS;
-            case 99 -> PaymentStatus.WRONG_PRICE;
+            case 10 -> PaymentStatus.WRONG_PRICE; // should contain amount field along with actual price
             case -10 -> PaymentStatus.INVALID;
             case -9 -> PaymentStatus.PENDING;
             case 2 -> PaymentStatus.FAILED;

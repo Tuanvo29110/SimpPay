@@ -1,0 +1,60 @@
+package org.simpmc.simppay.database.dto;
+
+import lombok.Builder;
+import lombok.Data;
+import org.simpmc.simppay.data.PaymentType;
+import org.simpmc.simppay.data.card.CardType;
+import org.simpmc.simppay.database.entities.BankingPayment;
+import org.simpmc.simppay.database.entities.CardPayment;
+
+import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
+
+@Data
+@Builder
+public class PaymentRecord {
+    private UUID paymentId;
+    private Date timestamp;
+    private PaymentType paymentType;      // e.g. "Bank" or "Card"
+    private String provider;      // bank API name or card type
+    private Optional<String> serial;
+    private Optional<String> pin;
+    private double amount;        // face‐value amount
+    private Optional<Double> trueAmount; // only for cards
+    private Optional<CardType> telco;
+    private String refId;
+
+    public static PaymentRecord fromBank(BankingPayment bp) {
+        return PaymentRecord.builder()
+                .paymentId(bp.getPaymentID())
+                .timestamp(bp.getTimestamp())
+                .paymentType(PaymentType.BANKING)
+                .provider(bp.getApiProvider().name())
+                .serial(Optional.empty())
+                .pin(Optional.empty())
+                .amount(bp.getAmount())
+                .trueAmount(Optional.empty())
+                .refId(bp.getRefID())
+                .build();
+    }
+
+    public static PaymentRecord fromCard(CardPayment cp) {
+        return PaymentRecord.builder()
+                .paymentId(cp.getPaymentID())
+                .timestamp(cp.getTimestamp())
+                .paymentType(PaymentType.CARD)
+                .provider(cp.getApiProvider().name())
+                .serial(Optional.of(cp.getSerial()))
+                .pin(Optional.of(cp.getPin()))
+                .amount(cp.getAmount())
+                .trueAmount(Optional.of(cp.getTrueAmount()))
+                .refId(cp.getRefID())
+                .telco(Optional.of(cp.getCardType()))
+                .build();
+    }
+
+    public String getTelco() {
+        return telco.map(CardType::toString).orElse("?");
+    }
+}

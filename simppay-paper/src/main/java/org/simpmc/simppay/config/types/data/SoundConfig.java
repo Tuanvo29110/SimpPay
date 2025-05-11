@@ -1,4 +1,4 @@
-package org.simpmc.simppay.config.types;
+package org.simpmc.simppay.config.types.data;
 
 import de.exlll.configlib.Configuration;
 import lombok.AllArgsConstructor;

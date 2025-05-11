@@ -1,16 +1,34 @@
 package org.simpmc.simppay.database;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.DataSourceConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.Getter;
+import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.api.DatabaseSettings;
+import org.simpmc.simppay.database.entities.BankingPayment;
+import org.simpmc.simppay.database.entities.CardPayment;
+import org.simpmc.simppay.database.entities.PlayerStreakPayment;
+import org.simpmc.simppay.database.entities.SPPlayer;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class Database {
 
     private final HikariDataSource dataSource;
     private final DataSourceConnectionSource connectionSource;
+    @Getter
+    private final Dao<BankingPayment, UUID> bankDao;
+    @Getter
+    private final Dao<CardPayment, UUID> cardDao;
+    @Getter
+    private final Dao<PlayerStreakPayment, UUID> streakDao;
+    @Getter
+    private final Dao<SPPlayer, UUID> playerDao;
 
     public Database(DatabaseSettings db) throws SQLException {
         // Retrieve config values from your ConfigManager
@@ -38,7 +56,7 @@ public class Database {
             config.addDataSourceProperty("prepStmtCacheSize", "250");
             config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         } else if (dbType.equalsIgnoreCase("h2")) {
-            jdbcUrl = "jdbc:h2:./" + host + ";DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
+            jdbcUrl = "jdbc:h2:file:" + SPPlugin.getInstance().getDataFolder().getAbsolutePath() + "/simppay.db;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=TRUE";
             driverClassName = "org.h2.Driver";
         } else {
             throw new RuntimeException("Unsupported database type: " + dbType);
@@ -59,6 +77,18 @@ public class Database {
         connectionSource = new DataSourceConnectionSource(dataSource, jdbcUrl);
 
 //         Create tables if they do not exist
+
+        TableUtils.createTableIfNotExists(connectionSource, SPPlayer.class);
+        TableUtils.createTableIfNotExists(connectionSource, BankingPayment.class);
+        TableUtils.createTableIfNotExists(connectionSource, CardPayment.class);
+        TableUtils.createTableIfNotExists(connectionSource, PlayerStreakPayment.class);
+
+        // Create the DAOs
+        playerDao = DaoManager.createDao(connectionSource, SPPlayer.class);
+        bankDao = DaoManager.createDao(connectionSource, BankingPayment.class);
+        cardDao = DaoManager.createDao(connectionSource, CardPayment.class);
+        streakDao = DaoManager.createDao(connectionSource, PlayerStreakPayment.class);
+
     }
 
     /**

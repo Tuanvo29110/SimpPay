@@ -12,7 +12,7 @@ public class BankingData {
     public UUID playerUUID;
     public String desc;
     public String bin; // represents the bank name
-    public long amount;
+    public double amount;
     public String accountNumber;
     public String url;
 

@@ -5,6 +5,8 @@ import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.commands.root.BankingCommand;
 import org.simpmc.simppay.commands.root.NaptheCommand;
+import org.simpmc.simppay.commands.root.NaptheNhanhCommand;
+import org.simpmc.simppay.commands.root.ViewHistoryCommand;
 import org.simpmc.simppay.commands.root.admin.SimpPayAdminCommand;
 
 public class CommandHandler {
@@ -15,14 +17,16 @@ public class CommandHandler {
     }
 
     public void onLoad() {
-        CommandAPI.onLoad(new CommandAPIBukkitConfig(plugin).shouldHookPaperReload(true).silentLogs(true));
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(plugin).shouldHookPaperReload(true).silentLogs(true).usePluginNamespace());
     }
 
     public void onEnable() {
         CommandAPI.onEnable();
         new SimpPayAdminCommand();
         new BankingCommand();
+        new NaptheNhanhCommand();
         new NaptheCommand();
+        new ViewHistoryCommand();
     }
 
     public void onDisable() {
