@@ -1,7 +1,9 @@
 package org.simpmc.simppay.model.detail;
 
 public interface PaymentDetail {
-    long getAmount();
+    double getAmount();
+
+    PaymentDetail setAmount(int amount);
 
     String getRefID();
 
@@ -10,6 +12,4 @@ public interface PaymentDetail {
     String getDescription();
 
     String getQRCode();
-
-    double getTrueAmount();
 }

@@ -2,8 +2,13 @@ package org.simpmc.simppay.service;
 
 import lombok.Getter;
 import org.simpmc.simppay.SPPlugin;
+import org.simpmc.simppay.config.ConfigManager;
+import org.simpmc.simppay.config.types.BankingConfig;
+import org.simpmc.simppay.config.types.CardConfig;
 import org.simpmc.simppay.data.PaymentStatus;
 import org.simpmc.simppay.handler.HandlerRegistry;
+import org.simpmc.simppay.handler.data.BankAPI;
+import org.simpmc.simppay.handler.data.CardAPI;
 import org.simpmc.simppay.model.Payment;
 import org.simpmc.simppay.util.MessageUtil;
 
@@ -24,14 +29,34 @@ public class PaymentService {
         handlerRegistry = new HandlerRegistry();
     }
 
+    // use for storing data and pulling data out of the db later on
+    public static BankAPI getBankAPI() {
+        BankingConfig bankingConfig = ConfigManager.getInstance().getConfig(BankingConfig.class);
+        return bankingConfig.bankApi;
+    }
+
+    public static CardAPI getCardAPI() {
+        CardConfig cardConfig = ConfigManager.getInstance().getConfig(CardConfig.class);
+        return cardConfig.cardApi;
+    }
+
     public PaymentStatus sendCard(Payment payment) {
+        PaymentStatus status = handlerRegistry.getCardHandler().processPayment(payment);
+        if (status == PaymentStatus.EXIST) {
+            return status;
+        }
         payments.putIfAbsent(payment.getPaymentID(), payment);
-        return handlerRegistry.getCardHandler().processPayment(payment);
+        return status;
     }
 
     public PaymentStatus sendBank(Payment payment) {
+
+        PaymentStatus status = handlerRegistry.getBankHandler().processPayment(payment);
+        if (status == PaymentStatus.EXIST) {
+            return status;
+        }
         payments.putIfAbsent(payment.getPaymentID(), payment);
-        return handlerRegistry.getBankHandler().processPayment(payment);
+        return status;
     }
 
     public void clearPlayerBankCache(UUID playerUUID) {
@@ -43,7 +68,10 @@ public class PaymentService {
         UUID paymentID = playerBankingSessionPayment.get(playerUUID);
         int retryCount = 0;
         boolean cancelled = false;
-
+        if (paymentID == null) {
+            MessageUtil.debug("[PaymentService-Cancel] No payment found for " + playerUUID);
+            return;
+        }
         while (retryCount < 5 && !cancelled) {
             PaymentStatus status = handlerRegistry.getBankHandler().cancel(payments.get(paymentID)); // call to cancel payment
 
@@ -66,9 +94,5 @@ public class PaymentService {
         playerBankingSessionPayment.remove(playerUUID);
         playerBankQRCode.remove(playerUUID);
     }
-
-
-    // use for storing data and pulling data out of the db later on
-
 
 }

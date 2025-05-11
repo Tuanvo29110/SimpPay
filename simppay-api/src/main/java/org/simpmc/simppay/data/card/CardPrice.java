@@ -48,7 +48,11 @@ public enum CardPrice {
 
     public static List<String> getAllCardPrices() {
         return Arrays.stream(CardPrice.values())
-                .map(cardPrice -> String.valueOf(cardPrice.getValue()))
+                .map(cardPrice -> {
+                    // sperated every 3 zeros and đ at the end
+                    String formattedValue = String.format("%,d", cardPrice.getValue());
+                    return formattedValue + "đ";
+                })
                 .collect(Collectors.toList());
     }
 }

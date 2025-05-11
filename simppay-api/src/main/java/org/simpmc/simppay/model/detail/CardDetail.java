@@ -2,6 +2,7 @@ package org.simpmc.simppay.model.detail;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.simpmc.simppay.data.card.CardPrice;
 import org.simpmc.simppay.data.card.CardType;
 
@@ -17,8 +18,14 @@ public class CardDetail implements PaymentDetail {
     public double trueAmount;
 
     @Override
-    public long getAmount() {
+    public double getAmount() {
         return price.getValue();
+    }
+
+    @Override
+    public PaymentDetail setAmount(int amount) {
+        price = CardPrice.fromValue(amount);
+        return this;
     }
 
     @Override

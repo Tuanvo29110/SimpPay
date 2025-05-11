@@ -8,7 +8,6 @@ libraries:
   - com.zaxxer:HikariCP:5.0.1
   - com.j256.ormlite:ormlite-jdbc:6.1
   - commons-codec:commons-codec:1.18.0
-  - com.squareup.okhttp3:okhttp:4.10.0
 #  - redis.clients:jedis:4.3.1
 
 permission:
@@ -17,3 +16,6 @@ permission:
     description: Allow player to use /simppay command
   simppay.banking:
     default: op
+  simppay.napthenhanh:
+    default: true
+    description: Allow player to use /napthenhanh command

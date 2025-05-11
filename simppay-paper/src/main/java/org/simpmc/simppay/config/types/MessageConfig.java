@@ -1,7 +1,9 @@
 package org.simpmc.simppay.config.types;
 
+import de.exlll.configlib.Comment;
 import de.exlll.configlib.Configuration;
 import net.kyori.adventure.key.Key;
+import org.simpmc.simppay.config.types.data.SoundConfig;
 import org.simpmc.simppay.data.PaymentStatus;
 
 import java.util.Map;
@@ -10,6 +12,8 @@ import java.util.Map;
 public class MessageConfig {
 
     // <gradient:#f9535c:#FCD05C>SimpPay</gradient>
+    @Comment({"Tất cả message đều hỗ trợ PlaceholderAPI dưới dạng [papi:<placeholder>]",
+            "Không điền % %, ví dụ <papi:player_name>"})
     public String prefix = "<gray>[<gradient:#f9535c:#FCD05C>SimpPay</gradient><gray>] <reset>";
 
     public String configReloaded = "<green>Đã reload config thành công!";
@@ -17,6 +21,8 @@ public class MessageConfig {
     public String successQueueCard = "<green>Thẻ của bạn đang được xử lý, vui lòng chờ trong giây lát...";
 
     public String failedCard = "<red>Nạp thẻ thất bại!";
+
+    public String wrongPriceCard = "<red>Thẻ cào của bạn nhập sai mệnh giá, bạn đã được cộng thẻ trị giá <amount> vào tài khoản!";
 
     public String pendingCard = "<yellow>Thẻ của bạn đang được xử lý, vui lòng chờ trong giây lát...";
 
@@ -33,6 +39,10 @@ public class MessageConfig {
     public String promptPaymentLink = "<green>Bạn có thể thanh toán qua đường dẫn sau nếu QR trên tay bị lỗi: <link>";
 
     public String mustDivisibleBy1000 = "<red>Số tiền phải chia hết cho 1000!";
+
+    public String unknownErrror = "<red>Đã xảy ra lỗi không xác định, hãy báo cho admin server check log server!";
+
+    public String invalidAmount = "<red>Số tiền nạp tối thiểu là {amount}!";
 
     // TODO: store sound directly or have a toSound method
     public Map<PaymentStatus, SoundConfig> soundEffect = Map.of(

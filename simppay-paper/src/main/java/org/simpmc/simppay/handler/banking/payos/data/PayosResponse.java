@@ -31,7 +31,7 @@ public class PayosResponse {
         private String accountName;
 
         @SerializedName("amount")
-        private long amount;
+        private double amount;
 
         @SerializedName("description")
         private String description;

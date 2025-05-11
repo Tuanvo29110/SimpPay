@@ -4,17 +4,23 @@ import de.exlll.configlib.ConfigLib;
 import de.exlll.configlib.NameFormatters;
 import de.exlll.configlib.YamlConfigurationProperties;
 import de.exlll.configlib.YamlConfigurationStore;
+import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.simpmc.simppay.SPPlugin;
+import org.simpmc.simppay.config.annotations.Folder;
 import org.simpmc.simppay.config.serializers.KeySerializer;
 import org.simpmc.simppay.config.serializers.SoundComponentSerializer;
 import org.simpmc.simppay.config.types.*;
 import org.simpmc.simppay.config.types.banking.PayosConfig;
 import org.simpmc.simppay.config.types.card.ThesieutocConfig;
+import org.simpmc.simppay.config.types.menu.PaymentHistoryMenuConfig;
+import org.simpmc.simppay.config.types.menu.card.CardListMenuConfig;
+import org.simpmc.simppay.config.types.menu.card.CardPriceMenuConfig;
+import org.simpmc.simppay.config.types.menu.card.anvil.CardPinMenuConfig;
+import org.simpmc.simppay.config.types.menu.card.anvil.CardSerialMenuConfig;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -23,16 +29,25 @@ import java.util.Map;
 
 public class ConfigManager {
     // holds loaded config instances
-    public static final Map<Class<?>, Object> configs = new HashMap<>();
+    private static final Map<Class<?>, Object> configs = new HashMap<>();
+    @Getter
+    private static ConfigManager instance;
     private final SPPlugin plugin;
     private final List<Class<?>> configClasses = List.of(
+            // TODO: ClassGraph auto scan ?
+            PayosConfig.class,
+            ThesieutocConfig.class,
+            CardPinMenuConfig.class,
+            CardSerialMenuConfig.class,
+            CardListMenuConfig.class,
+            CardPriceMenuConfig.class,
+            PaymentHistoryMenuConfig.class,
             BankingConfig.class,
             CardConfig.class,
+            CoinsConfig.class,
             DatabaseConfig.class,
             MainConfig.class,
-            MessageConfig.class,
-            ThesieutocConfig.class,
-            PayosConfig.class
+            MessageConfig.class
     );
     // holds file paths for each config type
     private final Map<Class<?>, Path> configPaths = new HashMap<>();
@@ -50,19 +65,11 @@ public class ConfigManager {
 
     public ConfigManager(SPPlugin plugin) {
         this.plugin = plugin;
+        instance = this;
         // build default YAML properties
         // prepare paths and load all
         initPaths();
         registerAll();
-    }
-
-    private static <T> T makeNew(Class<T> clazz) {
-        try {
-            return clazz.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | NoSuchMethodException |
-                 IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Failed to create config instance for " + clazz.getName(), e);
-        }
     }
 
     private void initPaths() {
@@ -70,10 +77,27 @@ public class ConfigManager {
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }
-        for (Class<?> cls : configClasses) {
-            configPaths.put(cls, getConfigPath(cls.getSimpleName()));
+        for (Class<?> clazz : configClasses) {
+            configPaths.put(clazz, getConfigPath(clazz));
         }
     }
+
+    private Path getConfigPath(Class<?> clazz) {
+        String fileName = getConfigFileName(clazz.getSimpleName()) + ".yml";
+
+
+        if (clazz.isAnnotationPresent(Folder.class)) {
+            // if the class is annotated with @Folder, create a subfolder
+            String folderName = clazz.getAnnotation(Folder.class).value();
+            File folder = new File(plugin.getDataFolder(), folderName);
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+            return Paths.get(folder.getPath(), fileName);
+        }
+        return Paths.get(plugin.getDataFolder().getPath(), fileName);
+    }
+
 
     @SuppressWarnings("unchecked")
     private void registerAll() {
@@ -87,12 +111,10 @@ public class ConfigManager {
 
     private <T> void registerConfig(Class<T> cfgClass) {
         Path path = configPaths.get(cfgClass);
-        File file = path.toFile();
 
         YamlConfigurationStore<T> store = new YamlConfigurationStore<>(cfgClass, properties);
 
         store.update(path);
-
 
         // load (with properties on first load)
         T loaded = store.load(path);
@@ -119,10 +141,6 @@ public class ConfigManager {
         return (T) configs.get(cls);
     }
 
-    private Path getConfigPath(String name) {
-        String fileName = getConfigFileName(name) + ".yml";
-        return Paths.get(plugin.getDataFolder().getPath(), fileName);
-    }
 
     private String getConfigFileName(String name) {
         var builder = new StringBuilder(name.length());
