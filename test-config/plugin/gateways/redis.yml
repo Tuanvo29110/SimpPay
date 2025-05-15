@@ -1,4 +1,0 @@
-redis:
-  ip: localhost
-  port: 6379
-  api_provider: PAYOS
