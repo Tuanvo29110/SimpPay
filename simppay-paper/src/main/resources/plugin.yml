@@ -1,11 +1,13 @@
 name: SimpPay
 version: '$version'
 main: org.simpmc.simppay.SPPlugin
-api-version: '1.21'
+api-version: '1.13'
 author: 'typical.smc'
+description: 'Payment solution for Vietnamese Minecraft Servers'
+website: 'https://github.com/SimpMC-Studio/SimpPay'
 libraries:
   - com.h2database:h2:2.3.232
-  - com.zaxxer:HikariCP:5.0.1
+  - com.zaxxer:HikariCP:6.3.0
   - com.j256.ormlite:ormlite-jdbc:6.1
   - commons-codec:commons-codec:1.18.0
 #  - redis.clients:jedis:4.3.1
