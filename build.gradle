@@ -10,7 +10,7 @@ buildscript {
 plugins {
     id 'java'
     // Note: We apply the shadow plugin only in the modules that need it.
-    id 'com.gradleup.shadow' version '8.3.3' apply false
+    id 'com.gradleup.shadow' version '8.3.5' apply false
 }
 
 group = 'org.simpmc'
@@ -21,6 +21,9 @@ subprojects {
 
     repositories {
         mavenCentral()
+        maven {
+            url = "https://repo.opencollab.dev/main/"
+        }
         maven {
             name = "papermc-repo"
             url = "https://repo.papermc.io/repository/maven-public/"
@@ -33,14 +36,18 @@ subprojects {
             name = "jitpack"
             url = "https://jitpack.io"
         }
-        maven { url = uri("https://repo.codemc.io/repository/maven-releases/") }
-
-        maven { url = uri("https://repo.codemc.io/repository/maven-snapshots/") }
+        maven {
+            url = "https://repo.codemc.io/repository/maven-releases/"
+        }
+        maven {
+            url = "https://repo.codemc.io/repository/maven-snapshots/"
+        }
         maven {
             url = 'https://repo.extendedclip.com/releases/'
         }
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-        // This lets gradle find the BungeeCord files online
+        maven {
+            url = 'https://oss.sonatype.org/content/repositories/snapshots'
+        }
         maven {
             url = 'https://repo.rosewooddev.io/repository/public/'
         }
@@ -51,7 +58,7 @@ subprojects {
 }
 
 // Set the Java version for all subprojects
-def targetJavaVersion = 21
+def targetJavaVersion = 8
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion

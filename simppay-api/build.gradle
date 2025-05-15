@@ -8,18 +8,11 @@ dependencies {
     compileOnly 'com.j256.ormlite:ormlite-jdbc:6.1'
 //    implementation 'org.xerial:sqlite-jdbc:3.42.0.0'
 //    implementation 'com.h2database:h2:2.3.232'
-    compileOnly 'com.zaxxer:HikariCP:5.0.1'
-
-    // JSON processing
-    compileOnly 'com.google.code.gson:gson:2.10.1'
-
-    // Redis for PubSub
-    compileOnly 'redis.clients:jedis:4.3.1'
+    compileOnly 'com.zaxxer:HikariCP:6.3.0'
 
     compileOnly 'com.google.code.gson:gson:2.13.1'
     compileOnly 'commons-codec:commons-codec:1.18.0'
 
-
-    compileOnly 'org.projectlombok:lombok:1.18.36'
-    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+    compileOnly 'org.projectlombok:lombok:1.18.38'
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
 }
