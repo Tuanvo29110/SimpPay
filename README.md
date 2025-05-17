@@ -36,17 +36,31 @@ Note:
 - [x] implement giving coins
 - [ ] implement server milestone / need async cache thinggy
 - [x] implement cache for placeholder, get player current số tiền đã nạp / also async cache thing
-- [ ] migrate to okhttp connection pool, also handle when server cant connect to the internet(get ddosed, dns issues) ->
+- [ ] migrate to okhttp connection pool
+- [ ] handle when server cant connect to the internet(get ddosed, dns issues) ->
   mark payment as failed, the payment on psp should expire on their own. For card transaction, they should be cached to
-  db somehow
+  db somehow (prio)
 - [x] implementation database to save payment history
-- [ ] implement menu nạp thẻ
-- [ ] implement menu xem lịch sử nạp admin và player
-- [ ] implement menu nạp thẻ floodgate
-- [ ] implement lệnh xem số liệu cho admin
-    + [ ] xem tổng nạp hôm nay, chia thẻ và bank, số liệu cộng ở cuối
+- [x] implement menu nạp thẻ
+- [x] implement menu xem lịch sử nạp admin và player
+- [x] implement menu nạp thẻ floodgate
 - [ ] fix lỗi chuyển trang của menu xem lịch sử nạp
 - [x] find a way to generate unique order id for payos
 - [x] implement payos
 - [x] test thesieutoc
 - [x] idea: always have a timer task that check on the queue and process the payment
+
+* Nap Lan Dau
+
+- [ ] implement annotation for custom file name
+- [ ] implement EAV for database to store data flexible
+-
+
+* Milestone
+
+- Check on payment success -> get all existing milestone -> forEach ->
+- current = player current donated player
+- amount = new charge amount
+- if (current >= this.amount && current - amount < this.amount) {
+
+refresh mechanic: compute before hand the time that next reset occur, add to scheduler, do it every onEnable

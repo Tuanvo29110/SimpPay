@@ -67,16 +67,17 @@ public class SuccessHandlingListener implements Listener {
         // notify player
         SPPlugin plugin = SPPlugin.getInstance();
         MessageConfig config = ConfigManager.getInstance().getConfig(MessageConfig.class);
+        String formattedAmount = String.format("%,.0f", event.getAmount());
         if (event.getPaymentType() == PaymentType.CARD) {
             if (event.isWrongPrice()) {
-                MessageUtil.sendMessage(event.getPlayerUUID(), config.wrongPriceCard.replace("<amount>", String.valueOf(event.getAmount())));
+                MessageUtil.sendMessage(event.getPlayerUUID(), config.wrongPriceCard.replace("<amount>", formattedAmount));
             } else {
-                MessageUtil.sendMessage(event.getPlayerUUID(), config.successPayment);
+                MessageUtil.sendMessage(event.getPlayerUUID(), config.successPayment.replace("<amount>", formattedAmount));
             }
             SoundUtil.sendSound(event.getPlayerUUID(), config.soundEffect.get(PaymentStatus.SUCCESS).toSound());
         }
         if (event.getPaymentType() == PaymentType.BANKING) {
-            MessageUtil.sendMessage(event.getPlayerUUID(), config.successPayment);
+            MessageUtil.sendMessage(event.getPlayerUUID(), config.successPayment.replace("<amount>", formattedAmount));
             SoundUtil.sendSound(event.getPlayerUUID(), config.soundEffect.get(PaymentStatus.SUCCESS).toSound());
         }
     }
@@ -136,13 +137,11 @@ public class SuccessHandlingListener implements Listener {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), parsed);
                     });
                 }, 1);
-            } else {
-                MessageUtil.sendMessage(player, config.successPayment.replace("<amount>", String.valueOf(event.getAmount())));
             }
         }
         if (event.getPaymentType() == PaymentType.BANKING) {
             // TODO: Add support for banking commands, havent figure out the logic for it yet
-            MessageUtil.sendMessage(player, config.successPayment.replace("<amount>", String.valueOf(event.getAmount())));
+//            MessageUtil.sendMessage(player, config.successPayment.replace("<amount>", String.valueOf(event.getAmount())));
         }
     }
 
@@ -152,12 +151,12 @@ public class SuccessHandlingListener implements Listener {
         MessageConfig config = ConfigManager.getInstance().getConfig(MessageConfig.class);
         // notify player
         if (event.getPaymentType() == PaymentType.CARD) {
-            MessageUtil.sendMessage(event.getPlayerUUID(), config.successQueueCard);
+            MessageUtil.sendMessage(event.getPlayerUUID(), config.pendingCard);
             SoundUtil.sendSound(event.getPlayerUUID(), config.soundEffect.get(PaymentStatus.PENDING).toSound());
         }
         if (event.getPaymentType() == PaymentType.BANKING) {
             // called when player receive the qr code and the task for checking api is running
-            MessageUtil.sendMessage(event.getPlayerUUID(), config.successQueueBanking);
+            MessageUtil.sendMessage(event.getPlayerUUID(), config.pendingBank);
             SoundUtil.sendSound(event.getPlayerUUID(), config.soundEffect.get(PaymentStatus.PENDING).toSound());
         }
 

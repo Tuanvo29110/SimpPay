@@ -14,16 +14,19 @@ import org.simpmc.simppay.config.ConfigManager;
 import org.simpmc.simppay.config.types.DatabaseConfig;
 import org.simpmc.simppay.database.Database;
 import org.simpmc.simppay.hook.HookManager;
-import org.simpmc.simppay.listener.PlayerJoinListener;
+import org.simpmc.simppay.listener.internal.cache.CacheUpdaterListener;
+import org.simpmc.simppay.listener.internal.milestone.MilestoneListener;
 import org.simpmc.simppay.listener.internal.payment.PaymentHandlingListener;
 import org.simpmc.simppay.listener.internal.player.BankPromptListener;
 import org.simpmc.simppay.listener.internal.player.SuccessHandlingListener;
 import org.simpmc.simppay.listener.internal.player.database.SuccessDatabaseHandlingListener;
 import org.simpmc.simppay.menu.PaymentHistoryView;
+import org.simpmc.simppay.menu.ServerPaymentHistoryView;
 import org.simpmc.simppay.menu.card.CardListView;
 import org.simpmc.simppay.menu.card.CardPriceView;
 import org.simpmc.simppay.menu.card.anvil.CardPINView;
 import org.simpmc.simppay.menu.card.anvil.CardSerialView;
+import org.simpmc.simppay.service.MilestoneService;
 import org.simpmc.simppay.service.OrderIDService;
 import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.service.cache.CacheDataService;
@@ -43,13 +46,16 @@ public final class SPPlugin extends JavaPlugin {
     @Getter
     private FoliaLib foliaLib;
     private Database database;
+
+    @Getter
+    private CommandHandler commandHandler;
+
     @Getter
     private PaymentService paymentService;
     @Getter
-    private CommandHandler commandHandler;
-    @Getter
     private CacheDataService cacheDataService;
-
+    @Getter
+    private MilestoneService milestoneService;
     @Getter // TODO: Group this in one manager class
     private PaymentLogService paymentLogService;
     @Getter
@@ -88,11 +94,12 @@ public final class SPPlugin extends JavaPlugin {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        cacheDataService = new CacheDataService();
+        cacheDataService = CacheDataService.getInstance();
         new HookManager(this);
         playerService = new PlayerService(database.getPlayerDao());
         paymentLogService = new PaymentLogService(database);
         paymentService = new PaymentService();
+        milestoneService = new MilestoneService();
         registerListener();
         commandHandler.onEnable();
         registerInventoryFramework();
@@ -102,6 +109,8 @@ public final class SPPlugin extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         PacketEvents.getAPI().terminate();
+        this.getCacheDataService().clearAllCache();
+
         if (database != null) {
             database.close();
         }
@@ -115,7 +124,8 @@ public final class SPPlugin extends JavaPlugin {
                 BankPromptListener.class,
                 SuccessHandlingListener.class,
                 SuccessDatabaseHandlingListener.class,
-                PlayerJoinListener.class
+                CacheUpdaterListener.class,
+                MilestoneListener.class
         );
 
         for (Class<? extends Listener> listener : listeners) {
@@ -135,7 +145,8 @@ public final class SPPlugin extends JavaPlugin {
                         new CardSerialView(),
                         new CardListView(),
                         new CardPriceView(),
-                        new PaymentHistoryView()
+                        new PaymentHistoryView(),
+                        new ServerPaymentHistoryView()
                 )
                 .disableMetrics()
                 .register();

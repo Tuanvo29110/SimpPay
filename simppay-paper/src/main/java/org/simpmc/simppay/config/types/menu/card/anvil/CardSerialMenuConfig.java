@@ -12,14 +12,14 @@ import java.util.List;
 @Folder("menus")
 public class CardSerialMenuConfig {
     @Comment("Title có hỗ trợ PlaceholderAPI")
-    public String title = "<gold>Nhập mã seri của thẻ cào";
+    public String title = "<gradient:#E34949:#D8DB5C><bold>SimpPay</bold><white> Nhập Số Serial";
 
     public DisplayItem item = DisplayItem.builder()
-            .material(Material.PAPER)
+            .material(Material.DIAMOND)
             .amount(1)
-            .name("Nhập seri của thẻ...")
+            .name("<green>Nhập Số Serial...")
             .lores(List.of(
-                    "<green>Nhập mã serial của thẻ cào"
+                    "<color:#24d65d> Nhập số serial của thẻ cào!"
             ))
             .build();
 }

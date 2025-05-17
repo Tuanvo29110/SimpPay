@@ -9,7 +9,6 @@ import org.simpmc.simppay.data.PaymentStatus;
 import org.simpmc.simppay.data.card.CardType;
 import org.simpmc.simppay.data.card.thesieutoc.TSTCardAdapter;
 import org.simpmc.simppay.event.PaymentQueueSuccessEvent;
-import org.simpmc.simppay.exception.CardProcessException;
 import org.simpmc.simppay.handler.CardAdapter;
 import org.simpmc.simppay.handler.PaymentHandler;
 import org.simpmc.simppay.model.Payment;
@@ -40,7 +39,8 @@ public class TSTHandler implements PaymentHandler, CardAdapter {
         try {
             request = requestTransaction(detail).get();
         } catch (InterruptedException | ExecutionException e) {
-            throw new CardProcessException(e.getMessage());
+            e.printStackTrace();
+            return PaymentStatus.FAILED;
         }
         if (request == null) {
             MessageUtil.debug("[Thesieutoc-ProcessPayment] Request is null");
@@ -67,7 +67,8 @@ public class TSTHandler implements PaymentHandler, CardAdapter {
             ThesieutocConfig config = ConfigManager.getInstance().getConfig(ThesieutocConfig.class);
 
             if (config.apiKey == null || config.secretKey == null) {
-                throw new CardProcessException("API key or secret key is not set");
+                MessageUtil.info("[TST-RequestTransaction] API key or secret key is not set");
+                return null;
             }
             String base = TST_CREATE_URL + "?APIkey={0}&APIsecret={1}&mathe={2}&seri={3}&type={4}&menhgia={5}";
             String rnd = HashUtils.randomMD5();
@@ -88,6 +89,7 @@ public class TSTHandler implements PaymentHandler, CardAdapter {
         });
     }
 
+    @Override
     public PaymentResult getTransactionResult(PaymentDetail card) {
         // {
         //    "status": "10",

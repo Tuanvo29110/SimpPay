@@ -3,6 +3,7 @@ package org.simpmc.simppay.service.cache;
 import lombok.Getter;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.database.entities.SPPlayer;
+import org.simpmc.simppay.event.PlayerMilestoneEvent;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,20 +11,51 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
 // TODO: Rewrite this class to use a more efficient data structure, use generics stuff thingy, or libraries
+// TODO: Fix this colossal class, it is a mess !!!!!!
 @Getter
 public class CacheDataService {
-    private final ConcurrentHashMap<UUID, Long> playerTotalValue = new ConcurrentHashMap<>();
 
+    private static CacheDataService instance;
     private final ConcurrentLinkedQueue<UUID> playerQueue = new ConcurrentLinkedQueue<>();
-
+    private final ConcurrentHashMap<UUID, AtomicLong> playerTotalValue = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, AtomicLong> playerDailyTotalValue = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, AtomicLong> playerWeeklyTotalValue = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, AtomicLong> playerMonthlyTotalValue = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, AtomicLong> playerYearlyTotalValue = new ConcurrentHashMap<>();
     private final AtomicLong serverTotalValue = new AtomicLong(0);
+    private final AtomicLong serverDailyTotalValue = new AtomicLong(0);
+    private final AtomicLong serverWeeklyTotalValue = new AtomicLong(0);
+    private final AtomicLong serverMonthlyTotalValue = new AtomicLong(0);
+    private final AtomicLong serverYearlyTotalValue = new AtomicLong(0);
+    private final AtomicLong cardTotalValue = new AtomicLong(0);
+    private final AtomicLong bankTotalValue = new AtomicLong(0);
+
+    private CacheDataService() {
+        SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> processQueue());
+        // Player cache are updated once when player first join
+        // and then on PaymentSuccessEvent given there is a player
+
+        // Server cache are updated once when server start
+        // and then on PaymentSuccessEvent
+    }
+
+    public static synchronized CacheDataService getInstance() {
+        if (instance == null) {
+            instance = new CacheDataService();
+        }
+        return instance;
+    }
 
     public void clearAllCache() {
         playerTotalValue.clear();
     }
 
-    public void removePlayerCache(UUID playerUUID) {
+    public void clearPlayerCache(UUID playerUUID) {
         playerTotalValue.remove(playerUUID);
+        playerDailyTotalValue.remove(playerUUID);
+        playerWeeklyTotalValue.remove(playerUUID);
+        playerMonthlyTotalValue.remove(playerUUID);
+        playerYearlyTotalValue.remove(playerUUID);
     }
 
     // Process queue conurrently
@@ -37,12 +69,65 @@ public class CacheDataService {
             UUID playerUUID = playerQueue.poll();
 
             SPPlayer player = plugin.getPlayerService().findByUuid(playerUUID);
+            if (player == null) {
+                // Player not found, re-add to queue
+                playerQueue.add(playerUUID);
+                continue;
+            }
 
             double totalValue = plugin.getPaymentLogService().getPlayerTotalAmount(player);
             if (totalValue != 0) {
-                playerTotalValue.put(playerUUID, (long) totalValue);
-                serverTotalValue.set(plugin.getPaymentLogService().getEntireServerAmount());
+                updatePlayerTimedValues(playerUUID);
             }
         }
+    }
+
+    public void updateServerDataCache() {
+        SPPlugin plugin = SPPlugin.getInstance();
+        serverTotalValue.set(plugin.getPaymentLogService().getEntireServerAmount());
+        serverDailyTotalValue.set(plugin.getPaymentLogService().getEntireServerDailyAmount());
+        serverWeeklyTotalValue.set(plugin.getPaymentLogService().getEntireServerWeeklyAmount());
+        serverMonthlyTotalValue.set(plugin.getPaymentLogService().getEntireServerMonthlyAmount());
+        serverYearlyTotalValue.set(plugin.getPaymentLogService().getEntireServerYearlyAmount());
+    }
+
+    private void updatePlayerTimedValues(UUID playerUUID) {
+        SPPlugin plugin = SPPlugin.getInstance();
+        SPPlayer player = plugin.getPlayerService().findByUuid(playerUUID);
+
+        playerDailyTotalValue.compute(playerUUID, (k, v) -> {
+            if (v == null) {
+                return new AtomicLong(plugin.getPaymentLogService().getPlayerDailyAmount(player));
+            }
+            v.set(plugin.getPaymentLogService().getPlayerDailyAmount(player));
+            return v;
+        });
+
+        playerWeeklyTotalValue.compute(playerUUID, (k, v) -> {
+            if (v == null) {
+                return new AtomicLong(plugin.getPaymentLogService().getPlayerWeeklyAmount(player));
+            }
+            v.set(plugin.getPaymentLogService().getPlayerWeeklyAmount(player));
+            return v;
+        });
+        playerMonthlyTotalValue.compute(playerUUID, (k, v) -> {
+            if (v == null) {
+                return new AtomicLong(plugin.getPaymentLogService().getPlayerMonthlyAmount(player));
+            }
+            v.set(plugin.getPaymentLogService().getPlayerMonthlyAmount(player));
+            return v;
+        });
+        playerYearlyTotalValue.compute(playerUUID, (k, v) -> {
+            if (v == null) {
+                return new AtomicLong(plugin.getPaymentLogService().getPlayerYearlyAmount(player));
+            }
+            v.set(plugin.getPaymentLogService().getPlayerYearlyAmount(player));
+            return v;
+        });
+        // Call event for player milestone
+        plugin.getFoliaLib().getScheduler().runLater(task -> {
+            plugin.getServer().getPluginManager().callEvent(new PlayerMilestoneEvent(playerUUID));
+        }, 1);
+
     }
 }

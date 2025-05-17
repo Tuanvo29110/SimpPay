@@ -3,7 +3,6 @@ package org.simpmc.simppay.model.detail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 @Data
 @AllArgsConstructor

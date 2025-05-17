@@ -1,12 +1,13 @@
 package org.simpmc.simppay.model.detail;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.Accessors;
 import org.simpmc.simppay.data.card.CardPrice;
 import org.simpmc.simppay.data.card.CardType;
 
 @Data
+@AllArgsConstructor
 @Builder
 public class CardDetail implements PaymentDetail {
     public String pin;

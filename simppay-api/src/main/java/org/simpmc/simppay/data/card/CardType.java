@@ -1,7 +1,6 @@
 package org.simpmc.simppay.data.card;
 
 import java.util.Arrays;
-import java.util.Locale;
 
 public enum CardType {
     VIETTEL("Viettel"),
@@ -52,6 +51,7 @@ public enum CardType {
      */
     @Override
     public String toString() {
+
         return displayName;
     }
 }

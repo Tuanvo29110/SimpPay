@@ -8,7 +8,9 @@ import org.simpmc.simppay.database.entities.BankingPayment;
 import org.simpmc.simppay.database.entities.CardPayment;
 import org.simpmc.simppay.database.entities.SPPlayer;
 import org.simpmc.simppay.model.Payment;
+import org.simpmc.simppay.util.CalendarUtil;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,7 +23,6 @@ public class PaymentLogService {
         this.cardDao = database.getCardDao();
     }
 
-    // NOTE: Please convert Payment to BankingPayment or CardPayment to interact with database. We use ORMLite :D
     // TODO: Please, someone make a PR to optimize this code, i know it is trash, better when using proper SQL Query with JOIN and SUM :D
     public boolean todaysPaymentExists(UUID playerId) {
         try {
@@ -54,6 +55,27 @@ public class PaymentLogService {
                     .where()
                     .eq("player_uuid", playerId)
                     .query()
+                    .stream()
+                    .map(PaymentRecord::fromCard)
+                    .toList());
+
+            return payments;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        }
+    }
+
+    public List<PaymentRecord> getEntireServerPayments() {
+        try {
+            List<PaymentRecord> payments = new java.util.ArrayList<>(bankDao
+                    .queryForAll()
+                    .stream()
+                    .map(PaymentRecord::fromBank)
+                    .toList());
+
+            payments.addAll(cardDao
+                    .queryForAll()
                     .stream()
                     .map(PaymentRecord::fromCard)
                     .toList());
@@ -103,6 +125,197 @@ public class PaymentLogService {
             e.printStackTrace();
             return 0L;
         }
+    }
+
+    public long getEntireServerBankAmount() {
+        try {
+            List<BankingPayment> bankingPayments = bankDao.queryForAll();
+            double bankingTotal = bankingPayments.stream()
+                    .mapToDouble(BankingPayment::getAmount)
+                    .sum();
+            return (long) (bankingTotal);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0L;
+        }
+    }
+
+    public long getEntireServerCardAmount() {
+        try {
+            List<CardPayment> cardPayments = cardDao.queryForAll();
+            double cardTotal = cardPayments.stream()
+                    .mapToDouble(CardPayment::getAmount)
+                    .sum();
+            return (long) (cardTotal);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0L;
+        }
+    }
+
+    public long getEntireServerDailyAmount() {
+        try {
+            long epoch = System.currentTimeMillis();
+            long startOfDay = CalendarUtil.getFirstHourOfDay(epoch);
+            long endOfDay = CalendarUtil.getLastHourOfDay(epoch);
+
+            List<BankingPayment> bankingPayments = bankDao.queryBuilder()
+                    .where().between("timestamp", startOfDay, endOfDay).query();
+            List<CardPayment> cardPayments = cardDao.queryBuilder().where().between("timestamp", startOfDay, endOfDay).query();
+
+            double bankingTotal = bankingPayments.stream()
+                    .mapToDouble(BankingPayment::getAmount)
+                    .sum();
+            double cardTotal = cardPayments.stream()
+                    .mapToDouble(CardPayment::getAmount)
+                    .sum();
+            return (long) (bankingTotal + cardTotal);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0L;
+        }
+    }
+
+    public long getEntireServerWeeklyAmount() {
+        try {
+            long epoch = System.currentTimeMillis();
+            long startOfWeek = CalendarUtil.getFirstDayOfWeek(epoch);
+            long endOfWeek = CalendarUtil.getLastDayOfWeek(epoch);
+
+            List<BankingPayment> bankingPayments = bankDao.queryBuilder()
+                    .where().between("timestamp", startOfWeek, endOfWeek).query();
+            List<CardPayment> cardPayments = cardDao.queryBuilder().where().between("timestamp", startOfWeek, endOfWeek).query();
+
+            double bankingTotal = bankingPayments.stream()
+                    .mapToDouble(BankingPayment::getAmount)
+                    .sum();
+            double cardTotal = cardPayments.stream()
+                    .mapToDouble(CardPayment::getAmount)
+                    .sum();
+            return (long) (bankingTotal + cardTotal);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0L;
+        }
+    }
+
+    public long getEntireServerMonthlyAmount() {
+        try {
+            long epoch = System.currentTimeMillis();
+            long startOfMonth = CalendarUtil.getFirstDayOfMonth(epoch);
+            long endOfMonth = CalendarUtil.getLastDayOfMonth(epoch);
+
+            List<BankingPayment> bankingPayments = bankDao.queryBuilder()
+                    .where().between("timestamp", startOfMonth, endOfMonth).query();
+            List<CardPayment> cardPayments = cardDao.queryBuilder().where().between("timestamp", startOfMonth, endOfMonth).query();
+
+            double bankingTotal = bankingPayments.stream()
+                    .mapToDouble(BankingPayment::getAmount)
+                    .sum();
+            double cardTotal = cardPayments.stream()
+                    .mapToDouble(CardPayment::getAmount)
+                    .sum();
+            return (long) (bankingTotal + cardTotal);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0L;
+        }
+    }
+
+    public long getEntireServerYearlyAmount() {
+        try {
+            long epoch = System.currentTimeMillis();
+            long startOfYear = CalendarUtil.getFirstDayOfYear(epoch);
+            long endOfYear = CalendarUtil.getLastDayOfYear(epoch);
+
+            List<BankingPayment> bankingPayments = bankDao.queryBuilder()
+                    .where().between("timestamp", startOfYear, endOfYear).query();
+            List<CardPayment> cardPayments = cardDao.queryBuilder().where().between("timestamp", startOfYear, endOfYear).query();
+
+            double bankingTotal = bankingPayments.stream()
+                    .mapToDouble(BankingPayment::getAmount)
+                    .sum();
+            double cardTotal = cardPayments.stream()
+                    .mapToDouble(CardPayment::getAmount)
+                    .sum();
+            return (long) (bankingTotal + cardTotal);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0L;
+        }
+    }
+
+    public long getPlayerDailyAmount(SPPlayer playerId) {
+        try {
+            long epoch = System.currentTimeMillis();
+            long startOfDay = CalendarUtil.getFirstHourOfDay(epoch);
+            long endOfDay = CalendarUtil.getLastHourOfDay(epoch);
+
+            return queryForPlayerAmount(playerId, startOfDay, endOfDay);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0L;
+        }
+    }
+
+    public long getPlayerWeeklyAmount(SPPlayer playerId) {
+        try {
+            long epoch = System.currentTimeMillis();
+            long startOfWeek = CalendarUtil.getFirstDayOfWeek(epoch);
+            long endOfWeek = CalendarUtil.getLastDayOfWeek(epoch);
+
+            return queryForPlayerAmount(playerId, startOfWeek, endOfWeek);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0L;
+        }
+    }
+
+    public long getPlayerMonthlyAmount(SPPlayer playerId) {
+        try {
+            long epoch = System.currentTimeMillis();
+            long startOfMonth = CalendarUtil.getFirstDayOfMonth(epoch);
+            long endOfMonth = CalendarUtil.getLastDayOfMonth(epoch);
+
+            return queryForPlayerAmount(playerId, startOfMonth, endOfMonth);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0L;
+        }
+    }
+
+    public long getPlayerYearlyAmount(SPPlayer playerId) {
+        try {
+            long epoch = System.currentTimeMillis();
+            long startOfYear = CalendarUtil.getFirstDayOfYear(epoch);
+            long endOfYear = CalendarUtil.getLastDayOfYear(epoch);
+
+            return queryForPlayerAmount(playerId, startOfYear, endOfYear);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0L;
+        }
+    }
+
+    private long queryForPlayerAmount(SPPlayer playerId, long start, long end) throws SQLException {
+        List<BankingPayment> bankingPayments = bankDao.queryBuilder()
+                .where().between("timestamp", start, end)
+                .and()
+                .eq("player_uuid", playerId)
+                .query();
+        List<CardPayment> cardPayments = cardDao.queryBuilder()
+                .where().between("timestamp", start, end)
+                .and()
+                .eq("player_uuid", playerId)
+                .query();
+
+        double bankingTotal = bankingPayments.stream()
+                .mapToDouble(BankingPayment::getAmount)
+                .sum();
+        double cardTotal = cardPayments.stream()
+                .mapToDouble(CardPayment::getAmount)
+                .sum();
+        return (long) (bankingTotal + cardTotal);
     }
 
     public void removePayment(Payment payment) {

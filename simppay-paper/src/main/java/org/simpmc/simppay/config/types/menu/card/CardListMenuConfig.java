@@ -16,15 +16,17 @@ import java.util.Map;
 public class CardListMenuConfig {
 
     @Comment("Title có hỗ trợ PlaceholderAPI")
-    public String title = "<gold>Chọn nhà mạng thẻ cào";
+    public String title = "<gradient:#E34949:#D8DB5C><bold>SimpPay</bold><white> Chọn Nhà Mạng";
     public List<String> layout = Arrays.asList(
             "#########",
-            "OOOOOOOOO",
+            "#O#O#O#O#",
+            "#O#O#O#O#",
             "#########"
     );
     @Comment({"Bản đồ các mục theo ký tự", "'O' là hiển thị thẻ"})
     public Map<Character, DisplayItem> displayItems = Map.of(
             '#', DisplayItem.builder()
+                    .name(" ")
                     .material(Material.GRAY_STAINED_GLASS_PANE)
                     .role(RoleType.NONE)
                     .amount(1)
@@ -34,9 +36,9 @@ public class CardListMenuConfig {
     public DisplayItem cardItem = DisplayItem.builder()
             .material(Material.PAPER)
             .amount(1)
-            .name("<yellow><bold>{card_name}")
+            .name("<white>Nhà Mạng:<color:#24d65d> <bold>{card_name}")
             .lores(List.of(
-                    "<green>Bấm để chọn nhà mạng thẻ cào"
+                    "<dark_green> ➜</dark_green><color:#00ff00> Click để chọn nhà mạng này!"
             ))
             .build();
 }

@@ -1,7 +1,6 @@
 package org.simpmc.simppay.hook.hooks;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import me.clip.placeholderapi.expansion.Taskable;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.simpmc.simppay.SPPlugin;
@@ -9,27 +8,12 @@ import org.simpmc.simppay.service.cache.CacheDataService;
 
 import java.util.UUID;
 
-public class PlaceholderAPIHook extends PlaceholderExpansion implements Taskable {
+public class PlaceholderAPIHook extends PlaceholderExpansion {
     private final SPPlugin plugin;
 
     public PlaceholderAPIHook(SPPlugin plugin) {
         this.plugin = plugin;
         register();
-    }
-
-    @Override
-    public void start() {
-        // Process queue for caching
-        plugin.getFoliaLib().getScheduler().runTimerAsync(task -> {
-            plugin.getCacheDataService().processQueue();
-        }, 20, 20);
-
-    }
-
-    @Override
-    public void stop() {
-        // Clear cache
-        plugin.getCacheDataService().clearAllCache();
     }
 
     @Override
@@ -67,16 +51,29 @@ public class PlaceholderAPIHook extends PlaceholderExpansion implements Taskable
             return "Đang load...";
         }
 
-        String[] args = identifier.split("_");
         // %simppay_total%
-        if (args[0].equalsIgnoreCase("total") && args.length == 1) {
+        if (identifier.equalsIgnoreCase("total")) {
             return cacheDataService.getPlayerTotalValue().get(uuid).toString();
         }
         // get server_total
         // %simppay_server_total%
-        if (args[0].equalsIgnoreCase("server") && args[1].equalsIgnoreCase("total") && args.length == 2) {
+        if (identifier.equalsIgnoreCase("server_total")) {
             return cacheDataService.getServerTotalValue().toString(); // cached
         }
+        // %simppay_server_total_formatted%
+        if (identifier.equalsIgnoreCase("server_total_formatted")) {
+            return String.format("%,d", cacheDataService.getServerTotalValue().get());
+        }
+        // %simppay_bank_total_formatted%
+        if (identifier.equalsIgnoreCase("bank_total_formatted")) {
+            return String.format("%,d", cacheDataService.getBankTotalValue().get());
+        }
+        // %simppay_card_total_formatted%
+        if (identifier.equalsIgnoreCase("card_total_formatted")) {
+            return String.format("%,d", cacheDataService.getCardTotalValue().get());
+        }
+
+
         return null;
     }
 

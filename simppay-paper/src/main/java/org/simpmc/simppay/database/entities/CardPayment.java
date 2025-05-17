@@ -6,14 +6,13 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.simpmc.simppay.SPPlugin;
-import org.simpmc.simppay.data.card.CardPrice;
 import org.simpmc.simppay.data.card.CardType;
-import org.simpmc.simppay.handler.data.BankAPI;
 import org.simpmc.simppay.handler.data.CardAPI;
 import org.simpmc.simppay.model.Payment;
 import org.simpmc.simppay.model.detail.CardDetail;
 import org.simpmc.simppay.service.PaymentService;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
@@ -49,8 +48,8 @@ public class CardPayment {
     @DatabaseField(columnName = "amount", canBeNull = false)
     private double amount;
 
-    @DatabaseField(columnName = "timestamp", canBeNull = false, dataType = DataType.DATE)
-    private Date timestamp;
+    @DatabaseField(columnName = "timestamp", canBeNull = false, dataType = DataType.LONG)
+    private long timestamp;
 
     @DatabaseField(columnName = "api_provider", canBeNull = false)
     private CardAPI apiProvider;
@@ -66,6 +65,6 @@ public class CardPayment {
         this.refID = payment.getDetail().getRefID();
         this.trueAmount = ((CardDetail) payment.getDetail()).getTrueAmount();
         this.apiProvider = PaymentService.getCardAPI();
-        this.timestamp = new Date();
+        this.timestamp = Instant.now().getEpochSecond();
     }
 }

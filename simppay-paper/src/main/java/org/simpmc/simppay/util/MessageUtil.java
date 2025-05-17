@@ -68,6 +68,10 @@ public class MessageUtil {
         }
     }
 
+    public static void info(String message) {
+        SPPlugin.getInstance().getLogger().info(message);
+
+    }
 
     /**
      * Creates a tag resolver capable of resolving PlaceholderAPI tags for a given player.

@@ -9,10 +9,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.Getter;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.api.DatabaseSettings;
-import org.simpmc.simppay.database.entities.BankingPayment;
-import org.simpmc.simppay.database.entities.CardPayment;
-import org.simpmc.simppay.database.entities.PlayerStreakPayment;
-import org.simpmc.simppay.database.entities.SPPlayer;
+import org.simpmc.simppay.database.entities.*;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -29,6 +26,8 @@ public class Database {
     private final Dao<PlayerStreakPayment, UUID> streakDao;
     @Getter
     private final Dao<SPPlayer, UUID> playerDao;
+    @Getter
+    private final Dao<PlayerData, UUID> playerDataDao;
 
     public Database(DatabaseSettings db) throws SQLException {
         // Retrieve config values from your ConfigManager
@@ -76,18 +75,20 @@ public class Database {
         dataSource = new HikariDataSource(config);
         connectionSource = new DataSourceConnectionSource(dataSource, jdbcUrl);
 
-//         Create tables if they do not exist
+        // Create tables if they do not exist
 
         TableUtils.createTableIfNotExists(connectionSource, SPPlayer.class);
         TableUtils.createTableIfNotExists(connectionSource, BankingPayment.class);
         TableUtils.createTableIfNotExists(connectionSource, CardPayment.class);
         TableUtils.createTableIfNotExists(connectionSource, PlayerStreakPayment.class);
+        TableUtils.createTableIfNotExists(connectionSource, PlayerData.class);
 
         // Create the DAOs
         playerDao = DaoManager.createDao(connectionSource, SPPlayer.class);
         bankDao = DaoManager.createDao(connectionSource, BankingPayment.class);
         cardDao = DaoManager.createDao(connectionSource, CardPayment.class);
         streakDao = DaoManager.createDao(connectionSource, PlayerStreakPayment.class);
+        playerDataDao = DaoManager.createDao(connectionSource, PlayerData.class);
 
     }
 

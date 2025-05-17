@@ -10,7 +10,6 @@ import org.simpmc.simppay.data.PaymentStatus;
 import org.simpmc.simppay.data.bank.payos.PayosAdapter;
 import org.simpmc.simppay.event.PaymentBankPromptEvent;
 import org.simpmc.simppay.event.PaymentQueueSuccessEvent;
-import org.simpmc.simppay.exception.CardProcessException;
 import org.simpmc.simppay.handler.PaymentHandler;
 import org.simpmc.simppay.handler.banking.data.BankingData;
 import org.simpmc.simppay.handler.banking.payos.data.PayosPayment;
@@ -47,7 +46,8 @@ public class PayosHandler implements PaymentHandler {
         try {
             request = requestTransaction(detail).get();
         } catch (InterruptedException | ExecutionException e) {
-            throw new CardProcessException(e.getMessage());
+            e.printStackTrace();
+            return PaymentStatus.FAILED;
         }
         if (request == null || request.getData() == null) {
             MessageUtil.debug("[PayOS-ProcessPayment] Request is null");
@@ -169,7 +169,8 @@ public class PayosHandler implements PaymentHandler {
             BankingConfig bankConfig = ConfigManager.getInstance().getConfig(BankingConfig.class);
 
             if (config.apiKey == null || config.clientId == null) {
-                throw new CardProcessException("API key or secret key is not set");
+                MessageUtil.info("[PayOS-RequestTransaction] API key or secret key is not set");
+                return null;
             }
             String base = "https://api-merchant.payos.vn/v2/payment-requests";
             try {

@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.simpmc.simppay.config.ConfigManager;
 import org.simpmc.simppay.config.types.data.menu.DisplayItem;
 import org.simpmc.simppay.config.types.data.menu.RoleType;
-import org.simpmc.simppay.config.types.menu.card.CardListMenuConfig;
 import org.simpmc.simppay.config.types.menu.card.CardPriceMenuConfig;
 import org.simpmc.simppay.data.card.CardPrice;
 import org.simpmc.simppay.data.card.CardType;
@@ -33,15 +32,15 @@ public class CardPriceView extends View {
                 .priceItem.clone().replaceStringInName("{price_name}", priceTag)
                 .getItemStack(ctx.getPlayer());
         bukkitItemComponentBuilder.withItem(item).onClick(click -> {
-                    // get current card session and add data, then move to next menu
-                    CardType cardType = (CardType) click.getInitialData();
+            // get current card session and add data, then move to next menu
+            CardType cardType = (CardType) click.getInitialData();
 
-                    CardDetail detail = CardDetail.builder()
-                            .type(cardType)
-                            .price(CardPrice.fromString(priceTag))
-                            .build();
-                    click.openForPlayer(CardSerialView.class, detail);
-                });
+            CardDetail detail = CardDetail.builder()
+                    .type(cardType)
+                    .price(CardPrice.fromString(priceTag))
+                    .build();
+            click.openForPlayer(CardSerialView.class, detail);
+        });
 
     }).build();
 

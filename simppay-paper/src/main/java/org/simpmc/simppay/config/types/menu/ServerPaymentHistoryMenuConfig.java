@@ -13,9 +13,9 @@ import java.util.Map;
 
 @Configuration
 @Folder("menus")
-public class PaymentHistoryMenuConfig {
+public class ServerPaymentHistoryMenuConfig {
     @Comment("Title có hỗ trợ PlaceholderAPI")
-    public String title = "<gold>Lịch sử nạp của <white><papi:player_name>";
+    public String title = "<gradient:#E34949:#D8DB5C><bold>SimpPay</bold><white> Lịch Sử Nạp <dark_gray>[<white>{page} / {maxPage}<dark_gray>]";
 
     public List<String> layout = Arrays.asList(
             "#########",
@@ -23,15 +23,15 @@ public class PaymentHistoryMenuConfig {
             "#OOOOOOO#",
             "#OOOOOOO#",
             "#WWWWWWW#",
-            "###L#R###"
+            "###L@R###"
     );
 
     @Comment({"Map ký tự -> item hiển thị", "'O' là vị trí hiển thị giao dịch"})
     public Map<Character, DisplayItem> displayItems = Map.of(
             '#', DisplayItem.builder()
                     .material(Material.GRAY_STAINED_GLASS_PANE)
-                    .role(RoleType.NONE)
                     .name(" ")
+                    .role(RoleType.NONE)
                     .amount(1)
                     .build(),
 
@@ -42,18 +42,33 @@ public class PaymentHistoryMenuConfig {
                     .name("<green>‹ Quay lại")
                     .lores(List.of(" "))
                     .build(),
-            'W', DisplayItem.builder()
-                    .material(Material.WHITE_STAINED_GLASS_PANE)
-                    .amount(1)
-                    .role(RoleType.NONE)
-                    .name(" ")
-                    .build(),
+
             'R', DisplayItem.builder()
                     .material(Material.ARROW)
                     .amount(1)
                     .role(RoleType.NEXT_PAGE)
                     .name("<green>Tiếp theo ›")
                     .lores(List.of(" "))
+                    .build(),
+            'W', DisplayItem.builder()
+                    .material(Material.WHITE_STAINED_GLASS_PANE)
+                    .amount(1)
+                    .role(RoleType.NONE)
+                    .name(" ")
+                    .build(),
+
+            '@', DisplayItem.builder()
+                    .material(Material.NETHER_STAR)
+                    .amount(1)
+                    .role(RoleType.NONE)
+                    .name("<yellow><bold>Tổng nạp thẻ của server")
+                    .lores(
+                            List.of(
+                                    "<color:#83E349>○<white> Tổng nạp qua ngân hàng: <green><papi:simppay_bank_total_formatted>",
+                                    "<color:#83E349>○<white> Tổng nạp qua thẻ: <green><papi:simppay_card_total_formatted>",
+                                    "<color:#83E349>○<white> Tổng nạp toàn server: <green><papi:simppay_server_total_formatted>"
+                            )
+                    )
                     .build()
     );
 

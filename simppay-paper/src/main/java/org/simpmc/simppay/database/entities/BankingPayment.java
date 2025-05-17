@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.handler.data.BankAPI;
 import org.simpmc.simppay.model.Payment;
-import org.simpmc.simppay.model.detail.BankingDetail;
 import org.simpmc.simppay.service.PaymentService;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
@@ -28,8 +28,8 @@ public class BankingPayment {
     @DatabaseField(columnName = "amount", canBeNull = false)
     private double amount;
 
-    @DatabaseField(columnName = "timestamp", canBeNull = false, dataType = DataType.DATE)
-    private Date timestamp;
+    @DatabaseField(columnName = "timestamp", canBeNull = false, dataType = DataType.LONG)
+    private long timestamp;
 
     @DatabaseField(columnName = "ref_id")
     private String refID;
@@ -45,7 +45,7 @@ public class BankingPayment {
         this.amount = payment.getDetail().getAmount();
         this.refID = payment.getDetail().getRefID();
         this.apiProvider = PaymentService.getBankAPI();
-        this.timestamp = new Date();
+        this.timestamp = Instant.now().getEpochSecond();
     }
 
 }

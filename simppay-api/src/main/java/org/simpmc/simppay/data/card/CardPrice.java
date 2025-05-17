@@ -46,6 +46,15 @@ public enum CardPrice {
         return null;
     }
 
+//    public static void main(String[] args) {
+//        // Example usage
+//        getAllCardPrices().forEach(System.out::println);
+//
+//        for (int i = 0; i < CardPrice.values().length; i++) {
+//            System.out.println("Index " + i + ": " + getCardPriceByIndex(i));
+//        }
+//    }
+
     public static List<String> getAllCardPrices() {
         return Arrays.stream(CardPrice.values())
                 .map(cardPrice -> {
@@ -54,5 +63,13 @@ public enum CardPrice {
                     return formattedValue + "đ";
                 })
                 .collect(Collectors.toList());
+    }
+
+    public static CardPrice getCardPriceByIndex(int index) {
+        CardPrice[] cardPrices = CardPrice.values();
+        if (index < 0 || index >= cardPrices.length) {
+            return null; // Return null if the index is out of bounds
+        }
+        return cardPrices[index];
     }
 }

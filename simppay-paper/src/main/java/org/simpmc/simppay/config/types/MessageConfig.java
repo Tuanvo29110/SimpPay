@@ -14,35 +14,35 @@ public class MessageConfig {
     // <gradient:#f9535c:#FCD05C>SimpPay</gradient>
     @Comment({"Tất cả message đều hỗ trợ PlaceholderAPI dưới dạng [papi:<placeholder>]",
             "Không điền % %, ví dụ <papi:player_name>"})
-    public String prefix = "<gray>[<gradient:#f9535c:#FCD05C>SimpPay</gradient><gray>] <reset>";
+    public String prefix = "<dark_gray>[<gradient:#E34949:#D8DB5C><bold>SimpPay</bold><dark_gray>] <reset>";
 
-    public String configReloaded = "<green>Đã reload config thành công!";
+    public String configReloaded = "<color:#B3E664>Tải lại config thành công!";
 
-    public String successQueueCard = "<green>Thẻ của bạn đang được xử lý, vui lòng chờ trong giây lát...";
+    public String pendingCard = "<color:#E7EE88>Thẻ của bạn đang được xử lý, vui lòng chờ trong giây lát...";
 
-    public String failedCard = "<red>Nạp thẻ thất bại!";
+    public String failedCard = "<color:#ff0000>Nạp thẻ thất bại!";
 
-    public String wrongPriceCard = "<red>Thẻ cào của bạn nhập sai mệnh giá, bạn đã được cộng thẻ trị giá <amount> vào tài khoản!";
+    public String wrongPriceCard = "<color:#ff0000>Thẻ cào của bạn nhập sai mệnh giá, bạn đã được cộng thẻ trị giá <white><amount><color:#ff0000> vào tài khoản!";
 
-    public String pendingCard = "<yellow>Thẻ của bạn đang được xử lý, vui lòng chờ trong giây lát...";
+    public String successPayment = "<color:#00ff00>Nạp thành công với mệnh giá <white><amount>đ<color:#00ff00>!";
 
-    public String successPayment = "<green>Nạp thành công với mệnh giá <amount>đ!";
+    public String cancelBanking = "<color:#ff0000>Đã hủy yêu cầu thanh toán ngân hàng!";
 
-    public String cancelBanking = "<red>Đã hủy yêu cầu thanh toán ngân hàng!";
+    public String existBankingSession = "<color:#ff0000>Bạn đã tạo lệnh nạp trước đó rồi! Nếu muốn tạo lệnh nạp mới, hãy gõ /bank cancel";
 
-    public String existBankingSession = "<red>Bạn đã tạo lệnh nạp trước đó rồi! Nếu muốn tạo lệnh nạp mới, hãy gõ /bank cancel";
+    public String noExistBankingSession = "<color:#ff0000>Bạn chưa tạo lệnh nạp nào cả! Hãy gõ <white>/bank <số tiền><color:#ff0000> để tạo lệnh nạp mới!";
 
-    public String noExistBankingSession = "<red>Bạn chưa tạo lệnh nạp nào cả! Hãy gõ /bank <số tiền> để tạo lệnh nạp mới!";
+    public String pendingBank = "<color:#00ff00>Hãy quét mã QR ở bên tay của bạn để thanh toán!";
 
-    public String successQueueBanking = "<green>Hãy quét mã QR ở bên tay của bạn để thanh toán!";
+    public String promptPaymentLink = "<color:#00ff00>Bạn có thể thanh toán qua đường dẫn sau nếu QR trên tay bị lỗi: <white><link>";
 
-    public String promptPaymentLink = "<green>Bạn có thể thanh toán qua đường dẫn sau nếu QR trên tay bị lỗi: <link>";
+    public String mustDivisibleBy1000 = "<color:#ff0000>Số tiền phải chia hết cho <white>1000<color:#ff0000>!";
 
-    public String mustDivisibleBy1000 = "<red>Số tiền phải chia hết cho 1000!";
+    public String unknownErrror = "<color:#ff0000>Lỗi không xác định! Hãy báo cho<white> Admin Server<color:#ff0000> để kiểm tra lỗi!";
 
-    public String unknownErrror = "<red>Đã xảy ra lỗi không xác định, hãy báo cho admin server check log server!";
+    public String invalidAmount = "<color:#ff0000>Số tiền nạp tối thiểu là <white>{amount}<color:#ff0000>!";
 
-    public String invalidAmount = "<red>Số tiền nạp tối thiểu là {amount}!";
+    public String invalidParam = "<color:#ff0000>>Serial hoặc mã thẻ nhập vào chưa chính xác!";
 
     // TODO: store sound directly or have a toSound method
     public Map<PaymentStatus, SoundConfig> soundEffect = Map.of(

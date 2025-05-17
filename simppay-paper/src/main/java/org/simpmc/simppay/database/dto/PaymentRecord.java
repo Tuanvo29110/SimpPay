@@ -7,6 +7,7 @@ import org.simpmc.simppay.data.card.CardType;
 import org.simpmc.simppay.database.entities.BankingPayment;
 import org.simpmc.simppay.database.entities.CardPayment;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,13 +29,14 @@ public class PaymentRecord {
     public static PaymentRecord fromBank(BankingPayment bp) {
         return PaymentRecord.builder()
                 .paymentId(bp.getPaymentID())
-                .timestamp(bp.getTimestamp())
+                .timestamp(Date.from(Instant.ofEpochSecond(bp.getTimestamp()))) // TODO: better way to handle this
                 .paymentType(PaymentType.BANKING)
                 .provider(bp.getApiProvider().name())
                 .serial(Optional.empty())
                 .pin(Optional.empty())
                 .amount(bp.getAmount())
                 .trueAmount(Optional.empty())
+                .telco(Optional.empty())
                 .refId(bp.getRefID())
                 .build();
     }
@@ -42,7 +44,7 @@ public class PaymentRecord {
     public static PaymentRecord fromCard(CardPayment cp) {
         return PaymentRecord.builder()
                 .paymentId(cp.getPaymentID())
-                .timestamp(cp.getTimestamp())
+                .timestamp(Date.from(Instant.ofEpochSecond(cp.getTimestamp()))) // TODO: better way to handle this
                 .paymentType(PaymentType.CARD)
                 .provider(cp.getApiProvider().name())
                 .serial(Optional.of(cp.getSerial()))
@@ -55,6 +57,9 @@ public class PaymentRecord {
     }
 
     public String getTelco() {
+        if (telco.isEmpty()) {
+            return "?";
+        }
         return telco.map(CardType::toString).orElse("?");
     }
 }

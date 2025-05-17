@@ -8,7 +8,7 @@ import org.simpmc.simppay.handler.data.BankAPI;
 @Configuration
 @Folder("banking")
 public class BankingConfig {
-    @Comment("Dịch vụ cổng banking: REDIS, PAYOS")
+    @Comment("Dịch vụ cổng banking: PAYOS")
     public BankAPI bankApi = BankAPI.PAYOS;
 
     @Comment("Thời gian chờ thanh toán ngân hàng (giây)")

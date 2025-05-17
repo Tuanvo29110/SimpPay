@@ -1,6 +1,5 @@
 package org.simpmc.simppay.menu;
 
-import com.google.common.base.Preconditions;
 import me.devnatan.inventoryframework.View;
 import me.devnatan.inventoryframework.ViewConfigBuilder;
 import me.devnatan.inventoryframework.component.Pagination;
@@ -13,10 +12,9 @@ import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.config.ConfigManager;
 import org.simpmc.simppay.config.types.data.menu.DisplayItem;
 import org.simpmc.simppay.config.types.data.menu.RoleType;
-import org.simpmc.simppay.config.types.menu.PaymentHistoryMenuConfig;
+import org.simpmc.simppay.config.types.menu.ServerPaymentHistoryMenuConfig;
 import org.simpmc.simppay.data.PaymentType;
 import org.simpmc.simppay.database.dto.PaymentRecord;
-import org.simpmc.simppay.database.entities.SPPlayer;
 import org.simpmc.simppay.util.MessageUtil;
 
 import java.time.Instant;
@@ -26,12 +24,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class PaymentHistoryView extends View {
+public class ServerPaymentHistoryView extends View {
 
 
     private final State<Pagination> paginationState = buildComputedAsyncPaginationState(this::fetchPaymentRecordsAsync)
             .elementFactory((ctx, bukkitItemComponentBuilder, i, paymentRecord) -> {
-                PaymentHistoryMenuConfig config = ConfigManager.getInstance().getConfig(PaymentHistoryMenuConfig.class);
+                ServerPaymentHistoryMenuConfig config = ConfigManager.getInstance().getConfig(ServerPaymentHistoryMenuConfig.class);
                 MessageUtil.debug(paymentRecord.toString());
                 if (paymentRecord.getPaymentType() == PaymentType.BANKING) {
                     DisplayItem item = config.cardItem.clone().replaceStringInName("{amount}", value -> {
@@ -73,7 +71,7 @@ public class PaymentHistoryView extends View {
             // Paper also noted that the practice is poorly written for InventoryView#setTitle() which this calls anyways above 1.20 :
             // i love and hate paper at the same time
 //            .onPageSwitch((ctx, pagination) -> {
-//                PaymentHistoryMenuConfig config = ConfigManager.getInstance().getConfig(PaymentHistoryMenuConfig.class);
+//                ServerPaymentHistoryMenuConfig config = ConfigManager.getInstance().getConfig(ServerPaymentHistoryMenuConfig.class);
 //                // wtf shit
 //                String title = LegacyComponentSerializer.legacySection().serializeOr(
 //                        MessageUtil.getComponentParsed(
@@ -85,21 +83,21 @@ public class PaymentHistoryView extends View {
     @Override
     public void onInit(ViewConfigBuilder config) {
         config.cancelInteractions();
-        config.layout(ConfigManager.getInstance().getConfig(PaymentHistoryMenuConfig.class).layout.toArray(new String[0]));
-        Component title = MessageUtil.getComponentParsed(ConfigManager.getInstance().getConfig(PaymentHistoryMenuConfig.class).title.replace("{page}", "1"), null);
+        config.layout(ConfigManager.getInstance().getConfig(ServerPaymentHistoryMenuConfig.class).layout.toArray(new String[0]));
+        Component title = MessageUtil.getComponentParsed(ConfigManager.getInstance().getConfig(ServerPaymentHistoryMenuConfig.class).title.replace("{page}", "1"), null);
         config.title(title);
     }
 
 //    @Override
 //    public void onOpen(@NotNull OpenContext open) {
-//        PaymentHistoryMenuConfig menuConfig = ConfigManager.getInstance().getConfig(PaymentHistoryMenuConfig.class);
+//        ServerPaymentHistoryMenuConfig menuConfig = ConfigManager.getInstance().getConfig(ServerPaymentHistoryMenuConfig.class);
 //        String title = menuConfig.title;
 //        open.modifyConfig().title(MessageUtil.getComponentParsed(title, open.getPlayer())); // Title support papi
 //    }
 
     @Override
     public void onFirstRender(@NotNull RenderContext render) {
-        PaymentHistoryMenuConfig menuConfig = ConfigManager.getInstance().getConfig(PaymentHistoryMenuConfig.class);
+        ServerPaymentHistoryMenuConfig menuConfig = ConfigManager.getInstance().getConfig(ServerPaymentHistoryMenuConfig.class);
         Pagination pagination = paginationState.get(render);
 
         Map<Character, DisplayItem> displayedItems = menuConfig.displayItems;
@@ -130,15 +128,7 @@ public class PaymentHistoryView extends View {
 
     private CompletableFuture<List<PaymentRecord>> fetchPaymentRecordsAsync(Context context) {
         return CompletableFuture.supplyAsync(() -> {
-            SPPlayer spPlayer;
-            if (context.getInitialData() == null) { // TODO: should be async ?
-                spPlayer = SPPlugin.getInstance().getPlayerService().findByUuid(context.getPlayer().getUniqueId());
-            } else {
-                spPlayer = SPPlugin.getInstance().getPlayerService().findByName((String) context.getInitialData());
-            }
-            Preconditions.checkNotNull(spPlayer, "Player not found");
-            List<PaymentRecord> paymentRecords = SPPlugin.getInstance().getPaymentLogService().getPaymentsByPlayer(spPlayer);
-
+            List<PaymentRecord> paymentRecords = SPPlugin.getInstance().getPaymentLogService().getEntireServerPayments();
             return paymentRecords;
         });
     }
