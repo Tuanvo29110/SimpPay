@@ -52,8 +52,9 @@ final class BitBuffer {
 
     // Returns the bit at the given index, yielding 0 or 1.
     public int getBit(int index) {
-        if (index < 0 || index >= bitLength)
+        if (index < 0 || index >= bitLength) {
             throw new IndexOutOfBoundsException();
+        }
         return (data[index >>> 5] >>> ~index) & 1;
     }
 
@@ -61,8 +62,9 @@ final class BitBuffer {
     // Returns a new array representing this buffer's bits packed into
     // bytes in big endian. The current bit length must be a multiple of 8.
     public byte[] getBytes() {
-        if (bitLength % 8 != 0)
+        if (bitLength % 8 != 0) {
             throw new IllegalStateException("Data is not a whole number of bytes");
+        }
         byte[] result = new byte[bitLength / 8];
         for (int i = 0; i < result.length; i++)
             result[i] = (byte) (data[i >>> 2] >>> (~i << 3));
@@ -73,13 +75,16 @@ final class BitBuffer {
     // Appends the given number of low-order bits of the given value
     // to this buffer. Requires 0 <= len <= 31 and 0 <= val < 2^len.
     public void appendBits(int val, int len) {
-        if (len < 0 || len > 31 || val >>> len != 0)
+        if (len < 0 || len > 31 || val >>> len != 0) {
             throw new IllegalArgumentException("Value out of range");
-        if (len > Integer.MAX_VALUE - bitLength)
+        }
+        if (len > Integer.MAX_VALUE - bitLength) {
             throw new IllegalStateException("Maximum length reached");
+        }
 
-        if (bitLength + len + 1 > data.length << 5)
+        if (bitLength + len + 1 > data.length << 5) {
             data = Arrays.copyOf(data, data.length * 2);
+        }
         assert bitLength + len <= data.length << 5;
 
         int remain = 32 - (bitLength & 0x1F);
@@ -101,16 +106,20 @@ final class BitBuffer {
     // word array and given bit length. Requires 0 <= len <= 32 * vals.length.
     public void appendBits(int[] vals, int len) {
         Objects.requireNonNull(vals);
-        if (len == 0)
+        if (len == 0) {
             return;
-        if (len < 0 || len > vals.length * 32L)
+        }
+        if (len < 0 || len > vals.length * 32L) {
             throw new IllegalArgumentException("Value out of range");
+        }
         int wholeWords = len / 32;
         int tailBits = len % 32;
-        if (tailBits > 0 && vals[wholeWords] << tailBits != 0)
+        if (tailBits > 0 && vals[wholeWords] << tailBits != 0) {
             throw new IllegalArgumentException("Last word must have low bits clear");
-        if (len > Integer.MAX_VALUE - bitLength)
+        }
+        if (len > Integer.MAX_VALUE - bitLength) {
             throw new IllegalStateException("Maximum length reached");
+        }
 
         while (bitLength + len > data.length * 32)
             data = Arrays.copyOf(data, data.length * 2);
@@ -126,8 +135,9 @@ final class BitBuffer {
                 bitLength += 32;
                 data[bitLength >>> 5] = word << (32 - shift);
             }
-            if (tailBits > 0)
+            if (tailBits > 0) {
                 appendBits(vals[wholeWords] >>> (32 - tailBits), tailBits);
+            }
         }
     }
 

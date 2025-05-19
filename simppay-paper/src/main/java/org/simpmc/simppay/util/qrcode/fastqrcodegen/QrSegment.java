@@ -91,8 +91,9 @@ public final class QrSegment {
     public QrSegment(Mode md, int numCh, int[] data, int bitLen) {
         mode = Objects.requireNonNull(md);
         this.data = Objects.requireNonNull(data);
-        if (numCh < 0 || bitLen < 0 || bitLen > data.length * 32L)
+        if (numCh < 0 || bitLen < 0 || bitLen > data.length * 32L) {
             throw new IllegalArgumentException("Invalid value");
+        }
         numChars = numCh;
         bitLength = bitLen;
     }
@@ -113,8 +114,9 @@ public final class QrSegment {
      */
     public static QrSegment makeBytes(byte[] data) {
         Objects.requireNonNull(data);
-        if (data.length * 8L > Integer.MAX_VALUE)
+        if (data.length * 8L > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("Data too long");
+        }
         int[] bits = new int[(data.length + 3) / 4];
         for (int i = 0; i < data.length; i++)
             bits[i >>> 2] |= (data[i] & 0xFF) << (~i << 3);
@@ -136,8 +138,9 @@ public final class QrSegment {
         int accumCount = 0;
         for (int i = 0; i < digits.length(); i++) {
             char c = digits.charAt(i);
-            if (c < '0' || c > '9')
+            if (c < '0' || c > '9') {
                 throw new IllegalArgumentException("String contains non-numeric characters");
+            }
             accumData = accumData * 10 + (c - '0');
             accumCount++;
             if (accumCount == 3) {
@@ -147,7 +150,9 @@ public final class QrSegment {
             }
         }
         if (accumCount > 0)  // 1 or 2 digits remaining
+        {
             bb.appendBits(accumData, accumCount * 3 + 1);
+        }
         return new QrSegment(Mode.NUMERIC, digits.length(), bb.data, bb.bitLength);
     }
 
@@ -168,8 +173,9 @@ public final class QrSegment {
         int accumCount = 0;
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
-            if (c >= ALPHANUMERIC_MAP.length || ALPHANUMERIC_MAP[c] == -1)
+            if (c >= ALPHANUMERIC_MAP.length || ALPHANUMERIC_MAP[c] == -1) {
                 throw new IllegalArgumentException("String contains unencodable characters in alphanumeric mode");
+            }
             accumData = accumData * 45 + ALPHANUMERIC_MAP[c];
             accumCount++;
             if (accumCount == 2) {
@@ -179,7 +185,9 @@ public final class QrSegment {
             }
         }
         if (accumCount > 0)  // 1 character remaining
+        {
             bb.appendBits(accumData, 6);
+        }
         return new QrSegment(Mode.ALPHANUMERIC, text.length(), bb.data, bb.bitLength);
     }
 
@@ -197,12 +205,13 @@ public final class QrSegment {
         // Select the most efficient segment encoding automatically
         List<QrSegment> result = new ArrayList<>();
         if (text.equals("")) ;  // Leave result empty
-        else if (isNumeric(text))
+        else if (isNumeric(text)) {
             result.add(makeNumeric(text));
-        else if (isAlphanumeric(text))
+        } else if (isAlphanumeric(text)) {
             result.add(makeAlphanumeric(text));
-        else
+        } else {
             result.add(makeBytes(text.getBytes(StandardCharsets.UTF_8)));
+        }
         return result;
     }
 
@@ -219,18 +228,19 @@ public final class QrSegment {
      */
     public static QrSegment makeEci(int assignVal) {
         BitBuffer bb = new BitBuffer();
-        if (assignVal < 0)
+        if (assignVal < 0) {
             throw new IllegalArgumentException("ECI assignment value out of range");
-        else if (assignVal < (1 << 7))
+        } else if (assignVal < (1 << 7)) {
             bb.appendBits(assignVal, 8);
-        else if (assignVal < (1 << 14)) {
+        } else if (assignVal < (1 << 14)) {
             bb.appendBits(2, 2);
             bb.appendBits(assignVal, 14);
         } else if (assignVal < 1_000_000) {
             bb.appendBits(6, 3);
             bb.appendBits(assignVal, 21);
-        } else
+        } else {
             throw new IllegalArgumentException("ECI assignment value out of range");
+        }
         return new QrSegment(Mode.ECI, 0, bb.data, bb.bitLength);
     }
 
@@ -246,8 +256,9 @@ public final class QrSegment {
     public static boolean isNumeric(String text) {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
-            if (c < '0' || c > '9')
+            if (c < '0' || c > '9') {
                 return false;
+            }
         }
         return true;
     }
@@ -268,8 +279,9 @@ public final class QrSegment {
     public static boolean isAlphanumeric(String text) {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
-            if (c >= ALPHANUMERIC_MAP.length || ALPHANUMERIC_MAP[c] == -1)
+            if (c >= ALPHANUMERIC_MAP.length || ALPHANUMERIC_MAP[c] == -1) {
                 return false;
+            }
         }
         return true;
     }
@@ -283,11 +295,13 @@ public final class QrSegment {
         for (QrSegment seg : segs) {
             Objects.requireNonNull(seg);
             int ccbits = seg.mode.numCharCountBits(version);
-            if (seg.numChars >= (1 << ccbits))
+            if (seg.numChars >= (1 << ccbits)) {
                 return -1;  // The segment's length doesn't fit the field's bit width
+            }
             result += 4L + ccbits + seg.bitLength;
-            if (result > Integer.MAX_VALUE)
+            if (result > Integer.MAX_VALUE) {
                 return -1;  // The sum will overflow an int type
+            }
         }
         return (int) result;
     }

@@ -52,8 +52,9 @@ final class Memoizer<T, R> {
             SoftReference<R> ref = cache.get(arg);
             if (ref != null) {
                 R result = ref.get();
-                if (result != null)
+                if (result != null) {
                     return result;
+                }
             }
         }
 
@@ -63,14 +64,16 @@ final class Memoizer<T, R> {
                 SoftReference<R> ref = cache.get(arg);
                 if (ref != null) {
                     R result = ref.get();
-                    if (result != null)
+                    if (result != null) {
                         return result;
+                    }
                     cache.remove(arg);
                 }
                 assert !cache.containsKey(arg);
 
-                if (pending.add(arg))
+                if (pending.add(arg)) {
                     break;
+                }
 
                 try {
                     this.wait();

@@ -147,10 +147,12 @@ public final class QrCode {
      */
     public QrCode(int ver, Ecc ecl, byte[] dataCodewords, int msk) {
         // Check arguments and initialize fields
-        if (ver < MIN_VERSION || ver > MAX_VERSION)
+        if (ver < MIN_VERSION || ver > MAX_VERSION) {
             throw new IllegalArgumentException("Version value out of range");
-        if (msk < -1 || msk > 7)
+        }
+        if (msk < -1 || msk > 7) {
             throw new IllegalArgumentException("Mask value out of range");
+        }
         version = ver;
         size = ver * 4 + 17;
         errorCorrectionLevel = Objects.requireNonNull(ecl);
@@ -254,20 +256,23 @@ public final class QrCode {
     public static QrCode encodeSegments(List<QrSegment> segs, Ecc ecl, int minVersion, int maxVersion, int mask, boolean boostEcl) {
         Objects.requireNonNull(segs);
         Objects.requireNonNull(ecl);
-        if (!(MIN_VERSION <= minVersion && minVersion <= maxVersion && maxVersion <= MAX_VERSION) || mask < -1 || mask > 7)
+        if (!(MIN_VERSION <= minVersion && minVersion <= maxVersion && maxVersion <= MAX_VERSION) || mask < -1 || mask > 7) {
             throw new IllegalArgumentException("Invalid value");
+        }
 
         // Find the minimal version number to use
         int version, dataUsedBits;
         for (version = minVersion; ; version++) {
             int dataCapacityBits = getNumDataCodewords(version, ecl) * 8;  // Number of data bits available
             dataUsedBits = QrSegment.getTotalBits(segs, version);
-            if (dataUsedBits != -1 && dataUsedBits <= dataCapacityBits)
+            if (dataUsedBits != -1 && dataUsedBits <= dataCapacityBits) {
                 break;  // This version number is found to be suitable
+            }
             if (version >= maxVersion) {  // All versions in the range could not fit the given data
                 String msg = "Segment too long";
-                if (dataUsedBits != -1)
+                if (dataUsedBits != -1) {
                     msg = String.format("Data length = %d bits, Max capacity = %d bits", dataUsedBits, dataCapacityBits);
+                }
                 throw new DataTooLongException(msg);
             }
         }
@@ -275,8 +280,9 @@ public final class QrCode {
 
         // Increase the error correction level while the data still fits in the current version number
         for (Ecc newEcl : Ecc.values()) {  // From low to high
-            if (boostEcl && dataUsedBits <= getNumDataCodewords(version, newEcl) * 8)
+            if (boostEcl && dataUsedBits <= getNumDataCodewords(version, newEcl) * 8) {
                 ecl = newEcl;
+            }
         }
 
         // Concatenate all segments to create the data bit string
@@ -335,8 +341,9 @@ public final class QrCode {
         if (0 <= x && x < size && 0 <= y && y < size) {
             int i = y * size + x;
             return getBit(modules[i >>> 5], i) != 0;
-        } else
+        } else {
             return false;
+        }
     }
 
     // Draws two copies of the format bits (with its own error correction code)
@@ -385,8 +392,9 @@ public final class QrCode {
     // codewords appended to it, based on this object's version and error correction level.
     private byte[] addEccAndInterleave(byte[] data) {
         Objects.requireNonNull(data);
-        if (data.length != getNumDataCodewords(version, errorCorrectionLevel))
+        if (data.length != getNumDataCodewords(version, errorCorrectionLevel)) {
             throw new IllegalArgumentException();
+        }
 
         // Calculate parameter numbers
         int numBlocks = NUM_ERROR_CORRECTION_BLOCKS[errorCorrectionLevel.ordinal()][version];
@@ -404,8 +412,9 @@ public final class QrCode {
             int datLen = shortBlockDataLen + (i < numShortBlocks ? 0 : 1);
             rs.getRemainder(data, k, datLen, ecc);
             for (int j = 0, l = i; j < datLen; j++, k++, l += numBlocks) {  // Copy data
-                if (j == shortBlockDataLen)
+                if (j == shortBlockDataLen) {
                     l -= numShortBlocks;
+                }
                 result[l] = data[k];
             }
             for (int j = 0, l = data.length + i; j < blockEccLen; j++, l += numBlocks)  // Copy ECC
@@ -419,8 +428,9 @@ public final class QrCode {
     private void drawCodewords(int[] dataOutputBitIndexes, byte[] allCodewords) {
         Objects.requireNonNull(dataOutputBitIndexes);
         Objects.requireNonNull(allCodewords);
-        if (allCodewords.length * 8 != dataOutputBitIndexes.length)
+        if (allCodewords.length * 8 != dataOutputBitIndexes.length) {
             throw new IllegalArgumentException();
+        }
         for (int i = 0; i < dataOutputBitIndexes.length; i++) {
             int j = dataOutputBitIndexes[i];
             int bit = getBit(allCodewords[i >>> 3], ~i & 7);
@@ -434,8 +444,9 @@ public final class QrCode {
     // the same mask value a second time will undo the mask. A final well-formed
     // QR Code needs exactly one (not zero, two, etc.) mask applied.
     private void applyMask(int[] msk) {
-        if (msk.length != modules.length)
+        if (msk.length != modules.length) {
             throw new IllegalArgumentException();
+        }
         for (int i = 0; i < msk.length; i++)
             modules[i] ^= msk[i];
     }
@@ -481,14 +492,16 @@ public final class QrCode {
                 int c = getBit(modules[index >>> 5], index);
                 if (c == runColor) {
                     runX++;
-                    if (runX == 5)
+                    if (runX == 5) {
                         result += PENALTY_N1;
-                    else if (runX > 5)
+                    } else if (runX > 5) {
                         result++;
+                    }
                 } else {
                     finderPenaltyAddHistory(runX, runHistory);
-                    if (runColor == 0)
+                    if (runColor == 0) {
                         result += finderPenaltyCountPatterns(runHistory) * PENALTY_N3;
+                    }
                     runColor = c;
                     runX = 1;
                 }
@@ -497,8 +510,9 @@ public final class QrCode {
                     curRow = ((curRow << 1) | c) & 3;
                     nextRow = ((nextRow << 1) | getBit(modules[downIndex >>> 5], downIndex)) & 3;
                     // 2*2 blocks of modules having same color
-                    if (x >= 1 && (curRow == 0 || curRow == 3) && curRow == nextRow)
+                    if (x >= 1 && (curRow == 0 || curRow == 3) && curRow == nextRow) {
                         result += PENALTY_N2;
+                    }
                 }
             }
             result += finderPenaltyTerminateAndCount(runColor, runX, runHistory) * PENALTY_N3;
@@ -513,14 +527,16 @@ public final class QrCode {
                 int c = getBit(modules[index >>> 5], index);
                 if (c == runColor) {
                     runY++;
-                    if (runY == 5)
+                    if (runY == 5) {
                         result += PENALTY_N1;
-                    else if (runY > 5)
+                    } else if (runY > 5) {
                         result++;
+                    }
                 } else {
                     finderPenaltyAddHistory(runY, runHistory);
-                    if (runColor == 0)
+                    if (runColor == 0) {
                         result += finderPenaltyCountPatterns(runHistory) * PENALTY_N3;
+                    }
                     runColor = c;
                     runY = 1;
                 }
@@ -559,8 +575,9 @@ public final class QrCode {
 
     // Pushes the given value to the front and drops the last value. A helper function for getPenaltyScore().
     private void finderPenaltyAddHistory(int currentRunLength, int[] runHistory) {
-        if (runHistory[0] == 0)
+        if (runHistory[0] == 0) {
             currentRunLength += size;  // Add light border to initial run
+        }
         System.arraycopy(runHistory, 0, runHistory, 1, runHistory.length - 1);
         runHistory[0] = currentRunLength;
     }

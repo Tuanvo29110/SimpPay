@@ -43,8 +43,9 @@ final class QrTemplate {
 
     // Creates a QR Code template for the given version number.
     private QrTemplate(int ver) {
-        if (ver < QrCode.MIN_VERSION || ver > QrCode.MAX_VERSION)
+        if (ver < QrCode.MIN_VERSION || ver > QrCode.MAX_VERSION) {
             throw new IllegalArgumentException("Version out of range");
+        }
         version = ver;
         size = version * 4 + 17;
         template = new int[(size * size + 31) / 32];
@@ -60,14 +61,16 @@ final class QrTemplate {
     // all function modules are excluded. This includes remainder bits, so it might not be a multiple of 8.
     // The result is in the range [208, 29648]. This could be implemented as a 40-entry lookup table.
     static int getNumRawDataModules(int ver) {
-        if (ver < QrCode.MIN_VERSION || ver > QrCode.MAX_VERSION)
+        if (ver < QrCode.MIN_VERSION || ver > QrCode.MAX_VERSION) {
             throw new IllegalArgumentException("Version number out of range");
+        }
         int result = (16 * ver + 128) * ver + 64;
         if (ver >= 2) {
             int numAlign = ver / 7 + 2;
             result -= (25 * numAlign - 10) * numAlign - 55;
-            if (ver >= 7)
+            if (ver >= 7) {
                 result -= 36;
+            }
         }
         return result;
     }
@@ -91,8 +94,9 @@ final class QrTemplate {
         for (int i = 0; i < numAlign; i++) {
             for (int j = 0; j < numAlign; j++) {
                 // Don't draw on the three finder corners
-                if (!(i == 0 && j == 0 || i == 0 && j == numAlign - 1 || i == numAlign - 1 && j == 0))
+                if (!(i == 0 && j == 0 || i == 0 && j == numAlign - 1 || i == numAlign - 1 && j == 0)) {
                     drawAlignmentPattern(alignPatPos[i], alignPatPos[j]);
+                }
             }
         }
 
@@ -123,8 +127,9 @@ final class QrTemplate {
     // Draws two copies of the version bits (with its own error correction code),
     // based on this object's version field, iff 7 <= version <= 40.
     private void drawVersion() {
-        if (version < 7)
+        if (version < 7) {
             return;
+        }
 
         // Calculate error correction code and pack bits
         int rem = version;  // version is uint6, in the range [7, 40]
@@ -150,8 +155,9 @@ final class QrTemplate {
             for (int dx = -4; dx <= 4; dx++) {
                 int dist = Math.max(Math.abs(dx), Math.abs(dy));  // Chebyshev/infinity norm
                 int xx = x + dx, yy = y + dy;
-                if (0 <= xx && xx < size && 0 <= yy && yy < size)
+                if (0 <= xx && xx < size && 0 <= yy && yy < size) {
                     darkenFunctionModule(xx, yy, (dist != 2 && dist != 4) ? 1 : 0);
+                }
             }
         }
     }
@@ -214,8 +220,9 @@ final class QrTemplate {
         int[] result = new int[getNumRawDataModules(version) / 8 * 8];
         int i = 0;  // Bit index into the data
         for (int right = size - 1; right >= 1; right -= 2) {  // Index of right column in each column pair
-            if (right == 6)
+            if (right == 6) {
                 right = 5;
+            }
             for (int vert = 0; vert < size; vert++) {  // Vertical counter
                 for (int j = 0; j < 2; j++) {
                     int x = right - j;  // Actual x coordinate
@@ -255,9 +262,9 @@ final class QrTemplate {
     // Each position is in the range [0,177), and are used on both the x and y axes.
     // This could be implemented as lookup table of 40 variable-length lists of unsigned bytes.
     private int[] getAlignmentPatternPositions() {
-        if (version == 1)
+        if (version == 1) {
             return new int[]{};
-        else {
+        } else {
             int numAlign = version / 7 + 2;
             int step = (version * 8 + numAlign * 3 + 5) / (numAlign * 4 - 4) * 2;
             int[] result = new int[numAlign];

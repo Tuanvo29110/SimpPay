@@ -13,7 +13,6 @@ import org.simpmc.simppay.model.detail.CardDetail;
 import org.simpmc.simppay.service.PaymentService;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.UUID;
 
 @Data

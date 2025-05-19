@@ -151,7 +151,9 @@ public class ConfigManager {
         for (int i = 0; i < name.length(); i++) {
             char c = name.charAt(i);
             if (Character.isUpperCase(c)) {
-                if (i != 0) builder.append('-');
+                if (i != 0) {
+                    builder.append('-');
+                }
                 builder.append(Character.toLowerCase(c));
             } else {
                 builder.append(c);

@@ -42,8 +42,9 @@ public class VietQr {
     }
 
     public static String getVietQrNotAmount(String bankid, String bankacc) {
-        if (isEmpty(bankid) || isEmpty(bankacc) || bankid.length() < 6 || bankacc.length() < 6 || bankacc.length() > 19)
+        if (isEmpty(bankid) || isEmpty(bankacc) || bankid.length() < 6 || bankacc.length() < 6 || bankacc.length() > 19) {
             return "";//not valid
+        }
         String vietQRCode = "000201010212";
         String dvcntt = "0010A000000727";
         String subBenOrg = "00" + String.format("%02d", bankid.length()) + bankid + "01" + String.format("%02d", bankacc.length()) + bankacc;
@@ -61,7 +62,9 @@ public class VietQr {
     }
 
     public static String getVietQr(String bankid, String bankacc, String amount, String description) {
-        if (isEmpty(bankid) || isEmpty(bankacc) || bankid.length() < 6) return "";//not valid
+        if (isEmpty(bankid) || isEmpty(bankacc) || bankid.length() < 6) {
+            return "";//not valid
+        }
         if (isEmpty(amount) || amount.length() > 13) {
             return getVietQrNotAmount(bankid, bankacc);
         }
@@ -86,7 +89,9 @@ public class VietQr {
     }
 
     public static String fm02Leng(int leng) {
-        if (leng > 10) return "" + leng;
+        if (leng > 10) {
+            return "" + leng;
+        }
         return "0" + leng;
     }
 

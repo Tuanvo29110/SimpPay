@@ -42,8 +42,9 @@ final class ReedSolomonGenerator {
 
     // Creates a Reed-Solomon ECC generator polynomial for the given degree.
     private ReedSolomonGenerator(int degree) {
-        if (degree < 1 || degree > 255)
+        if (degree < 1 || degree > 255) {
             throw new IllegalArgumentException("Degree out of range");
+        }
 
         // The divisor polynomial, whose coefficients are stored from highest to lowest power.
         // For example, x^3 + 255x^2 + 8x + 93 is stored as the uint8 array {255, 8, 93}.
@@ -58,8 +59,9 @@ final class ReedSolomonGenerator {
             // Multiply the current product by (x - r^i)
             for (int j = 0; j < coefficients.length; j++) {
                 coefficients[j] = (byte) multiply(coefficients[j] & 0xFF, root);
-                if (j + 1 < coefficients.length)
+                if (j + 1 < coefficients.length) {
                     coefficients[j] ^= coefficients[j + 1];
+                }
             }
             root = multiply(root, 0x02);
         }

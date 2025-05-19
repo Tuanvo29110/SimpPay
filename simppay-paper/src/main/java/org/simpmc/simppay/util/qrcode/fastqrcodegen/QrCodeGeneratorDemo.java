@@ -191,10 +191,12 @@ public final class QrCodeGeneratorDemo {
      */
     private static BufferedImage toImage(QrCode qr, int scale, int border, int lightColor, int darkColor) {
         Objects.requireNonNull(qr);
-        if (scale <= 0 || border < 0)
+        if (scale <= 0 || border < 0) {
             throw new IllegalArgumentException("Value out of range");
-        if (border > Integer.MAX_VALUE / 2 || qr.size + border * 2L > Integer.MAX_VALUE / scale)
+        }
+        if (border > Integer.MAX_VALUE / 2 || qr.size + border * 2L > Integer.MAX_VALUE / scale) {
             throw new IllegalArgumentException("Scale or border too large");
+        }
 
         BufferedImage result = new BufferedImage((qr.size + border * 2) * scale, (qr.size + border * 2) * scale, BufferedImage.TYPE_INT_RGB);
         for (int y = 0; y < result.getHeight(); y++) {
@@ -229,8 +231,9 @@ public final class QrCodeGeneratorDemo {
         Objects.requireNonNull(qr);
         Objects.requireNonNull(lightColor);
         Objects.requireNonNull(darkColor);
-        if (border < 0)
+        if (border < 0) {
             throw new IllegalArgumentException("Border must be non-negative");
+        }
         long brd = border;
         StringBuilder sb = new StringBuilder()
                 .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
@@ -242,8 +245,9 @@ public final class QrCodeGeneratorDemo {
         for (int y = 0; y < qr.size; y++) {
             for (int x = 0; x < qr.size; x++) {
                 if (qr.getModule(x, y)) {
-                    if (x != 0 || y != 0)
+                    if (x != 0 || y != 0) {
                         sb.append(" ");
+                    }
                     sb.append(String.format("M%d,%dh1v1h-1z", x + brd, y + brd));
                 }
             }

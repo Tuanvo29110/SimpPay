@@ -72,7 +72,9 @@ public class OrderIDService {
 
     // Atomically writes the current counter value to disk
     private static void saveCurrent() {
-        if (dataFile == null) return;
+        if (dataFile == null) {
+            return;
+        }
         try (Writer w = new OutputStreamWriter(new FileOutputStream(dataFile, false), StandardCharsets.UTF_8)) {
             w.write(Long.toString(counter.get()));
         } catch (IOException e) {

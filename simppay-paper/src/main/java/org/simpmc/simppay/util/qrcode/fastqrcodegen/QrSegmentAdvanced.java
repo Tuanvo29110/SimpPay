@@ -158,8 +158,9 @@ public final class QrSegmentAdvanced {
         byte[] bytes = Base64.getDecoder().decode(PACKED_QR_KANJI_TO_UNICODE);
         for (int i = 0; i < bytes.length; i += 2) {
             char c = (char) (((bytes[i] & 0xFF) << 8) | (bytes[i + 1] & 0xFF));
-            if (c == 0xFFFF)
+            if (c == 0xFFFF) {
                 continue;
+            }
             assert UNICODE_TO_QR_KANJI[c] == -1;
             UNICODE_TO_QR_KANJI[c] = (short) (i / 2);
         }
@@ -192,26 +193,30 @@ public final class QrSegmentAdvanced {
         // Check arguments
         Objects.requireNonNull(text);
         Objects.requireNonNull(ecl);
-        if (!(QrCode.MIN_VERSION <= minVersion && minVersion <= maxVersion && maxVersion <= QrCode.MAX_VERSION))
+        if (!(QrCode.MIN_VERSION <= minVersion && minVersion <= maxVersion && maxVersion <= QrCode.MAX_VERSION)) {
             throw new IllegalArgumentException("Invalid value");
+        }
 
         // Iterate through version numbers, and make tentative segments
         List<QrSegment> segs = null;
         int[] codePoints = toCodePoints(text);
         for (int version = minVersion; ; version++) {
-            if (version == minVersion || version == 10 || version == 27)
+            if (version == minVersion || version == 10 || version == 27) {
                 segs = makeSegmentsOptimally(codePoints, version);
+            }
             assert segs != null;
 
             // Check if the segments fit
             int dataCapacityBits = QrCode.getNumDataCodewords(version, ecl) * 8;  // Number of data bits available
             int dataUsedBits = QrSegment.getTotalBits(segs, version);
-            if (dataUsedBits != -1 && dataUsedBits <= dataCapacityBits)
+            if (dataUsedBits != -1 && dataUsedBits <= dataCapacityBits) {
                 return segs;  // This version number is found to be suitable
+            }
             if (version >= maxVersion) {  // All versions in the range could not fit the given text
                 String msg = "Segment too long";
-                if (dataUsedBits != -1)
+                if (dataUsedBits != -1) {
                     msg = String.format("Data length = %d bits, Max capacity = %d bits", dataUsedBits, dataCapacityBits);
+                }
                 throw new DataTooLongException(msg);
             }
         }
@@ -219,8 +224,9 @@ public final class QrSegmentAdvanced {
 
     // Returns a new list of segments that is optimal for the given text at the given version number.
     private static List<QrSegment> makeSegmentsOptimally(int[] codePoints, int version) {
-        if (codePoints.length == 0)
+        if (codePoints.length == 0) {
             return new ArrayList<>();
+        }
         Mode[] charModes = computeCharacterModes(codePoints, version);
         return splitIntoSegments(codePoints, charModes);
     }
@@ -231,8 +237,9 @@ public final class QrSegmentAdvanced {
 
     // Returns a new array representing the optimal mode per code point based on the given text and version.
     private static Mode[] computeCharacterModes(int[] codePoints, int version) {
-        if (codePoints.length == 0)
+        if (codePoints.length == 0) {
             throw new IllegalArgumentException();
+        }
         final Mode[] modeTypes = {Mode.BYTE, Mode.ALPHANUMERIC, Mode.NUMERIC, Mode.KANJI};  // Do not modify
         final int numModes = modeTypes.length;
 
@@ -313,29 +320,33 @@ public final class QrSegmentAdvanced {
     // Returns a new list of segments based on the given text and modes, such that
     // consecutive code points in the same mode are put into the same segment.
     private static List<QrSegment> splitIntoSegments(int[] codePoints, Mode[] charModes) {
-        if (codePoints.length == 0)
+        if (codePoints.length == 0) {
             throw new IllegalArgumentException();
+        }
         List<QrSegment> result = new ArrayList<>();
 
         // Accumulate run of modes
         Mode curMode = charModes[0];
         int start = 0;
         for (int i = 1; ; i++) {
-            if (i < codePoints.length && charModes[i] == curMode)
+            if (i < codePoints.length && charModes[i] == curMode) {
                 continue;
+            }
             String s = new String(codePoints, start, i - start);
-            if (curMode == Mode.BYTE)
+            if (curMode == Mode.BYTE) {
                 result.add(QrSegment.makeBytes(s.getBytes(StandardCharsets.UTF_8)));
-            else if (curMode == Mode.NUMERIC)
+            } else if (curMode == Mode.NUMERIC) {
                 result.add(QrSegment.makeNumeric(s));
-            else if (curMode == Mode.ALPHANUMERIC)
+            } else if (curMode == Mode.ALPHANUMERIC) {
                 result.add(QrSegment.makeAlphanumeric(s));
-            else if (curMode == Mode.KANJI)
+            } else if (curMode == Mode.KANJI) {
                 result.add(makeKanji(s));
-            else
+            } else {
                 throw new AssertionError();
-            if (i >= codePoints.length)
+            }
+            if (i >= codePoints.length) {
                 return result;
+            }
             curMode = charModes[i];
             start = i;
         }
@@ -346,20 +357,28 @@ public final class QrSegmentAdvanced {
     private static int[] toCodePoints(String s) {
         int[] result = s.codePoints().toArray();
         for (int c : result) {
-            if (Character.isSurrogate((char) c))
+            if (Character.isSurrogate((char) c)) {
                 throw new IllegalArgumentException("Invalid UTF-16 string");
+            }
         }
         return result;
     }
 
     // Returns the number of UTF-8 bytes needed to encode the given Unicode code point.
     private static int countUtf8Bytes(int cp) {
-        if (cp < 0) throw new IllegalArgumentException("Invalid code point");
-        else if (cp < 0x80) return 1;
-        else if (cp < 0x800) return 2;
-        else if (cp < 0x10000) return 3;
-        else if (cp < 0x110000) return 4;
-        else throw new IllegalArgumentException("Invalid code point");
+        if (cp < 0) {
+            throw new IllegalArgumentException("Invalid code point");
+        } else if (cp < 0x80) {
+            return 1;
+        } else if (cp < 0x800) {
+            return 2;
+        } else if (cp < 0x10000) {
+            return 3;
+        } else if (cp < 0x110000) {
+            return 4;
+        } else {
+            throw new IllegalArgumentException("Invalid code point");
+        }
     }
 
     /**
@@ -380,8 +399,9 @@ public final class QrSegmentAdvanced {
         BitBuffer bb = new BitBuffer();
         text.chars().forEachOrdered(c -> {
             int val = UNICODE_TO_QR_KANJI[c];
-            if (val == -1)
+            if (val == -1) {
                 throw new IllegalArgumentException("String contains non-kanji-mode characters");
+            }
             bb.appendBits(val, 13);
         });
         return new QrSegment(Mode.KANJI, text.length(), bb.data, bb.bitLength);
