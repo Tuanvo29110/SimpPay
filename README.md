@@ -34,7 +34,7 @@ Note:
 * Normal task
 
 - [x] implement giving coins
-- [ ] implement server milestone / need async cache thinggy
+- [x] implement server milestone / need async cache thinggy
 - [x] implement cache for placeholder, get player current số tiền đã nạp / also async cache thing
 - [ ] migrate to okhttp connection pool
 - [ ] handle when server cant connect to the internet(get ddosed, dns issues) ->
@@ -44,7 +44,7 @@ Note:
 - [x] implement menu nạp thẻ
 - [x] implement menu xem lịch sử nạp admin và player
 - [x] implement menu nạp thẻ floodgate
-- [ ] fix lỗi chuyển trang của menu xem lịch sử nạp
+- [x] fix lỗi chuyển trang của menu xem lịch sử nạp
 - [x] find a way to generate unique order id for payos
 - [x] implement payos
 - [x] test thesieutoc
@@ -52,9 +52,8 @@ Note:
 
 * Nap Lan Dau
 
-- [ ] implement annotation for custom file name
-- [ ] implement EAV for database to store data flexible
--
+- [x] implement EAV for database to store data flexible
+- [ ] testing
 
 * Milestone
 
@@ -62,5 +61,5 @@ Note:
 - current = player current donated player
 - amount = new charge amount
 - if (current >= this.amount && current - amount < this.amount) {
-
-refresh mechanic: compute before hand the time that next reset occur, add to scheduler, do it every onEnable
+* milestone
+[ ] testing 
