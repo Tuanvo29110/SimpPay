@@ -29,9 +29,9 @@ public class ViewHistoryForm {
     private static CompletableFuture<List<PaymentRecord>> fetchPaymentRecordsAsync(Player player) {
         return CompletableFuture.supplyAsync(() -> {
             SPPlayer spPlayer;
-            spPlayer = SPPlugin.getInstance().getPlayerService().findByUuid(player.getUniqueId());
+            spPlayer = SPPlugin.getInstance().getDatabaseService().getPlayerService().findByUuid(player.getUniqueId());
             Preconditions.checkNotNull(spPlayer, "Player not found");
-            List<PaymentRecord> paymentRecords = SPPlugin.getInstance().getPaymentLogService().getPaymentsByPlayer(spPlayer);
+            List<PaymentRecord> paymentRecords = SPPlugin.getInstance().getDatabaseService().getPaymentLogService().getPaymentsByPlayer(spPlayer);
             return paymentRecords;
         });
     }

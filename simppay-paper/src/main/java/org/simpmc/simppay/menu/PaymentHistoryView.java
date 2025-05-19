@@ -132,12 +132,12 @@ public class PaymentHistoryView extends View {
         return CompletableFuture.supplyAsync(() -> {
             SPPlayer spPlayer;
             if (context.getInitialData() == null) { // TODO: should be async ?
-                spPlayer = SPPlugin.getInstance().getPlayerService().findByUuid(context.getPlayer().getUniqueId());
+                spPlayer = SPPlugin.getInstance().getDatabaseService().getPlayerService().findByUuid(context.getPlayer().getUniqueId());
             } else {
-                spPlayer = SPPlugin.getInstance().getPlayerService().findByName((String) context.getInitialData());
+                spPlayer = SPPlugin.getInstance().getDatabaseService().getPlayerService().findByName((String) context.getInitialData());
             }
             Preconditions.checkNotNull(spPlayer, "Player not found");
-            List<PaymentRecord> paymentRecords = SPPlugin.getInstance().getPaymentLogService().getPaymentsByPlayer(spPlayer);
+            List<PaymentRecord> paymentRecords = SPPlugin.getInstance().getDatabaseService().getPaymentLogService().getPaymentsByPlayer(spPlayer);
 
             return paymentRecords;
         });

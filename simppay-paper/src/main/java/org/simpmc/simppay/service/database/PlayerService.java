@@ -2,6 +2,8 @@ package org.simpmc.simppay.service.database;
 
 import com.j256.ormlite.dao.Dao;
 import org.bukkit.entity.Player;
+import org.simpmc.simppay.SPPlugin;
+import org.simpmc.simppay.database.entities.PlayerData;
 import org.simpmc.simppay.database.entities.SPPlayer;
 
 import java.sql.SQLException;
@@ -106,6 +108,31 @@ public class PlayerService {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+    //             if (spPlayer != null && !spPlayer.isFirstCharge()) {
+    //                plugin.getPlayerService().setFirstCharge(spPlayer);
+    //             }
+    public void setFirstCharge(SPPlayer spPlayer) {
+        try {
+            // check if key is true
+            SPPlugin.getInstance().getDatabaseService().getPlayerDataService().upsertKeyValue(spPlayer, "first_charge", "true");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean hasFirstCharge(SPPlayer spPlayer) {
+        try {
+            // check if key is true
+            String value = SPPlugin.getInstance().getDatabaseService().getPlayerDataService().getValue(spPlayer, "first_charge");
+            if (value != null && value.equals("true")) {
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

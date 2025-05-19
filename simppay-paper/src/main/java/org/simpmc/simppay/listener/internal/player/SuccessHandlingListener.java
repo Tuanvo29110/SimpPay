@@ -31,20 +31,6 @@ public class SuccessHandlingListener implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-
-    @EventHandler
-    public void checkPlayerMilestone(PaymentSuccessEvent event) {
-        SPPlugin plugin = SPPlugin.getInstance();
-        UUID playerUUID = event.getPlayerUUID();
-        plugin.getFoliaLib().getScheduler().runAsync(task -> {
-            SPPlayer spPlayer = plugin.getPlayerService().findByUuid(playerUUID);
-            // do not use cache here, async stuff may not be updated yet
-            double totalSpent = plugin.getPaymentLogService().getPlayerTotalAmount(spPlayer);
-
-        });
-
-    }
-
     @EventHandler
     public void removeCaching(PaymentSuccessEvent event) {
         SPPlugin plugin = SPPlugin.getInstance();

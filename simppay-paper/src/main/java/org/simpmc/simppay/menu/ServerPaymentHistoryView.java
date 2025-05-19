@@ -128,7 +128,7 @@ public class ServerPaymentHistoryView extends View {
 
     private CompletableFuture<List<PaymentRecord>> fetchPaymentRecordsAsync(Context context) {
         return CompletableFuture.supplyAsync(() -> {
-            List<PaymentRecord> paymentRecords = SPPlugin.getInstance().getPaymentLogService().getEntireServerPayments();
+            List<PaymentRecord> paymentRecords = SPPlugin.getInstance().getDatabaseService().getPaymentLogService().getEntireServerPayments();
             return paymentRecords;
         });
     }

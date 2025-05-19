@@ -1,0 +1,33 @@
+package org.simpmc.simppay.listener.internal.player;
+
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.simpmc.simppay.SPPlugin;
+import org.simpmc.simppay.config.types.NaplandauConfig;
+import org.simpmc.simppay.database.entities.SPPlayer;
+import org.simpmc.simppay.event.PaymentSuccessEvent;
+import org.simpmc.simppay.service.database.PlayerService;
+
+public class NaplandauListener implements Listener {
+    @EventHandler
+    public void onFirstPayment(PaymentSuccessEvent event) {
+        SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
+            PlayerService playerService = SPPlugin.getInstance().getDatabaseService().getPlayerService();
+            SPPlayer player = playerService.findByUuid(event.getPlayerUUID());
+            if (!playerService.hasFirstCharge(player)) {
+                playerService.setFirstCharge(player);
+            } else {
+                NaplandauConfig naplandauConfig = SPPlugin.getInstance().getConfigManager().getConfig(NaplandauConfig.class);
+                for (String command : naplandauConfig.commands) {
+
+                    SPPlugin.getInstance().getFoliaLib().getScheduler().runLater(task2 -> {
+                        String formattedCommand = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(event.getPlayerUUID()), command);
+                        SPPlugin.getInstance().getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), formattedCommand);
+                    }, 1);
+                }
+            }
+        });
+    }
+}

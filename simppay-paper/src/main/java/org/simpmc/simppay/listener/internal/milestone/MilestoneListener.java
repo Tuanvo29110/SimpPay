@@ -55,8 +55,8 @@ public class MilestoneListener implements Listener {
     public void givePersonalMilestoneReward(PaymentSuccessEvent event) {
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
             MilestoneService milestoneService = SPPlugin.getInstance().getMilestoneService();
-            PlayerService playerService = SPPlugin.getInstance().getPlayerService();
-            PaymentLogService paymentLogService = SPPlugin.getInstance().getPaymentLogService();
+            PlayerService playerService = SPPlugin.getInstance().getDatabaseService().getPlayerService();
+            PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
             SPPlayer player = playerService.findByUuid(event.getPlayerUUID());
             double charged = event.getAmount();
             for (MilestoneConfig config : milestoneService.playerCurrentMilestones.get(event.getPlayerUUID())) {
@@ -75,8 +75,8 @@ public class MilestoneListener implements Listener {
                 if (playerNewBal >= config.amount && playerNewBal - charged < config.amount) {
                     // Milestone complete
                     for (String command : config.getCommands()) {
-                        String formattedCommand = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(event.getPlayerUUID()), command);
                         SPPlugin.getInstance().getFoliaLib().getScheduler().runLater(task2 -> {
+                            String formattedCommand = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(event.getPlayerUUID()), command);
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), formattedCommand);
                             MessageUtil.debug("Ran " + formattedCommand);
                         }, 1);
@@ -95,8 +95,8 @@ public class MilestoneListener implements Listener {
     public void updatePersonalMilestoneBossbar(PaymentSuccessEvent event) {
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
             MilestoneService service = SPPlugin.getInstance().getMilestoneService();
-            PlayerService playerService = SPPlugin.getInstance().getPlayerService();
-            PaymentLogService paymentLogService = SPPlugin.getInstance().getPaymentLogService();
+            PlayerService playerService = SPPlugin.getInstance().getDatabaseService().getPlayerService();
+            PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
             SPPlayer player = playerService.findByUuid(event.getPlayerUUID());
             double charged = event.getAmount();
             for (ObjectObjectMutablePair<MilestoneType, BossBar> pair : service.playerBossBars.get(event.getPlayerUUID())) {
@@ -138,7 +138,7 @@ public class MilestoneListener implements Listener {
     public void giveServerMilestoneReward(PaymentSuccessEvent event) {
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
             MilestoneService milestoneService = SPPlugin.getInstance().getMilestoneService();
-            PaymentLogService paymentLogService = SPPlugin.getInstance().getPaymentLogService();
+            PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
             double charged = event.getAmount();
             for (MilestoneConfig config : milestoneService.serverCurrentMilestones) {
                 double serverNewBal = switch (config.getType()) {
@@ -191,7 +191,7 @@ public class MilestoneListener implements Listener {
     public void updateServerMilestoneBossbar(PaymentSuccessEvent event) {
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
             MilestoneService service = SPPlugin.getInstance().getMilestoneService();
-            PaymentLogService paymentLogService = SPPlugin.getInstance().getPaymentLogService();
+            PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
             double charged = event.getAmount();
             for (ObjectObjectMutablePair<MilestoneType, BossBar> pair : service.serverBossbars) {
                 if (pair == null) {

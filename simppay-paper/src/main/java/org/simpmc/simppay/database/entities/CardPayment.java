@@ -56,7 +56,7 @@ public class CardPayment {
     public CardPayment(Payment payment) {
         this.paymentID = payment.getPaymentID();
         // may cause trouble if null, but player should already be created on join
-        this.player = SPPlugin.getInstance().getPlayerService().findByUuid(payment.getPlayerUUID());
+        this.player = SPPlugin.getInstance().getDatabaseService().getPlayerService().findByUuid(payment.getPlayerUUID());
         this.pin = ((CardDetail) payment.getDetail()).getPin();
         this.serial = ((CardDetail) payment.getDetail()).getSerial();
         this.priceValue = ((CardDetail) payment.getDetail()).getPrice().getValue();

@@ -68,14 +68,14 @@ public class CacheDataService {
             SPPlugin plugin = SPPlugin.getInstance();
             UUID playerUUID = playerQueue.poll();
 
-            SPPlayer player = plugin.getPlayerService().findByUuid(playerUUID);
+            SPPlayer player = plugin.getDatabaseService().getPlayerService().findByUuid(playerUUID);
             if (player == null) {
                 // Player not found, re-add to queue
                 playerQueue.add(playerUUID);
                 continue;
             }
 
-            double totalValue = plugin.getPaymentLogService().getPlayerTotalAmount(player);
+            double totalValue = plugin.getDatabaseService().getPaymentLogService().getPlayerTotalAmount(player);
             if (totalValue != 0) {
                 updatePlayerTimedValues(playerUUID);
             }
@@ -84,44 +84,44 @@ public class CacheDataService {
 
     public void updateServerDataCache() {
         SPPlugin plugin = SPPlugin.getInstance();
-        serverTotalValue.set(plugin.getPaymentLogService().getEntireServerAmount());
-        serverDailyTotalValue.set(plugin.getPaymentLogService().getEntireServerDailyAmount());
-        serverWeeklyTotalValue.set(plugin.getPaymentLogService().getEntireServerWeeklyAmount());
-        serverMonthlyTotalValue.set(plugin.getPaymentLogService().getEntireServerMonthlyAmount());
-        serverYearlyTotalValue.set(plugin.getPaymentLogService().getEntireServerYearlyAmount());
+        serverTotalValue.set(plugin.getDatabaseService().getPaymentLogService().getEntireServerAmount());
+        serverDailyTotalValue.set(plugin.getDatabaseService().getPaymentLogService().getEntireServerDailyAmount());
+        serverWeeklyTotalValue.set(plugin.getDatabaseService().getPaymentLogService().getEntireServerWeeklyAmount());
+        serverMonthlyTotalValue.set(plugin.getDatabaseService().getPaymentLogService().getEntireServerMonthlyAmount());
+        serverYearlyTotalValue.set(plugin.getDatabaseService().getPaymentLogService().getEntireServerYearlyAmount());
     }
 
     private void updatePlayerTimedValues(UUID playerUUID) {
         SPPlugin plugin = SPPlugin.getInstance();
-        SPPlayer player = plugin.getPlayerService().findByUuid(playerUUID);
+        SPPlayer player = plugin.getDatabaseService().getPlayerService().findByUuid(playerUUID);
 
         playerDailyTotalValue.compute(playerUUID, (k, v) -> {
             if (v == null) {
-                return new AtomicLong(plugin.getPaymentLogService().getPlayerDailyAmount(player));
+                return new AtomicLong(plugin.getDatabaseService().getPaymentLogService().getPlayerDailyAmount(player));
             }
-            v.set(plugin.getPaymentLogService().getPlayerDailyAmount(player));
+            v.set(plugin.getDatabaseService().getPaymentLogService().getPlayerDailyAmount(player));
             return v;
         });
 
         playerWeeklyTotalValue.compute(playerUUID, (k, v) -> {
             if (v == null) {
-                return new AtomicLong(plugin.getPaymentLogService().getPlayerWeeklyAmount(player));
+                return new AtomicLong(plugin.getDatabaseService().getPaymentLogService().getPlayerWeeklyAmount(player));
             }
-            v.set(plugin.getPaymentLogService().getPlayerWeeklyAmount(player));
+            v.set(plugin.getDatabaseService().getPaymentLogService().getPlayerWeeklyAmount(player));
             return v;
         });
         playerMonthlyTotalValue.compute(playerUUID, (k, v) -> {
             if (v == null) {
-                return new AtomicLong(plugin.getPaymentLogService().getPlayerMonthlyAmount(player));
+                return new AtomicLong(plugin.getDatabaseService().getPaymentLogService().getPlayerMonthlyAmount(player));
             }
-            v.set(plugin.getPaymentLogService().getPlayerMonthlyAmount(player));
+            v.set(plugin.getDatabaseService().getPaymentLogService().getPlayerMonthlyAmount(player));
             return v;
         });
         playerYearlyTotalValue.compute(playerUUID, (k, v) -> {
             if (v == null) {
-                return new AtomicLong(plugin.getPaymentLogService().getPlayerYearlyAmount(player));
+                return new AtomicLong(plugin.getDatabaseService().getPaymentLogService().getPlayerYearlyAmount(player));
             }
-            v.set(plugin.getPaymentLogService().getPlayerYearlyAmount(player));
+            v.set(plugin.getDatabaseService().getPaymentLogService().getPlayerYearlyAmount(player));
             return v;
         });
         // Call event for player milestone

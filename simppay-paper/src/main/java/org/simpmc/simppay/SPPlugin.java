@@ -26,6 +26,7 @@ import org.simpmc.simppay.menu.card.CardListView;
 import org.simpmc.simppay.menu.card.CardPriceView;
 import org.simpmc.simppay.menu.card.anvil.CardPINView;
 import org.simpmc.simppay.menu.card.anvil.CardSerialView;
+import org.simpmc.simppay.service.DatabaseService;
 import org.simpmc.simppay.service.MilestoneService;
 import org.simpmc.simppay.service.OrderIDService;
 import org.simpmc.simppay.service.PaymentService;
@@ -56,10 +57,8 @@ public final class SPPlugin extends JavaPlugin {
     private CacheDataService cacheDataService;
     @Getter
     private MilestoneService milestoneService;
-    @Getter // TODO: Group this in one manager class
-    private PaymentLogService paymentLogService;
     @Getter
-    private PlayerService playerService;
+    private DatabaseService databaseService;
     private boolean dev = false;
     @Getter
     private ViewFrame viewFrame;
@@ -96,8 +95,7 @@ public final class SPPlugin extends JavaPlugin {
         }
         cacheDataService = CacheDataService.getInstance();
         new HookManager(this);
-        playerService = new PlayerService(database.getPlayerDao());
-        paymentLogService = new PaymentLogService(database);
+        databaseService = new DatabaseService(database);
         paymentService = new PaymentService();
         milestoneService = new MilestoneService();
         registerListener();

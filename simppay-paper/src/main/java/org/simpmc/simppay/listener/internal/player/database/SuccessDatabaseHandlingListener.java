@@ -16,7 +16,7 @@ public class SuccessDatabaseHandlingListener implements Listener {
         SPPlugin plugin = SPPlugin.getInstance();
 
         plugin.getFoliaLib().getScheduler().runAsync(task -> {
-            plugin.getPaymentLogService().addPayment(event.getPayment());
+            plugin.getDatabaseService().getPaymentLogService().addPayment(event.getPayment());
         });
     }
 

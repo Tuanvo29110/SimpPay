@@ -20,7 +20,7 @@ public class CacheUpdaterListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         SPPlugin plugin = SPPlugin.getInstance();
-        plugin.getFoliaLib().getScheduler().runAsync(task2 -> plugin.getPlayerService().createPlayer(event.getPlayer()));
+        plugin.getFoliaLib().getScheduler().runAsync(task2 -> plugin.getDatabaseService().getPlayerService().createPlayer(event.getPlayer()));
         plugin.getCacheDataService().addPlayerToQueue(event.getPlayer().getUniqueId());
     }
 

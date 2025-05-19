@@ -56,7 +56,7 @@ public class MilestoneService {
     // all milestones should be reloaded upon a milestone complete event
     private void loadServerMilestone() {
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
-            long entireServerAmount = SPPlugin.getInstance().getPaymentLogService().getEntireServerAmount();
+            long entireServerAmount = SPPlugin.getInstance().getDatabaseService().getPaymentLogService().getEntireServerAmount();
             MocNapServerConfig mocNapServerConfig = ConfigManager.getInstance().getConfig(MocNapServerConfig.class);
 
             for (Map.Entry<MilestoneType, List<MilestoneConfig>> entry : mocNapServerConfig.mocnap.entrySet()) {
@@ -88,8 +88,8 @@ public class MilestoneService {
 
     public void loadPlayerMilestone(UUID uuid) {
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
-            SPPlayer player = SPPlugin.getInstance().getPlayerService().findByUuid(uuid);
-            double playerChargedAmount = SPPlugin.getInstance().getPaymentLogService().getPlayerTotalAmount(player);
+            SPPlayer player = SPPlugin.getInstance().getDatabaseService().getPlayerService().findByUuid(uuid);
+            double playerChargedAmount = SPPlugin.getInstance().getDatabaseService().getPaymentLogService().getPlayerTotalAmount(player);
 
             MocNapConfig mocNapConfig = ConfigManager.getInstance().getConfig(MocNapConfig.class);
             MessageUtil.debug("Loading MocNap For Player " + player.getName());
