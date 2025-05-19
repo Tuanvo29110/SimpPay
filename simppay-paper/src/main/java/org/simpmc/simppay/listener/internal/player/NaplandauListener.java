@@ -10,7 +10,11 @@ import org.simpmc.simppay.database.entities.SPPlayer;
 import org.simpmc.simppay.event.PaymentSuccessEvent;
 import org.simpmc.simppay.service.database.PlayerService;
 
+
 public class NaplandauListener implements Listener {
+    public NaplandauListener(SPPlugin plugin) {
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
     @EventHandler
     public void onFirstPayment(PaymentSuccessEvent event) {
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {

@@ -51,6 +51,7 @@ public class ConfigManager {
             MessageConfig.class,
             ServerPaymentHistoryMenuConfig.class,
             MocNapConfig.class,
+            MocNapServerConfig.class,
             NaplandauConfig.class
     );
     // holds file paths for each config type
@@ -62,9 +63,8 @@ public class ConfigManager {
             .header("""
                     SimpPay @ 2025
                     Made by typical.smc, used for SimpMC Network
-                    Shared publicly on github.com/SimpMC_Network/SimpPay
+                    Shared publicly on github.com/SimpMC-Studio/SimpPay
                     """)
-            .header("Discord: discord.gg/simpmc")
             .build();
 
     public ConfigManager(SPPlugin plugin) {

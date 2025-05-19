@@ -14,6 +14,7 @@ import org.simpmc.simppay.data.milestone.MilestoneType;
 import org.simpmc.simppay.database.entities.SPPlayer;
 import org.simpmc.simppay.util.MessageUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -36,8 +37,8 @@ public class MilestoneService {
 //       - "/tell %player_name% Cảm ơn đã ủng hộ server hehe"
     public ConcurrentHashMap<UUID, List<ObjectObjectMutablePair<MilestoneType, BossBar>>> playerBossBars = new ConcurrentHashMap<>();
     public ConcurrentHashMap<UUID, List<MilestoneConfig>> playerCurrentMilestones = new ConcurrentHashMap<>();
-    public List<MilestoneConfig> serverCurrentMilestones;
-    public List<ObjectObjectMutablePair<MilestoneType, BossBar>> serverBossbars; // contains all valid loaded milestones
+    public List<MilestoneConfig> serverCurrentMilestones = new ArrayList<>();
+    public List<ObjectObjectMutablePair<MilestoneType, BossBar>> serverBossbars = new ArrayList<>(); // contains all valid loaded milestones
 
     public MilestoneService() {
         loadAllMilestones();
@@ -46,8 +47,8 @@ public class MilestoneService {
     public void loadAllMilestones() {
         playerCurrentMilestones.clear();
         playerBossBars.clear();
-        serverCurrentMilestones = null;
-        serverBossbars = null;
+        serverCurrentMilestones.clear();
+        serverBossbars.clear();
         loadServerMilestone();
         for (Player p : Bukkit.getOnlinePlayers()) { // thread-safe for folia
             loadPlayerMilestone(p.getUniqueId());

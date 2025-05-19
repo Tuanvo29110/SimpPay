@@ -18,6 +18,7 @@ import org.simpmc.simppay.listener.internal.cache.CacheUpdaterListener;
 import org.simpmc.simppay.listener.internal.milestone.MilestoneListener;
 import org.simpmc.simppay.listener.internal.payment.PaymentHandlingListener;
 import org.simpmc.simppay.listener.internal.player.BankPromptListener;
+import org.simpmc.simppay.listener.internal.player.NaplandauListener;
 import org.simpmc.simppay.listener.internal.player.SuccessHandlingListener;
 import org.simpmc.simppay.listener.internal.player.database.SuccessDatabaseHandlingListener;
 import org.simpmc.simppay.menu.PaymentHistoryView;
@@ -121,7 +122,8 @@ public final class SPPlugin extends JavaPlugin {
                 SuccessHandlingListener.class,
                 SuccessDatabaseHandlingListener.class,
                 CacheUpdaterListener.class,
-                MilestoneListener.class
+                MilestoneListener.class,
+                NaplandauListener.class
         );
 
         for (Class<? extends Listener> listener : listeners) {

@@ -39,6 +39,7 @@ public class MilestoneListener implements Listener {
         service.loadPlayerMilestone(uuid);
         List<BossBar> serverBossbars = service.serverBossbars.stream().map(ObjectObjectMutablePair::right).toList();
         List<BossBar> playerBossbars = service.playerBossBars.get(uuid).stream().map(ObjectObjectMutablePair::right).toList();
+        // have to load after player milestone is loaded
         for (BossBar bar : serverBossbars) {
             bar.addViewer(event.getPlayer());
         }
