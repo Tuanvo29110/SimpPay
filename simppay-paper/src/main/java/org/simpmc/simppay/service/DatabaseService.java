@@ -11,6 +11,7 @@ public class DatabaseService {
     private final PlayerService playerService;
     private final PaymentLogService paymentLogService;
     private final PlayerDataService playerDataService;
+
     public DatabaseService(Database database) {
         playerService = new PlayerService(database.getPlayerDao());
         paymentLogService = new PaymentLogService(database);

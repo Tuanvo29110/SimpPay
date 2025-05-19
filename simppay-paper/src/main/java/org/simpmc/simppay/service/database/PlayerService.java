@@ -3,7 +3,6 @@ package org.simpmc.simppay.service.database;
 import com.j256.ormlite.dao.Dao;
 import org.bukkit.entity.Player;
 import org.simpmc.simppay.SPPlugin;
-import org.simpmc.simppay.database.entities.PlayerData;
 import org.simpmc.simppay.database.entities.SPPlayer;
 
 import java.sql.SQLException;
@@ -110,6 +109,7 @@ public class PlayerService {
             e.printStackTrace();
         }
     }
+
     //             if (spPlayer != null && !spPlayer.isFirstCharge()) {
     //                plugin.getPlayerService().setFirstCharge(spPlayer);
     //             }

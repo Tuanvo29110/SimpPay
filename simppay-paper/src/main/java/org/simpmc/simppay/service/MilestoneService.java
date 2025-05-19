@@ -38,6 +38,7 @@ public class MilestoneService {
     public ConcurrentHashMap<UUID, List<MilestoneConfig>> playerCurrentMilestones = new ConcurrentHashMap<>();
     public List<MilestoneConfig> serverCurrentMilestones;
     public List<ObjectObjectMutablePair<MilestoneType, BossBar>> serverBossbars; // contains all valid loaded milestones
+
     public MilestoneService() {
         loadAllMilestones();
     }

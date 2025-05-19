@@ -21,7 +21,10 @@ import org.simpmc.simppay.service.database.PaymentLogService;
 import org.simpmc.simppay.service.database.PlayerService;
 import org.simpmc.simppay.util.MessageUtil;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
+import java.util.UUID;
 
 public class MilestoneListener implements Listener {
     public MilestoneListener(SPPlugin plugin) {

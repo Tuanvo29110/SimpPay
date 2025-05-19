@@ -4,7 +4,6 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @DatabaseTable(tableName = "player_data")
 @Data

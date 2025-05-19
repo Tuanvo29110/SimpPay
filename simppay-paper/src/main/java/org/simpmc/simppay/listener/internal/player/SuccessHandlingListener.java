@@ -12,7 +12,6 @@ import org.simpmc.simppay.config.types.MessageConfig;
 import org.simpmc.simppay.data.PaymentStatus;
 import org.simpmc.simppay.data.PaymentType;
 import org.simpmc.simppay.data.card.CardPrice;
-import org.simpmc.simppay.database.entities.SPPlayer;
 import org.simpmc.simppay.event.PaymentQueueSuccessEvent;
 import org.simpmc.simppay.event.PaymentSuccessEvent;
 import org.simpmc.simppay.model.detail.BankingDetail;

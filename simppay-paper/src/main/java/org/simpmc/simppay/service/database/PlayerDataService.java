@@ -1,7 +1,6 @@
 package org.simpmc.simppay.service.database;
 
 import com.j256.ormlite.dao.Dao;
-import org.bukkit.entity.Player;
 import org.simpmc.simppay.database.entities.PlayerData;
 import org.simpmc.simppay.database.entities.SPPlayer;
 
@@ -50,6 +49,7 @@ public class PlayerDataService {
             playerDataDao.create(playerData);
         }
     }
+
     public String getValue(SPPlayer player, String key) throws SQLException {
         return playerDataDao.queryBuilder()
                 .where()

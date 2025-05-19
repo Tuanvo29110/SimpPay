@@ -31,8 +31,6 @@ import org.simpmc.simppay.service.MilestoneService;
 import org.simpmc.simppay.service.OrderIDService;
 import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.service.cache.CacheDataService;
-import org.simpmc.simppay.service.database.PaymentLogService;
-import org.simpmc.simppay.service.database.PlayerService;
 
 import java.io.File;
 import java.sql.SQLException;
