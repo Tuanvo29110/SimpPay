@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
-public class MocNapConfig {
+public class MocNapServerConfig {
     public Map<MilestoneType, List<MilestoneConfig>> mocnap = Map.of(
             MilestoneType.ALL, List.of(new MilestoneConfig(
                             MilestoneType.ALL,

@@ -4,7 +4,6 @@ import de.exlll.configlib.Configuration;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.kyori.adventure.bossbar.BossBar;
 import org.simpmc.simppay.data.milestone.MilestoneType;
 
 import java.util.List;
