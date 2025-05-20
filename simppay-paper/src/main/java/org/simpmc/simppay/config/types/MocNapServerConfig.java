@@ -14,64 +14,64 @@ public class MocNapServerConfig {
     public Map<MilestoneType, List<MilestoneConfig>> mocnap = Map.of(
             MilestoneType.ALL, List.of(new MilestoneConfig(
                             MilestoneType.ALL,
-                            10000,
+                            100000,
                             new BossBarConfig(true, "MocNapServer 10k all",
                                     BossBar.Color.YELLOW,
                                     BossBar.Overlay.PROGRESS),
-                            List.of("tell %player_name% Đã vượt mức pickleball 10k toàn thời gian")),
+                            List.of("tell %player_name% Đã vượt mức server pickleball 100k toàn thời gian")),
                     new MilestoneConfig(
                             MilestoneType.ALL,
-                            20000,
+                            200000,
                             new BossBarConfig(true, "MocNapServer 20k all",
                                     BossBar.Color.YELLOW,
                                     BossBar.Overlay.PROGRESS),
-                            List.of("tell %player_name% Đã vượt mức pickleball 20k toàn thời gian"))
+                            List.of("tell %player_name% Đã vượt mức server pickleball 200k toàn thời gian"))
             ),
             MilestoneType.DAILY, List.of(new MilestoneConfig(
 
                             MilestoneType.DAILY,
-                            10000,
-                            new BossBarConfig(true, "MocNapServer10k daily",
+                            100000,
+                            new BossBarConfig(true, "MocNapServer 100k daily",
                                     BossBar.Color.YELLOW,
                                     BossBar.Overlay.PROGRESS),
-                            List.of("tell %player_name% Đã vượt mức pickleball 10k daily")),
+                            List.of("tell %player_name% Đã vượt mức pickleball 100k daily")),
                     new MilestoneConfig(
                             MilestoneType.DAILY,
-                            20000,
-                            new BossBarConfig(true, "MocNapServer20k daily",
+                            200000,
+                            new BossBarConfig(true, "MocNapServer 200k daily",
                                     BossBar.Color.YELLOW,
                                     BossBar.Overlay.PROGRESS),
-                            List.of("tell %player_name% Đã vượt mức pickleball 20k daily"))
+                            List.of("tell %player_name% Đã vượt mức server pickleball 200k daily"))
             ),
             MilestoneType.WEEKLY, List.of(new MilestoneConfig(
                             MilestoneType.WEEKLY,
-                            10000,
-                            new BossBarConfig(true, "MocNapServer10k weekly",
+                            100000,
+                            new BossBarConfig(true, "MocNapServer 100k weekly",
                                     BossBar.Color.YELLOW,
                                     BossBar.Overlay.PROGRESS),
-                            List.of("tell %player_name% Đã vượt mức pickleball 10k weekly")),
+                            List.of("tell %player_name% Đã vượt mức server pickleball 100k weekly")),
                     new MilestoneConfig(
                             MilestoneType.WEEKLY,
-                            20000,
-                            new BossBarConfig(true, "MocNapServer20k weekly",
+                            200000,
+                            new BossBarConfig(true, "MocNapServer200k weekly",
                                     BossBar.Color.YELLOW,
                                     BossBar.Overlay.PROGRESS),
-                            List.of("tell %player_name% Đã vượt mức pickleball 20k weekly"))
+                            List.of("tell %player_name% Đã vượt mức server pickleball 200k weekly"))
             ),
             MilestoneType.MONTHLY, List.of(new MilestoneConfig(
                             MilestoneType.MONTHLY,
-                            10000,
-                            new BossBarConfig(true, "MocNapServer10k monthly",
+                            100000,
+                            new BossBarConfig(true, "MocNapServer100k monthly",
                                     BossBar.Color.YELLOW,
                                     BossBar.Overlay.PROGRESS),
-                            List.of("tell %player_name% Đã vượt mức pickleball 10k monthly")),
+                            List.of("tell %player_name% Đã vượt mức server pickleball 100k monthly")),
                     new MilestoneConfig(
                             MilestoneType.MONTHLY,
-                            20000,
-                            new BossBarConfig(true, "MocNapServer20k monthly",
+                            200000,
+                            new BossBarConfig(true, "MocNapServer200k monthly",
                                     BossBar.Color.YELLOW,
                                     BossBar.Overlay.PROGRESS),
-                            List.of("tell %player_name% Đã vượt mức pickleball 20k monthly"))
+                            List.of("tell %player_name% Đã vượt mức server pickleball 200k monthly"))
             )
 
     );
