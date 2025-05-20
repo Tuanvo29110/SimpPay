@@ -1,10 +1,7 @@
 package org.simpmc.simppay.commands.root.admin;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import org.simpmc.simppay.commands.sub.admin.FakeBankCommand;
-import org.simpmc.simppay.commands.sub.admin.FakeCardCommand;
-import org.simpmc.simppay.commands.sub.admin.ReloadCommand;
-import org.simpmc.simppay.commands.sub.admin.ViewHistoryCommand;
+import org.simpmc.simppay.commands.sub.admin.*;
 
 public class SimpPayAdminCommand {
     public SimpPayAdminCommand() {
@@ -14,7 +11,10 @@ public class SimpPayAdminCommand {
                         ReloadCommand.commandCreate(),
                         ViewHistoryCommand.commandCreate(),
                         FakeBankCommand.commandCreate(),
-                        FakeCardCommand.commandCreate()
+                        FakeCardCommand.commandCreate(),
+                        DeletePlayerCommand.commandCreate(),
+                        ReloadServerMilestoneCommand.commandCreate(),
+                        ReloadPlayerMilestoneCommand.commandCreate()
                 )
                 .register();
     }

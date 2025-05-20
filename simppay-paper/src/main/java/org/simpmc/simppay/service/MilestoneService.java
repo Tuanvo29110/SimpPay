@@ -12,6 +12,7 @@ import org.simpmc.simppay.config.types.data.BossBarConfig;
 import org.simpmc.simppay.config.types.data.MilestoneConfig;
 import org.simpmc.simppay.data.milestone.MilestoneType;
 import org.simpmc.simppay.database.entities.SPPlayer;
+import org.simpmc.simppay.service.database.PaymentLogService;
 import org.simpmc.simppay.util.MessageUtil;
 
 import java.util.ArrayList;
@@ -35,10 +36,10 @@ public class MilestoneService {
 //     - amount: 100
 //       commands:
 //       - "/tell %player_name% Cảm ơn đã ủng hộ server hehe"
-    public ConcurrentHashMap<UUID, List<ObjectObjectMutablePair<MilestoneType, BossBar>>> playerBossBars = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<UUID, List<ObjectObjectMutablePair<MilestoneConfig, BossBar>>> playerBossBars = new ConcurrentHashMap<>();
     public ConcurrentHashMap<UUID, List<MilestoneConfig>> playerCurrentMilestones = new ConcurrentHashMap<>();
     public List<MilestoneConfig> serverCurrentMilestones = new ArrayList<>();
-    public List<ObjectObjectMutablePair<MilestoneType, BossBar>> serverBossbars = new ArrayList<>(); // contains all valid loaded milestones
+    public List<ObjectObjectMutablePair<MilestoneConfig, BossBar>> serverBossbars = new ArrayList<>(); // contains all valid loaded milestones
 
     public MilestoneService() {
         loadAllMilestones();
@@ -56,8 +57,10 @@ public class MilestoneService {
     }
 
     // all milestones should be reloaded upon a milestone complete event
-    private void loadServerMilestone() {
+    public void loadServerMilestone() {
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
+            PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
+
             long entireServerAmount = SPPlugin.getInstance().getDatabaseService().getPaymentLogService().getEntireServerAmount();
             MocNapServerConfig mocNapServerConfig = ConfigManager.getInstance().getConfig(MocNapServerConfig.class);
 
@@ -76,25 +79,40 @@ public class MilestoneService {
                     }
                     MessageUtil.debug("Loading MocNap Server " + type.name() + " " + config.amount);
                     BossBarConfig bossBarConfig = config.bossbar;
+                    double serverBal = switch (config.getType()) {
+                        case ALL -> paymentLogService.getEntireServerAmount();
+                        case DAILY -> paymentLogService.getEntireServerDailyAmount();
+                        case WEEKLY -> paymentLogService.getEntireServerWeeklyAmount();
+                        case MONTHLY -> paymentLogService.getEntireServerMonthlyAmount();
+                        case YEARLY -> paymentLogService.getEntireServerYearlyAmount();
+                        default -> throw new IllegalStateException("Unexpected value: " + config.getType());
+                    };
                     BossBar bossBar = BossBar.bossBar(
                             MessageUtil.getComponentParsed(bossBarConfig.getTitle(), null), // bossbar title will be loaded after
-                            0f,
+                            (float) (serverBal / config.amount),
                             config.bossbar.color,
                             config.bossbar.style
                     );
-                    serverBossbars.add(new ObjectObjectMutablePair<>(type, bossBar));
+                    serverBossbars.add(new ObjectObjectMutablePair<>(config, bossBar));
+                    serverCurrentMilestones.add(config);
                 }
             }
         });
     }
 
     public void loadPlayerMilestone(UUID uuid) {
+        playerCurrentMilestones.remove(uuid);
+        playerBossBars.remove(uuid);
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
+            PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
+
             SPPlayer player = SPPlugin.getInstance().getDatabaseService().getPlayerService().findByUuid(uuid);
             double playerChargedAmount = SPPlugin.getInstance().getDatabaseService().getPaymentLogService().getPlayerTotalAmount(player);
 
             MocNapConfig mocNapConfig = ConfigManager.getInstance().getConfig(MocNapConfig.class);
             MessageUtil.debug("Loading MocNap For Player " + player.getName());
+            playerBossBars.putIfAbsent(uuid, new ArrayList<>());
+            playerCurrentMilestones.putIfAbsent(uuid, new ArrayList<>());
             for (Map.Entry<MilestoneType, List<MilestoneConfig>> entry : mocNapConfig.mocnap.entrySet()) {
                 MilestoneType type = entry.getKey();
                 if (type == null) {
@@ -111,16 +129,25 @@ public class MilestoneService {
                     }
                     MessageUtil.debug("Loading MocNap Entry For Player " + type.name() + " " + config.amount);
                     BossBarConfig bossBarConfig = config.bossbar;
+                    double playerBal = switch (config.getType()) {
+                        case MilestoneType.ALL -> paymentLogService.getPlayerTotalAmount(player);
+                        case MilestoneType.DAILY -> paymentLogService.getPlayerDailyAmount(player);
+                        case MilestoneType.WEEKLY -> paymentLogService.getPlayerWeeklyAmount(player);
+                        case MilestoneType.MONTHLY -> paymentLogService.getPlayerMonthlyAmount(player);
+                        case MilestoneType.YEARLY -> paymentLogService.getPlayerYearlyAmount(player);
+                        default -> throw new IllegalStateException("Unexpected value: " + config.getType());
+                    };
                     BossBar bossBar = BossBar.bossBar(
                             MessageUtil.getComponentParsed(bossBarConfig.getTitle(), null), // bossbar title will be loaded after
-                            0f,
+                            (float) (playerBal / config.amount),
                             config.bossbar.color,
                             config.bossbar.style
                     );
                     MessageUtil.debug("Loaded MocNap Entry For Player " + type.name() + " " + config.amount);
-                    playerBossBars.get(uuid).add(new ObjectObjectMutablePair<>(type, bossBar));
+                    playerBossBars.get(uuid).add(new ObjectObjectMutablePair<>(config, bossBar));
+                    playerCurrentMilestones.get(uuid).add(config);
                 }
-                playerCurrentMilestones.put(uuid, entry.getValue());
+
             }
         });
 

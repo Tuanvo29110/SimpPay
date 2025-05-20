@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PlayerData {
+    @DatabaseField(generatedId = true)
+    public int id;
     @DatabaseField(columnName = "player_uuid", foreign = true, foreignAutoRefresh = true, canBeNull = false, unique = true)
     public SPPlayer player;
     @DatabaseField(columnName = "key", canBeNull = false)

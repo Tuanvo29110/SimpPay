@@ -61,5 +61,6 @@ Note:
 - current = player current donated player
 - amount = new charge amount
 - if (current >= this.amount && current - amount < this.amount) {
+
 * milestone
-[ ] testing 
+  [ ] testing 

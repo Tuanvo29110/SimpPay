@@ -9,6 +9,7 @@ import org.simpmc.simppay.database.entities.CardPayment;
 import org.simpmc.simppay.database.entities.SPPlayer;
 import org.simpmc.simppay.model.Payment;
 import org.simpmc.simppay.util.CalendarUtil;
+import org.simpmc.simppay.util.MessageUtil;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -84,6 +85,29 @@ public class PaymentLogService {
         } catch (Exception e) {
             e.printStackTrace();
             return List.of();
+        }
+    }
+
+    public void resetPlayerPaymentLog(SPPlayer playerId) {
+        try {
+            List<BankingPayment> bankingPayments = bankDao.queryBuilder()
+                    .where()
+                    .eq("player_uuid", playerId)
+                    .query();
+            List<CardPayment> cardPayments = cardDao.queryBuilder()
+                    .where()
+                    .eq("player_uuid", playerId)
+                    .query();
+
+            for (BankingPayment payment : bankingPayments) {
+                bankDao.delete(payment);
+                MessageUtil.debug(String.format("Removed %s payment: %s", playerId.getName(), payment.toString()));
+            }
+            for (CardPayment payment : cardPayments) {
+                cardDao.delete(payment);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

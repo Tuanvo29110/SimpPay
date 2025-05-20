@@ -21,10 +21,8 @@ import org.simpmc.simppay.service.database.PaymentLogService;
 import org.simpmc.simppay.service.database.PlayerService;
 import org.simpmc.simppay.util.MessageUtil;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class MilestoneListener implements Listener {
     public MilestoneListener(SPPlugin plugin) {
@@ -34,18 +32,30 @@ public class MilestoneListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        MilestoneService service = SPPlugin.getInstance().getMilestoneService();
-        service.loadPlayerMilestone(uuid);
-        List<BossBar> serverBossbars = service.serverBossbars.stream().map(ObjectObjectMutablePair::right).toList();
-        List<BossBar> playerBossbars = service.playerBossBars.get(uuid).stream().map(ObjectObjectMutablePair::right).toList();
-        // have to load after player milestone is loaded
-        for (BossBar bar : serverBossbars) {
-            bar.addViewer(event.getPlayer());
-        }
-        for (BossBar bar : playerBossbars) {
-            bar.addViewer(event.getPlayer());
-        }
+        SPPlugin.getInstance().getFoliaLib().getScheduler().runLater(() -> {
+            UUID uuid = event.getPlayer().getUniqueId();
+            MilestoneService service = SPPlugin.getInstance().getMilestoneService();
+            MessageUtil.debug("Loading player milestone for " + event.getPlayer().getName());
+
+            List<BossBar> serverBossbars = service.serverBossbars.stream().map(ObjectObjectMutablePair::right).toList();
+            SPPlugin.getInstance().getFoliaLib().getScheduler().runLater(task -> {
+                service.loadPlayerMilestone(uuid);
+            }, 20 * 2).thenAccept(task -> {
+                List<BossBar> playerBossbars = service.playerBossBars.get(uuid).stream().map(ObjectObjectMutablePair::right).toList();
+                for (BossBar bar : playerBossbars) {
+                    SPPlugin.getInstance().getFoliaLib().getScheduler().runAtEntity(event.getPlayer(), task2 -> {
+                        bar.addViewer(event.getPlayer());
+                    });
+                }
+            });
+
+
+            // have to load after player milestone is loaded
+            for (BossBar bar : serverBossbars) {
+                bar.addViewer(event.getPlayer());
+            }
+
+        }, 20);
     }
 
     @EventHandler
@@ -53,61 +63,65 @@ public class MilestoneListener implements Listener {
         MilestoneService service = SPPlugin.getInstance().getMilestoneService();
         service.playerBossBars.remove(event.getPlayer().getUniqueId());
         service.playerCurrentMilestones.remove(event.getPlayer().getUniqueId());
+        MessageUtil.debug("Cleared cache bossbar and currentmilestones " + event.getPlayer().getName());
     }
 
     @EventHandler
     public void givePersonalMilestoneReward(PaymentSuccessEvent event) {
-        SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
-            MilestoneService milestoneService = SPPlugin.getInstance().getMilestoneService();
-            PlayerService playerService = SPPlugin.getInstance().getDatabaseService().getPlayerService();
-            PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
-            SPPlayer player = playerService.findByUuid(event.getPlayerUUID());
-            double charged = event.getAmount();
-            for (MilestoneConfig config : milestoneService.playerCurrentMilestones.get(event.getPlayerUUID())) {
-                double playerNewBal = switch (config.getType()) {
-                    case ALL -> paymentLogService.getPlayerTotalAmount(player);
-                    case DAILY -> paymentLogService.getPlayerDailyAmount(player);
-                    case WEEKLY -> paymentLogService.getPlayerWeeklyAmount(player);
-                    case MONTHLY -> paymentLogService.getPlayerMonthlyAmount(player);
-                    case YEARLY -> paymentLogService.getPlayerYearlyAmount(player);
-                    default -> throw new IllegalStateException("Unexpected value: " + config.getType());
-                };
-                /*
-                 * @param playerNewBal số tiền sau khi nạp
-                 * @param charged số tiền nạp
-                 */
-                if (playerNewBal >= config.amount && playerNewBal - charged < config.amount) {
-                    // Milestone complete
-                    for (String command : config.getCommands()) {
-                        SPPlugin.getInstance().getFoliaLib().getScheduler().runLater(task2 -> {
-                            String formattedCommand = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(event.getPlayerUUID()), command);
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), formattedCommand);
-                            MessageUtil.debug("Ran " + formattedCommand);
-                        }, 1);
-                    }
-                    // reset player current milestone
-                    milestoneService.playerCurrentMilestones.get(event.getPlayerUUID()).remove(config);
-                    MessageUtil.debug("Player " + player.getName() + " completed milestone " + config.amount);
-                    MessageUtil.debug("Player " + player.getName() + " remaining milestone " + milestoneService.playerCurrentMilestones.get(event.getPlayerUUID()).size());
-                    MessageUtil.debug("Player " + player.getName() + " removed " + config.toString());
+        MilestoneService milestoneService = SPPlugin.getInstance().getMilestoneService();
+        PlayerService playerService = SPPlugin.getInstance().getDatabaseService().getPlayerService();
+        PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
+        SPPlayer player = playerService.findByUuid(event.getPlayerUUID());
+        double charged = event.getAmount();
+
+        List<MilestoneConfig> list = milestoneService.playerCurrentMilestones.get(event.getPlayerUUID());
+        Iterator<MilestoneConfig> iter = list.iterator();
+
+        while (iter.hasNext()) {
+            MilestoneConfig config = iter.next();
+
+            double playerNewBal = switch (config.getType()) {
+                case ALL -> paymentLogService.getPlayerTotalAmount(player);
+                case DAILY -> paymentLogService.getPlayerDailyAmount(player);
+                case WEEKLY -> paymentLogService.getPlayerWeeklyAmount(player);
+                case MONTHLY -> paymentLogService.getPlayerMonthlyAmount(player);
+                case YEARLY -> paymentLogService.getPlayerYearlyAmount(player);
+                default -> throw new IllegalStateException("Unexpected value: " + config.getType());
+            };
+            /*
+             * @param playerNewBal số tiền sau khi nạp
+             * @param charged số tiền nạp
+             */
+            if (playerNewBal >= config.amount && playerNewBal - charged < config.amount) {
+                // Milestone complete
+                for (String command : config.getCommands()) {
+                    SPPlugin.getInstance().getFoliaLib().getScheduler().runLater(task2 -> {
+                        String formattedCommand = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(event.getPlayerUUID()), command);
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), formattedCommand);
+                        MessageUtil.debug("Ran " + formattedCommand);
+                    }, 1);
                 }
+                // reset player current milestone
+                iter.remove();
+                MessageUtil.debug("Player " + player.getName() + " completed milestone " + config.amount);
+                MessageUtil.debug("Player " + player.getName() + " remaining milestone " + milestoneService.playerCurrentMilestones.get(event.getPlayerUUID()).size());
+                MessageUtil.debug("Player " + player.getName() + " removed " + config.toString());
             }
-        });
+        }
+
     }
 
     @EventHandler
     public void updatePersonalMilestoneBossbar(PaymentSuccessEvent event) {
-        SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
             MilestoneService service = SPPlugin.getInstance().getMilestoneService();
             PlayerService playerService = SPPlugin.getInstance().getDatabaseService().getPlayerService();
             PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
             SPPlayer player = playerService.findByUuid(event.getPlayerUUID());
-            double charged = event.getAmount();
-            for (ObjectObjectMutablePair<MilestoneType, BossBar> pair : service.playerBossBars.get(event.getPlayerUUID())) {
+            for (ObjectObjectMutablePair<MilestoneConfig, BossBar> pair : service.playerBossBars.get(event.getPlayerUUID())) {
                 if (pair == null) {
                     continue;
                 }
-                double playerNewBal = switch (pair.left()) {
+                double playerNewBal = switch (pair.left().type) {
                     case MilestoneType.ALL -> paymentLogService.getPlayerTotalAmount(player);
                     case MilestoneType.DAILY -> paymentLogService.getPlayerDailyAmount(player);
                     case MilestoneType.WEEKLY -> paymentLogService.getPlayerWeeklyAmount(player);
@@ -115,10 +129,8 @@ public class MilestoneListener implements Listener {
                     case MilestoneType.YEARLY -> paymentLogService.getPlayerYearlyAmount(player);
                     default -> throw new IllegalStateException("Unexpected value: " + pair);
                 };
-                double prevBal = playerNewBal - charged;
                 BossBar bar = pair.right();
-                float currentProgress = bar.progress();
-                double milestone = prevBal / currentProgress;
+                double milestone = pair.left().amount;
                 double newProgress = (playerNewBal) / milestone;
 
                 if (newProgress >= 1) {
@@ -134,17 +146,19 @@ public class MilestoneListener implements Listener {
                     }, 1);
                 }
             }
-        });
+
     }
 
 
     @EventHandler
     public void giveServerMilestoneReward(PaymentSuccessEvent event) {
-        SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
             MilestoneService milestoneService = SPPlugin.getInstance().getMilestoneService();
             PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
             double charged = event.getAmount();
-            for (MilestoneConfig config : milestoneService.serverCurrentMilestones) {
+            List<MilestoneConfig> list = milestoneService.serverCurrentMilestones;
+            Iterator<MilestoneConfig> iter = list.iterator();
+            while (iter.hasNext()) {
+                MilestoneConfig config = iter.next();
                 double serverNewBal = switch (config.getType()) {
                     case ALL -> paymentLogService.getEntireServerAmount();
                     case DAILY -> paymentLogService.getEntireServerDailyAmount();
@@ -170,11 +184,13 @@ public class MilestoneListener implements Listener {
                     // queue commands to console using timer
                     SPPlugin.getInstance().getFoliaLib().getScheduler().runTimer(task2 -> {
                         if (commands.isEmpty()) {
-                            task.cancel();
+                            task2.cancel();
+                            return;
                         }
                         String command = commands.poll();
                         if (command == null) {
-                            task.cancel();
+                            task2.cancel();
+                            return;
                         }
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
                         MessageUtil.debug("Ran " + command);
@@ -182,26 +198,25 @@ public class MilestoneListener implements Listener {
                     }, 1, 20);
 
                     // reset player current milestone
-                    milestoneService.playerCurrentMilestones.get(event.getPlayerUUID()).remove(config);
+                    iter.remove();
                     MessageUtil.debug("Server completed milestone " + config.amount);
                     MessageUtil.debug("Server remaining milestone " + milestoneService.playerCurrentMilestones.get(event.getPlayerUUID()).size());
                     MessageUtil.debug("Server removed " + config.toString());
                 }
             }
-        });
+
+
     }
 
     @EventHandler
     public void updateServerMilestoneBossbar(PaymentSuccessEvent event) {
-        SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
             MilestoneService service = SPPlugin.getInstance().getMilestoneService();
             PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
-            double charged = event.getAmount();
-            for (ObjectObjectMutablePair<MilestoneType, BossBar> pair : service.serverBossbars) {
+            for (ObjectObjectMutablePair<MilestoneConfig, BossBar> pair : service.serverBossbars) {
                 if (pair == null) {
                     continue;
                 }
-                double serverNewBal = switch (pair.left()) {
+                double serverNewBal = switch (pair.left().type) {
                     case ALL -> paymentLogService.getEntireServerAmount();
                     case DAILY -> paymentLogService.getEntireServerDailyAmount();
                     case WEEKLY -> paymentLogService.getEntireServerWeeklyAmount();
@@ -209,10 +224,8 @@ public class MilestoneListener implements Listener {
                     case YEARLY -> paymentLogService.getEntireServerYearlyAmount();
                     default -> throw new IllegalStateException("Unexpected value: " + pair);
                 };
-                double prevBal = serverNewBal - charged;
                 BossBar bar = pair.right();
-                float currentProgress = bar.progress();
-                double milestone = prevBal / currentProgress;
+                double milestone = pair.left().amount;
                 double newProgress = (serverNewBal) / milestone;
 
                 if (newProgress >= 1) {
@@ -228,7 +241,6 @@ public class MilestoneListener implements Listener {
                     }, 1);
                 }
             }
-        });
     }
 
 }

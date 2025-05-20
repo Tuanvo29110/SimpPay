@@ -1,6 +1,7 @@
 package org.simpmc.simppay.listener.internal.player.database;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.event.PaymentSuccessEvent;
@@ -11,7 +12,7 @@ public class SuccessDatabaseHandlingListener implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void updateDBz(PaymentSuccessEvent event) {
         SPPlugin plugin = SPPlugin.getInstance();
 

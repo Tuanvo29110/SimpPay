@@ -51,12 +51,17 @@ public class PlayerDataService {
     }
 
     public String getValue(SPPlayer player, String key) throws SQLException {
-        return playerDataDao.queryBuilder()
+        PlayerData playerData = playerDataDao.queryBuilder()
                 .where()
                 .eq("player_uuid", player.getUuid())
                 .and()
                 .eq("key", key)
-                .queryForFirst().value;
+                .queryForFirst();
+        if (playerData == null) {
+            return null;
+        } else {
+            return playerData.getValue();
+        }
     }
 }
 

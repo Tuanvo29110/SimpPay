@@ -8,6 +8,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.simpmc.simppay.SPPlugin;
@@ -20,6 +21,13 @@ import java.util.UUID;
 public class MessageUtil {
     public static void sendMessage(Player player, String message) {
         taskMessage(message, player);
+    }
+    public static void sendMessage(CommandSender sender, String message) {
+        if (sender instanceof Player) {
+            taskMessage(message, (Player) sender);
+        } else {
+            SPPlugin.getInstance().getLogger().info(message);
+        }
     }
 
     public static void sendMessage(UUID playerUuid, String message) {

@@ -44,7 +44,7 @@ public class BankingPayment {
         this.amount = payment.getDetail().getAmount();
         this.refID = payment.getDetail().getRefID();
         this.apiProvider = PaymentService.getBankAPI();
-        this.timestamp = Instant.now().getEpochSecond();
+        this.timestamp = Instant.now().toEpochMilli();
     }
 
 }
