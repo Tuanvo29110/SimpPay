@@ -1,6 +1,8 @@
 package org.simpmc.simppay.commands.root;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
+import dev.jorel.commandapi.arguments.StringArgument;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.config.ConfigManager;
 import org.simpmc.simppay.config.types.MessageConfig;
@@ -23,6 +25,16 @@ public class NaptheNhanhCommand {
         new CommandAPICommand("napthenhanh")
                 .withPermission("simppay.napthenhanh")
                 .withArguments(
+                        new StringArgument("serial"),
+                        new StringArgument("pin"),
+                        new StringArgument("amount").replaceSuggestions(
+                                ArgumentSuggestions.strings(
+                                        CardPrice.getAllCardPrices()
+                                )
+                        ),
+                        new StringArgument("telco").replaceSuggestions(ArgumentSuggestions.strings(
+                                CardType.getAllCardTypes()
+                        ))
                 )
                 .executesPlayer((player, args) -> {
                     // start a new napthe session
