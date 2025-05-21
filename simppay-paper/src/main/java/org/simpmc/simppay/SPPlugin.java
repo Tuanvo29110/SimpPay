@@ -151,7 +151,7 @@ public final class SPPlugin extends JavaPlugin {
     }
 
     private void registerMetrics() {
-        Metrics metrics = new Metrics(this, 25553);
+        Metrics metrics = new Metrics(this, 25693);
         // check competitors stuff
         File dotManFolder = new File(getDataFolder().getParent(), "DotMan");
         File hmtopupFolder = new File(getDataFolder().getParent(), "HMTopUp");
