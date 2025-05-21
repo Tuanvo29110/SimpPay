@@ -1,6 +1,7 @@
 package org.simpmc.simppay.service;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.simpmc.simppay.SPPlugin;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +22,7 @@ public class OrderIDService {
      * Call this once from your plugin's onEnable().
      * It will create the data folder/file if needed and load the last saved ID.
      */
-    public static void init(JavaPlugin plugin) {
+    public static void init(SPPlugin plugin) {
         // Ensure data folder exists
         if (!plugin.getDataFolder().exists()) {
             plugin.getDataFolder().mkdirs();
@@ -45,18 +46,6 @@ public class OrderIDService {
         } catch (Exception e) {
             plugin.getLogger().severe("Could not load last ID from " + FILE_NAME + ": " + e.getMessage());
         }
-
-        // Hook into shutdown to save the final value
-        plugin.getServer().getScheduler().runTask(plugin, () ->
-                plugin.getServer().getPluginManager().registerEvents(new org.bukkit.event.Listener() {
-                    @org.bukkit.event.EventHandler
-                    public void onDisable(org.bukkit.event.server.PluginDisableEvent ev) {
-                        if (ev.getPlugin().equals(plugin)) {
-                            saveCurrent();
-                        }
-                    }
-                }, plugin)
-        );
     }
 
     /**
@@ -71,7 +60,7 @@ public class OrderIDService {
     }
 
     // Atomically writes the current counter value to disk
-    private static void saveCurrent() {
+    public static void saveCurrent() {
         if (dataFile == null) {
             return;
         }

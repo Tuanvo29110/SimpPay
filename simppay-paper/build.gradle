@@ -38,7 +38,7 @@ shadowJar {
     archiveBaseName.set("SimpPay-Paper")
     archiveVersion.set(version)
     archiveClassifier.set('')
-    destinationDirectory = file("D:\\paper1.21.4\\plugins")
+    destinationDirectory = file("D:\\folia\\plugins")
 
     relocate("de.exlll.configlib", "me.typical.lib.configlib")
     relocate("dev.jorel.commandapi", "me.typical.lib.commandapi")

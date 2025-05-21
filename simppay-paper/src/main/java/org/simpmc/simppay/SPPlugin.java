@@ -112,6 +112,7 @@ public final class SPPlugin extends JavaPlugin {
             database.close();
         }
         commandHandler.onDisable();
+        OrderIDService.saveCurrent();
         instance = null;
     }
 
