@@ -35,7 +35,7 @@ Hướng dẫn sử dụng
 
 **Placeholder:**
 
-Placeholder có thể sử dụng để hiển thị top nạp
+Placeholder có thể sử dụng để hiển thị top nạp bằng cách sử dụng [ajLeaderboards](https://www.spigotmc.org/resources/ajleaderboards.85548/)
 
 | Placeholder                      | Chức năng                                      | Ghi chú |
 |----------------------------------|------------------------------------------------|---------|
