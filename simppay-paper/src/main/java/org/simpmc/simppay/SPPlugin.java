@@ -80,7 +80,7 @@ public final class SPPlugin extends JavaPlugin {
         registerMetrics();
         if (getServer().getPluginManager().getPlugin("floodgate") != null) {
             FloodgateUtil.enableFloodgate = true;
-            MessageUtil.info("Enabled floodgate support");
+            getLogger().info("Enabled floodgate support");
         }
         // Thanks CHATGPT, qua met r
         OrderIDService.init(this);
