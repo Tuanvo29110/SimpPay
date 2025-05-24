@@ -137,9 +137,9 @@ public class MilestoneListener implements Listener {
 
             if (newProgress >= 1) {
                 // Milestone complete
+                iter.remove();
                 SPPlugin.getInstance().getFoliaLib().getScheduler().runLater(() -> {
                     bar.removeViewer(Bukkit.getPlayer(event.getPlayerUUID()));
-                    iter.remove();
                     Bukkit.getPluginManager().callEvent(new PlayerMilestoneEvent(event.getPlayerUUID()));
                 }, 1);
 
@@ -238,11 +238,11 @@ public class MilestoneListener implements Listener {
 
             if (newProgress >= 1) {
                 // Milestone complete
+                iter.remove();
                 SPPlugin.getInstance().getFoliaLib().getScheduler().runLater(() -> {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         bar.removeViewer(player);
                     }
-                    iter.remove();
                     Bukkit.getPluginManager().callEvent(new ServerMilestoneEvent());
                 }, 1);
             } else {
