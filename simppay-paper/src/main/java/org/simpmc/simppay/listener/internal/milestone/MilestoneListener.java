@@ -106,6 +106,10 @@ public class MilestoneListener implements Listener {
                 MessageUtil.debug("Player " + player.getName() + " completed milestone " + config.amount);
                 MessageUtil.debug("Player " + player.getName() + " remaining milestone " + milestoneService.playerCurrentMilestones.get(event.getPlayerUUID()).size());
                 MessageUtil.debug("Player " + player.getName() + " removed " + config.toString());
+                // Call event for player milestone
+                SPPlugin.getInstance().getFoliaLib().getScheduler().runNextTick(task -> {
+                    SPPlugin.getInstance().getServer().getPluginManager().callEvent(new PlayerMilestoneEvent(event.getPlayerUUID()));
+                });
             }
         }
 
@@ -208,6 +212,10 @@ public class MilestoneListener implements Listener {
                 MessageUtil.debug("Server completed milestone " + config.amount);
                 MessageUtil.debug("Server remaining milestone " + milestoneService.playerCurrentMilestones.get(event.getPlayerUUID()).size());
                 MessageUtil.debug("Server removed " + config.toString());
+                // Call event for player milestone
+                SPPlugin.getInstance().getFoliaLib().getScheduler().runNextTick(task -> {
+                    SPPlugin.getInstance().getServer().getPluginManager().callEvent(new ServerMilestoneEvent(config));
+                });
             }
         }
 
@@ -239,16 +247,15 @@ public class MilestoneListener implements Listener {
             if (newProgress >= 1) {
                 // Milestone complete
                 iter.remove();
-                SPPlugin.getInstance().getFoliaLib().getScheduler().runLater(() -> {
+                SPPlugin.getInstance().getFoliaLib().getScheduler().runNextTick(task -> {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         bar.removeViewer(player);
                     }
-                    Bukkit.getPluginManager().callEvent(new ServerMilestoneEvent());
-                }, 1);
+                });
             } else {
-                SPPlugin.getInstance().getFoliaLib().getScheduler().runLater(() -> {
+                SPPlugin.getInstance().getFoliaLib().getScheduler().runNextTick(task -> {
                     bar.progress((float) newProgress);
-                }, 1);
+                });
             }
         }
     }
