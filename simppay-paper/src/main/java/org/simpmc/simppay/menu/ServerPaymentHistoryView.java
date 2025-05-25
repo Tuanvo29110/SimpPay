@@ -41,7 +41,7 @@ public class ServerPaymentHistoryView extends View {
                                             .replace("{pin}", paymentRecord.getPin().orElse("0"))
                                             .replace("{api}", paymentRecord.getProvider())
                                             .replace("{transaction_id}", paymentRecord.getRefId())
-                                            .replace("{name}", ctx.getInitialData().toString()
+                                            .replace("{name}", paymentRecord.getPlayerName()
                                             ))
                             .toList();
                     item.setLores(lores);
@@ -59,8 +59,7 @@ public class ServerPaymentHistoryView extends View {
                                     line.replace("{time}", CalendarUtil.getFormattedTimestamp(paymentRecord.getTimestamp().getTime()))
                                             .replace("{api}", paymentRecord.getProvider())
                                             .replace("{transaction_id}", paymentRecord.getRefId())
-                                            .replace("{name}", ctx.getInitialData().toString()
-
+                                            .replace("{name}", paymentRecord.getPlayerName()
                                             ))
                             .toList();
                     item.setLores(lores);
