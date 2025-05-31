@@ -26,7 +26,8 @@ public class CardPriceView extends View {
     private final State<Pagination> paginationState = buildLazyPaginationState(context -> {
         return CardPrice.getAllCardPrices();
 
-    }).elementFactory((ctx, bukkitItemComponentBuilder, i, priceTag) -> {
+    }).elementFactory((ctx, bukkitItemComponentBuilder, i, price) -> {
+        String priceTag = getFormattedPrice(price);
         ItemStack item = ConfigManager.getInstance()
                 .getConfig(CardPriceMenuConfig.class)
                 .priceItem.clone().replaceStringInName("{price_name}", priceTag)
@@ -34,10 +35,9 @@ public class CardPriceView extends View {
         bukkitItemComponentBuilder.withItem(item).onClick(click -> {
             // get current card session and add data, then move to next menu
             CardType cardType = (CardType) click.getInitialData();
-
             CardDetail detail = CardDetail.builder()
                     .type(cardType)
-                    .price(CardPrice.fromString(priceTag))
+                    .price(CardPrice.fromString(price))
                     .build();
             click.openForPlayer(CardSerialView.class, detail);
         });
@@ -84,5 +84,9 @@ public class CardPriceView extends View {
                         });
             }
         }
+    }
+
+    public String getFormattedPrice(String price) {
+        return String.format("%,d", Integer.valueOf(price)) + "đ";
     }
 }
