@@ -32,7 +32,6 @@ import org.simpmc.simppay.service.MilestoneService;
 import org.simpmc.simppay.service.OrderIDService;
 import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.service.cache.CacheDataService;
-import org.simpmc.simppay.util.FloodgateUtil;
 
 import java.io.File;
 import java.sql.SQLException;

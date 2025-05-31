@@ -1,6 +1,5 @@
 package org.simpmc.simppay.util;
 
-import org.bukkit.entity.Player;
 import org.geysermc.cumulus.form.Form;
 import org.geysermc.floodgate.api.FloodgateApi;
 

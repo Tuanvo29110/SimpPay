@@ -64,6 +64,7 @@ public enum CardPrice {
                 })
                 .collect(Collectors.toList());
     }
+
     public static List<String> getAllCardPrices() {
         return Arrays.stream(CardPrice.values())
                 .map(cardPrice -> String.valueOf(cardPrice.getValue()))
