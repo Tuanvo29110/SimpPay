@@ -33,7 +33,7 @@ Hướng dẫn sử dụng
 | /simppayadmin lichsu        | Xem lịch sử nạp toàn server             | simppay.admin.viewhistory |
 | /simppayadmin lichsu <name> | Xem lịch sử nạp của người chơi chỉ định | simppay.admin.viewhistory |
 | /lichsunapthe               | Xem lịch sử nạp                         | simppay.lichsunapthe      |
-| /bank <số tiền>             | Nạp ngân hàng qua mã QR                 | simppay.admin             |
+| /bank <số tiền>             | Nạp ngân hàng qua mã QR                 | simppay.banking           |
 
 **Placeholder:**
 
