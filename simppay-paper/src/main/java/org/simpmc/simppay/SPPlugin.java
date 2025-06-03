@@ -25,8 +25,6 @@ import org.simpmc.simppay.menu.PaymentHistoryView;
 import org.simpmc.simppay.menu.ServerPaymentHistoryView;
 import org.simpmc.simppay.menu.card.CardListView;
 import org.simpmc.simppay.menu.card.CardPriceView;
-import org.simpmc.simppay.menu.card.anvil.CardPINView;
-import org.simpmc.simppay.menu.card.anvil.CardSerialView;
 import org.simpmc.simppay.service.DatabaseService;
 import org.simpmc.simppay.service.MilestoneService;
 import org.simpmc.simppay.service.OrderIDService;
@@ -144,9 +142,7 @@ public final class SPPlugin extends JavaPlugin {
 
     private void registerInventoryFramework() {
         viewFrame = ViewFrame.create(this)
-                .install(AnvilInputFeature.AnvilInput)
-                .with(new CardPINView(),
-                        new CardSerialView(),
+                .with(
                         new CardListView(),
                         new CardPriceView(),
                         new PaymentHistoryView(),

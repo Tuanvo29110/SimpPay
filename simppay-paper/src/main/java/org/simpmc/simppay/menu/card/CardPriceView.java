@@ -14,7 +14,7 @@ import org.simpmc.simppay.config.types.data.menu.RoleType;
 import org.simpmc.simppay.config.types.menu.card.CardPriceMenuConfig;
 import org.simpmc.simppay.data.card.CardPrice;
 import org.simpmc.simppay.data.card.CardType;
-import org.simpmc.simppay.menu.card.anvil.CardSerialView;
+import org.simpmc.simppay.menu.card.anvil.CardSerialInput;
 import org.simpmc.simppay.model.detail.CardDetail;
 import org.simpmc.simppay.util.MessageUtil;
 
@@ -39,7 +39,8 @@ public class CardPriceView extends View {
                     .type(cardType)
                     .price(CardPrice.fromString(price))
                     .build();
-            click.openForPlayer(CardSerialView.class, detail);
+            click.closeForPlayer();
+            new CardSerialInput(click.getPlayer(), detail);
         });
 
     }).build();
