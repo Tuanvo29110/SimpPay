@@ -4,6 +4,8 @@ Language: [Vietnamese](README_VN.md), **[English](README.md)** <br><br>
 Automated QR payment and prepaid mobile card recharge solution for Vietnamese Minecraft Servers <br> <br>
 **Supported payment gateways:** [thesieutoc](https://thesieutoc.net/), [payos](https://payos.vn/)
 
+![Bstats](https://bstats.org/signatures/bukkit/SimpPay.svg)
+
 Current Features
 ===========
 

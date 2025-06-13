@@ -1,8 +1,12 @@
 Simp Pay [![Discord](https://img.shields.io/discord/1353293624238145626.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.typicalsmc.me/discord) ![Supported server version](https://img.shields.io/badge/minecraft-1.13%20--_1.21.4-green)
 ===========
-Language: **[Vietnamese](README_VN.md)**, [English](README.md) <br><br>
-Giải pháp thanh toán QR và thẻ cào tự động cho Server Minecraft Việt Nam <br> <br>
+Ngôn ngữ: **[Vietnamese](README_VN.md)**, [English](README.md)
+
+Giải pháp thanh toán QR và thẻ cào tự động cho Server Minecraft Việt Nam
+
 **Các loại cổng nạp đang hỗ trợ:** [thesieutoc](https://thesieutoc.net/), [payos](https://payos.vn/)
+
+![Bstats](https://bstats.org/signatures/bukkit/SimpPay.svg)
 
 Tính năng hiện có
 ===========
