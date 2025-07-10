@@ -68,7 +68,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         UUID uuid = player.getUniqueId();
         if (!cacheDataService.getPlayerTotalValue().containsKey(uuid)) {
             cacheDataService.addPlayerToQueue(uuid);
-            return "Đang load...";
+            return "0";
         }
 
         // %simppay_total%
