@@ -176,5 +176,4 @@ public final class SPPlugin extends JavaPlugin {
         metrics.addCustomChart(new Metrics.SimplePie("had_dotman", () -> String.valueOf(dotManFolder.exists())));
         metrics.addCustomChart(new Metrics.SimplePie("had_hmtopup", () -> String.valueOf(hmtopupFolder.exists())));
     }
-
 }

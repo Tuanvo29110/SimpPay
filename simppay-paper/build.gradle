@@ -23,7 +23,7 @@ dependencies {
     implementation("de.exlll:configlib-paper:4.6.0") {
         exclude group: 'org.yaml', module: 'snakeyaml-engine'
     }
-    implementation "dev.jorel:commandapi-bukkit-shade:10.1.1"
+    implementation "dev.jorel:commandapi-bukkit-shade:10.1.2"
     implementation("com.tcoded:FoliaLib:0.5.1")
     implementation('me.devnatan:inventory-framework-platform-bukkit:3.4.1')
     implementation('me.devnatan:inventory-framework-platform-paper:3.4.1')
