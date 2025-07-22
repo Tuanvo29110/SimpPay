@@ -64,12 +64,18 @@ public class CoinsConfig {
             "1.5: Khuyến mãi 150%, VD: nạp 100k được 250k"})
     public double promoRate = 0.0;
     @Comment("Thời gian kết thúc khuyến mãi")
-    public LocalDateTime promoEndTime = LocalDateTime.parse("30/04/1975 11:30", formatter);
+    public String promoEndTimeString = "30/04/1975 11:30";
 
     public double getPromoRate() {
-        if (promoEndTime.isBefore(LocalDateTime.now())) {
+        try {
+            LocalDateTime promoEndTime = LocalDateTime.parse(promoEndTimeString, formatter);
+            if (promoEndTime.isBefore(LocalDateTime.now())) {
+                return 0.0;
+            }
+            return promoRate;
+        } catch (Exception e) {
+            // không parse được time => cook event
             return 0.0;
         }
-        return promoRate;
     }
 }
