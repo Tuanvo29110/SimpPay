@@ -17,7 +17,7 @@ public class CommandHandler {
     }
 
     public void onLoad() {
-        CommandAPI.onLoad(new CommandAPIBukkitConfig(plugin).shouldHookPaperReload(true).silentLogs(true).usePluginNamespace());
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(plugin).shouldHookPaperReload(true).silentLogs(true));
     }
 
     public void onEnable() {

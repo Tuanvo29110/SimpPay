@@ -17,6 +17,7 @@ import org.simpmc.simppay.config.types.menu.PaymentHistoryMenuConfig;
 import org.simpmc.simppay.data.PaymentType;
 import org.simpmc.simppay.database.dto.PaymentRecord;
 import org.simpmc.simppay.database.entities.SPPlayer;
+import org.simpmc.simppay.service.DatabaseService;
 import org.simpmc.simppay.util.CalendarUtil;
 import org.simpmc.simppay.util.MessageUtil;
 
@@ -129,12 +130,12 @@ public class PaymentHistoryView extends View {
         return CompletableFuture.supplyAsync(() -> {
             SPPlayer spPlayer;
             if (context.getInitialData() == null) { // TODO: should be async ?
-                spPlayer = SPPlugin.getInstance().getDatabaseService().getPlayerService().findByUuid(context.getPlayer().getUniqueId());
+                spPlayer = SPPlugin.getService(DatabaseService.class).getPlayerService().findByUuid(context.getPlayer().getUniqueId());
             } else {
-                spPlayer = SPPlugin.getInstance().getDatabaseService().getPlayerService().findByName((String) context.getInitialData());
+                spPlayer = SPPlugin.getService(DatabaseService.class).getPlayerService().findByName((String) context.getInitialData());
             }
             Preconditions.checkNotNull(spPlayer, "Player not found");
-            List<PaymentRecord> paymentRecords = SPPlugin.getInstance().getDatabaseService().getPaymentLogService().getPaymentsByPlayer(spPlayer);
+            List<PaymentRecord> paymentRecords = SPPlugin.getService(DatabaseService.class).getPaymentLogService().getPaymentsByPlayer(spPlayer);
 
             return paymentRecords;
         });

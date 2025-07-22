@@ -9,6 +9,7 @@ import org.simpmc.simppay.config.types.MessageConfig;
 import org.simpmc.simppay.database.entities.SPPlayer;
 import org.simpmc.simppay.menu.PaymentHistoryView;
 import org.simpmc.simppay.menu.ServerPaymentHistoryView;
+import org.simpmc.simppay.service.DatabaseService;
 import org.simpmc.simppay.util.MessageUtil;
 
 public class ViewHistoryCommand {
@@ -34,7 +35,7 @@ public class ViewHistoryCommand {
 //            FloodgateApi.getInstance().sendForm(player.getUniqueId(), ViewHistoryForm.getHistoryForm(targetPlayer));
 //            return;
 //        }
-        SPPlayer targetPlayer = SPPlugin.getInstance().getDatabaseService().getPlayerService().findByName(playerName);
+        SPPlayer targetPlayer = SPPlugin.getService(DatabaseService.class).getPlayerService().findByName(playerName);
         if (targetPlayer == null) {
             MessageConfig messageConfig = SPPlugin.getInstance().getConfigManager().getConfig(MessageConfig.class);
             MessageUtil.sendMessage(player, messageConfig.playerNotFound.replace("{name}", playerName));

@@ -16,6 +16,7 @@ import org.simpmc.simppay.event.PaymentQueueSuccessEvent;
 import org.simpmc.simppay.event.PaymentSuccessEvent;
 import org.simpmc.simppay.model.detail.BankingDetail;
 import org.simpmc.simppay.model.detail.CardDetail;
+import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.util.MessageUtil;
 import org.simpmc.simppay.util.SoundUtil;
 
@@ -32,12 +33,11 @@ public class SuccessHandlingListener implements Listener {
 
     @EventHandler
     public void removeCaching(PaymentSuccessEvent event) {
-        SPPlugin plugin = SPPlugin.getInstance();
 
-        plugin.getPaymentService().getPayments().remove(event.getPayment().getPaymentID());
+        SPPlugin.getService(PaymentService.class).getPayments().remove(event.getPayment().getPaymentID());
 
         if (event.getPaymentType() == PaymentType.BANKING) {
-            SPPlugin.getInstance().getPaymentService().clearPlayerBankCache(event.getPlayerUUID());
+            SPPlugin.getService(PaymentService.class).clearPlayerBankCache(event.getPlayerUUID());
             Player player = Bukkit.getPlayer(event.getPlayerUUID());
             if (player != null) {
                 player.updateInventory(); // update the fake qr map to normal item
@@ -50,7 +50,6 @@ public class SuccessHandlingListener implements Listener {
     @EventHandler
     public void notifyPlayer(PaymentSuccessEvent event) {
         // notify player
-        SPPlugin plugin = SPPlugin.getInstance();
         MessageConfig config = ConfigManager.getInstance().getConfig(MessageConfig.class);
         String formattedAmount = String.format("%,.0f", event.getAmount());
         if (event.getPaymentType() == PaymentType.CARD) {
@@ -98,7 +97,7 @@ public class SuccessHandlingListener implements Listener {
         long finalGivenCoins = givenCoins;
         plugin.getFoliaLib().getScheduler().runAsync(task -> {
             // TODO: Might need change to sync because some plugin will not support running async, for example: CoinsEngine
-            plugin.getPaymentService().getHandlerRegistry().getCoinHandler().give(playerUUID, (int) finalGivenCoins);
+            SPPlugin.getService(PaymentService.class).getHandlerRegistry().getCoinHandler().give(playerUUID, (int) finalGivenCoins);
         });
     }
 

@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.config.ConfigManager;
 import org.simpmc.simppay.config.types.MessageConfig;
+import org.simpmc.simppay.service.DatabaseService;
+import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.util.MessageUtil;
 
 public class CancelCommand {
@@ -15,14 +17,13 @@ public class CancelCommand {
     }
 
     public static void execute(Player player, CommandArguments args) {
-        SPPlugin plugin = SPPlugin.getInstance();
         MessageConfig messageConfig = ConfigManager.getInstance().getConfig(MessageConfig.class);
 
-        if (!plugin.getPaymentService().getPlayerBankingSessionPayment().containsKey(player.getUniqueId())) {
+        if (!SPPlugin.getService(PaymentService.class).getPlayerBankingSessionPayment().containsKey(player.getUniqueId())) {
             MessageUtil.sendMessage(player, messageConfig.noExistBankingSession);
         } else {
             MessageUtil.sendMessage(player, messageConfig.cancelBanking);
-            plugin.getPaymentService().clearPlayerBankCache(player.getUniqueId());
+            SPPlugin.getService(PaymentService.class).clearPlayerBankCache(player.getUniqueId());
             player.updateInventory(); // remove qr map
         }
     }

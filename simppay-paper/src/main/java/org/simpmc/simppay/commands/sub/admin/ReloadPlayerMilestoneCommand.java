@@ -6,6 +6,9 @@ import dev.jorel.commandapi.executors.CommandArguments;
 import org.bukkit.command.CommandSender;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.database.entities.SPPlayer;
+import org.simpmc.simppay.service.DatabaseService;
+import org.simpmc.simppay.service.MilestoneService;
+import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.util.MessageUtil;
 
 public class ReloadPlayerMilestoneCommand {
@@ -19,14 +22,13 @@ public class ReloadPlayerMilestoneCommand {
     }
 
     public static void execute(CommandSender player, CommandArguments args) {
-        SPPlugin plugin = SPPlugin.getInstance();
 
         String playerTarget = (String) args.get("player");
-        SPPlayer spPlayer = plugin.getDatabaseService().getPlayerService().findByName(playerTarget);
+        SPPlayer spPlayer = SPPlugin.getService(DatabaseService.class).getPlayerService().findByName(playerTarget);
         if (spPlayer == null) {
             MessageUtil.sendMessage(player, "Player not found");
             return;
         }
-        plugin.getMilestoneService().loadPlayerMilestone(spPlayer.getUuid());
+        SPPlugin.getService(MilestoneService.class).loadPlayerMilestone(spPlayer.getUuid());
     }
 }

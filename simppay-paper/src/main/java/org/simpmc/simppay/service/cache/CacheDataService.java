@@ -3,6 +3,8 @@ package org.simpmc.simppay.service.cache;
 import lombok.Getter;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.database.entities.SPPlayer;
+import org.simpmc.simppay.service.DatabaseService;
+import org.simpmc.simppay.service.IService;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 // TODO: Rewrite this class to use a more efficient data structure, use generics stuff thingy, or libraries
 // TODO: Fix this colossal class, it is a mess !!!!!!
 @Getter
-public class CacheDataService {
+public class CacheDataService implements IService {
 
     private static CacheDataService instance;
     private final ConcurrentLinkedQueue<UUID> playerQueue = new ConcurrentLinkedQueue<>();
@@ -29,7 +31,8 @@ public class CacheDataService {
     private final AtomicLong cardTotalValue = new AtomicLong(0);
     private final AtomicLong bankTotalValue = new AtomicLong(0);
 
-    private CacheDataService() {
+    @Override
+    public void setup() {
         SPPlugin.getInstance().getFoliaLib().getScheduler().runTimerAsync(task -> processQueue(), 1, 20L);
         // Player cache are updated once when player first join
         // and then on PaymentSuccessEvent given there is a player
@@ -38,11 +41,9 @@ public class CacheDataService {
         // and then on PaymentSuccessEvent
     }
 
-    public static synchronized CacheDataService getInstance() {
-        if (instance == null) {
-            instance = new CacheDataService();
-        }
-        return instance;
+    @Override
+    public void shutdown() {
+
     }
 
     public void clearAllCache() {
@@ -77,15 +78,15 @@ public class CacheDataService {
         while (!playerQueue.isEmpty()) {
             SPPlugin plugin = SPPlugin.getInstance();
             UUID playerUUID = playerQueue.poll();
-
-            SPPlayer player = plugin.getDatabaseService().getPlayerService().findByUuid(playerUUID);
+            
+            SPPlayer player = SPPlugin.getService(DatabaseService.class).getPlayerService().findByUuid(playerUUID);
             if (player == null) {
                 // Player not found, re-add to queue
                 playerQueue.add(playerUUID);
                 continue;
             }
 
-            double totalValue = plugin.getDatabaseService().getPaymentLogService().getPlayerTotalAmount(player);
+            double totalValue = SPPlugin.getService(DatabaseService.class).getPaymentLogService().getPlayerTotalAmount(player);
             if (totalValue != 0) {
                 playerTotalValue.putIfAbsent(playerUUID, new AtomicLong((long) totalValue));
                 updatePlayerTimedValues(playerUUID);
@@ -94,49 +95,48 @@ public class CacheDataService {
     }
 
     public void updateServerDataCache() {
-        SPPlugin plugin = SPPlugin.getInstance();
-        serverTotalValue.set(plugin.getDatabaseService().getPaymentLogService().getEntireServerAmount());
-        serverDailyTotalValue.set(plugin.getDatabaseService().getPaymentLogService().getEntireServerDailyAmount());
-        serverWeeklyTotalValue.set(plugin.getDatabaseService().getPaymentLogService().getEntireServerWeeklyAmount());
-        serverMonthlyTotalValue.set(plugin.getDatabaseService().getPaymentLogService().getEntireServerMonthlyAmount());
-        serverYearlyTotalValue.set(plugin.getDatabaseService().getPaymentLogService().getEntireServerYearlyAmount());
-        cardTotalValue.set(plugin.getDatabaseService().getPaymentLogService().getEntireServerCardAmount());
-        bankTotalValue.set(plugin.getDatabaseService().getPaymentLogService().getEntireServerBankAmount());
+        serverTotalValue.set(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getEntireServerAmount());
+        serverDailyTotalValue.set(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getEntireServerDailyAmount());
+        serverWeeklyTotalValue.set(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getEntireServerWeeklyAmount());
+        serverMonthlyTotalValue.set(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getEntireServerMonthlyAmount());
+        serverYearlyTotalValue.set(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getEntireServerYearlyAmount());
+        cardTotalValue.set(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getEntireServerCardAmount());
+        bankTotalValue.set(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getEntireServerBankAmount());
     }
 
     private void updatePlayerTimedValues(UUID playerUUID) {
-        SPPlugin plugin = SPPlugin.getInstance();
-        SPPlayer player = plugin.getDatabaseService().getPlayerService().findByUuid(playerUUID);
+        SPPlayer player = SPPlugin.getService(DatabaseService.class).getPlayerService().findByUuid(playerUUID);
 
         playerDailyTotalValue.compute(playerUUID, (k, v) -> {
             if (v == null) {
-                return new AtomicLong(plugin.getDatabaseService().getPaymentLogService().getPlayerDailyAmount(player));
+                return new AtomicLong(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getPlayerDailyAmount(player));
             }
-            v.set(plugin.getDatabaseService().getPaymentLogService().getPlayerDailyAmount(player));
+            v.set(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getPlayerDailyAmount(player));
             return v;
         });
 
         playerWeeklyTotalValue.compute(playerUUID, (k, v) -> {
             if (v == null) {
-                return new AtomicLong(plugin.getDatabaseService().getPaymentLogService().getPlayerWeeklyAmount(player));
+                return new AtomicLong(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getPlayerWeeklyAmount(player));
             }
-            v.set(plugin.getDatabaseService().getPaymentLogService().getPlayerWeeklyAmount(player));
+            v.set(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getPlayerWeeklyAmount(player));
             return v;
         });
         playerMonthlyTotalValue.compute(playerUUID, (k, v) -> {
             if (v == null) {
-                return new AtomicLong(plugin.getDatabaseService().getPaymentLogService().getPlayerMonthlyAmount(player));
+                return new AtomicLong(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getPlayerMonthlyAmount(player));
             }
-            v.set(plugin.getDatabaseService().getPaymentLogService().getPlayerMonthlyAmount(player));
+            v.set(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getPlayerMonthlyAmount(player));
             return v;
         });
         playerYearlyTotalValue.compute(playerUUID, (k, v) -> {
             if (v == null) {
-                return new AtomicLong(plugin.getDatabaseService().getPaymentLogService().getPlayerYearlyAmount(player));
+                return new AtomicLong(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getPlayerYearlyAmount(player));
             }
-            v.set(plugin.getDatabaseService().getPaymentLogService().getPlayerYearlyAmount(player));
+            v.set(SPPlugin.getService(DatabaseService.class).getPaymentLogService().getPlayerYearlyAmount(player));
             return v;
         });
 
     }
+
 }

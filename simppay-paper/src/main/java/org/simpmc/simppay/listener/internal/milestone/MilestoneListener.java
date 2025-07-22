@@ -16,6 +16,7 @@ import org.simpmc.simppay.database.entities.SPPlayer;
 import org.simpmc.simppay.event.PaymentSuccessEvent;
 import org.simpmc.simppay.event.PlayerMilestoneEvent;
 import org.simpmc.simppay.event.ServerMilestoneEvent;
+import org.simpmc.simppay.service.DatabaseService;
 import org.simpmc.simppay.service.MilestoneService;
 import org.simpmc.simppay.service.database.PaymentLogService;
 import org.simpmc.simppay.service.database.PlayerService;
@@ -33,7 +34,7 @@ public class MilestoneListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         SPPlugin.getInstance().getFoliaLib().getScheduler().runLater(() -> {
             UUID uuid = event.getPlayer().getUniqueId();
-            MilestoneService service = SPPlugin.getInstance().getMilestoneService();
+            MilestoneService service = SPPlugin.getService(MilestoneService.class);
             MessageUtil.debug("Loading player milestone for " + event.getPlayer().getName());
 
             List<BossBar> serverBossbars = service.serverBossbars.stream().map(ObjectObjectMutablePair::right).toList();
@@ -59,7 +60,7 @@ public class MilestoneListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        MilestoneService service = SPPlugin.getInstance().getMilestoneService();
+        MilestoneService service = SPPlugin.getService(MilestoneService.class);
         service.playerBossBars.remove(event.getPlayer().getUniqueId());
         service.playerCurrentMilestones.remove(event.getPlayer().getUniqueId());
         MessageUtil.debug("Cleared cache bossbar and currentmilestones " + event.getPlayer().getName());
@@ -67,9 +68,9 @@ public class MilestoneListener implements Listener {
 
     @EventHandler
     public void givePersonalMilestoneReward(PaymentSuccessEvent event) {
-        MilestoneService milestoneService = SPPlugin.getInstance().getMilestoneService();
-        PlayerService playerService = SPPlugin.getInstance().getDatabaseService().getPlayerService();
-        PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
+        MilestoneService milestoneService = SPPlugin.getService(MilestoneService.class);
+        PlayerService playerService = SPPlugin.getService(DatabaseService.class).getPlayerService();
+        PaymentLogService paymentLogService = SPPlugin.getService(DatabaseService.class).getPaymentLogService();
         SPPlayer player = playerService.findByUuid(event.getPlayerUUID());
         double charged = event.getAmount();
 
@@ -116,9 +117,9 @@ public class MilestoneListener implements Listener {
 
     @EventHandler
     public void updatePersonalMilestoneBossbar(PaymentSuccessEvent event) {
-        MilestoneService service = SPPlugin.getInstance().getMilestoneService();
-        PlayerService playerService = SPPlugin.getInstance().getDatabaseService().getPlayerService();
-        PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
+        MilestoneService service = SPPlugin.getService(MilestoneService.class);
+        PlayerService playerService = SPPlugin.getService(DatabaseService.class).getPlayerService();
+        PaymentLogService paymentLogService = SPPlugin.getService(DatabaseService.class).getPaymentLogService();
         SPPlayer player = playerService.findByUuid(event.getPlayerUUID());
         Iterator<ObjectObjectMutablePair<MilestoneConfig, BossBar>> iter = service.playerBossBars.get(event.getPlayerUUID()).iterator();
         while (iter.hasNext()) {
@@ -158,8 +159,8 @@ public class MilestoneListener implements Listener {
 
     @EventHandler
     public void giveServerMilestoneReward(PaymentSuccessEvent event) {
-        MilestoneService milestoneService = SPPlugin.getInstance().getMilestoneService();
-        PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
+        MilestoneService milestoneService = SPPlugin.getService(MilestoneService.class);
+        PaymentLogService paymentLogService = SPPlugin.getService(DatabaseService.class).getPaymentLogService();
         double charged = event.getAmount();
         List<MilestoneConfig> list = milestoneService.serverCurrentMilestones;
         if (list == null) {
@@ -223,8 +224,8 @@ public class MilestoneListener implements Listener {
 
     @EventHandler
     public void updateServerMilestoneBossbar(PaymentSuccessEvent event) {
-        MilestoneService service = SPPlugin.getInstance().getMilestoneService();
-        PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
+        MilestoneService service = SPPlugin.getService(MilestoneService.class);
+        PaymentLogService paymentLogService = SPPlugin.getService(DatabaseService.class).getPaymentLogService();
         Iterator<ObjectObjectMutablePair<MilestoneConfig, BossBar>> iter = service.serverBossbars.iterator();
         while (iter.hasNext()) {
             ObjectObjectMutablePair<MilestoneConfig, BossBar> pair = iter.next();

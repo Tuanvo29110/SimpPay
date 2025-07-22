@@ -6,22 +6,34 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class OrderIDService {
+public class OrderIDService implements IService {
 
     // The filename within the plugin data folder
-    private static final String FILE_NAME = "last_id.txt";
+    private final String FILE_NAME = "last_id.txt";
 
     // Thread-safe counter
-    private static final AtomicLong counter = new AtomicLong(0);
+    private final AtomicLong counter = new AtomicLong(0);
 
     // File where the counter is persisted
-    private static File dataFile;
+    private File dataFile;
 
     /**
      * Call this once from your plugin's onEnable().
      * It will create the data folder/file if needed and load the last saved ID.
+    /**
+     * Gets the next unique ID (thread-safe) and immediately persists it.
+     *
+     * @return the next ID
      */
-    public static void init(SPPlugin plugin) {
+    public long getNextId() {
+        long next = counter.incrementAndGet();
+        saveCurrent();
+        return next;
+    }
+
+    @Override
+    public void setup() {
+        SPPlugin plugin = SPPlugin.getInstance();
         // Ensure data folder exists
         if (!plugin.getDataFolder().exists()) {
             plugin.getDataFolder().mkdirs();
@@ -47,19 +59,7 @@ public class OrderIDService {
         }
     }
 
-    /**
-     * Gets the next unique ID (thread-safe) and immediately persists it.
-     *
-     * @return the next ID
-     */
-    public static long getNextId() {
-        long next = counter.incrementAndGet();
-        saveCurrent();
-        return next;
-    }
-
-    // Atomically writes the current counter value to disk
-    public static void saveCurrent() {
+    public void saveCurrent() {
         if (dataFile == null) {
             return;
         }
@@ -69,5 +69,9 @@ public class OrderIDService {
             // Best effort: log to console
             System.err.println("Failed to save ID to " + FILE_NAME + ": " + e.getMessage());
         }
+    }
+    @Override
+    public void shutdown() {
+        saveCurrent();
     }
 }

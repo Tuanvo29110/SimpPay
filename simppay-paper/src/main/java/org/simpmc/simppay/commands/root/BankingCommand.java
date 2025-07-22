@@ -11,6 +11,7 @@ import org.simpmc.simppay.data.PaymentStatus;
 import org.simpmc.simppay.model.Payment;
 import org.simpmc.simppay.model.detail.BankingDetail;
 import org.simpmc.simppay.model.detail.PaymentDetail;
+import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.util.MessageUtil;
 import org.simpmc.simppay.util.SoundUtil;
 import org.simpmc.simppay.util.qrcode.MapQR;
@@ -33,7 +34,6 @@ public class BankingCommand {
                     // start a new banking session
                     MessageConfig messageConfig = ConfigManager.getInstance().getConfig(MessageConfig.class);
                     BankingConfig bankingConfig = ConfigManager.getInstance().getConfig(BankingConfig.class);
-                    SPPlugin plugin = SPPlugin.getInstance();
                     // check min amount
                     if ((long) args.get("amount") < bankingConfig.minBanking) {
                         MessageUtil.sendMessage(player, messageConfig.invalidAmount.replace("{amount}", String.valueOf(bankingConfig.minBanking)));
@@ -46,10 +46,10 @@ public class BankingCommand {
                         SoundUtil.sendSound(player, messageConfig.soundEffect.get(PaymentStatus.FAILED).toSound());
                         return;
                     }
-                    if (plugin.getPaymentService().getPlayerBankingSessionPayment().containsKey(player.getUniqueId())) {
+                    if (SPPlugin.getService(PaymentService.class).getPlayerBankingSessionPayment().containsKey(player.getUniqueId())) {
                         // resend qr map if player is in banking session
                         MessageUtil.sendMessage(player, messageConfig.existBankingSession);
-                        byte[] qrMap = plugin.getPaymentService().getPlayerBankQRCode().get(player.getUniqueId());
+                        byte[] qrMap = SPPlugin.getService(PaymentService.class).getPlayerBankQRCode().get(player.getUniqueId());
                         MapQR.sendPacketQRMap(qrMap, player);
                         return;
                     }
@@ -61,7 +61,7 @@ public class BankingCommand {
 
                     Payment payment = new Payment(uuid, player.getUniqueId(), detail);
 
-                    PaymentStatus status = SPPlugin.getInstance().getPaymentService().sendBank(payment);
+                    PaymentStatus status = SPPlugin.getService(PaymentService.class).sendBank(payment);
                     if (status == PaymentStatus.EXIST) {
                         MessageUtil.sendMessage(player, messageConfig.unknownErrror);
                         SoundUtil.sendSound(player, messageConfig.soundEffect.get(PaymentStatus.PENDING).toSound());
@@ -72,7 +72,7 @@ public class BankingCommand {
                         SoundUtil.sendSound(player, messageConfig.soundEffect.get(PaymentStatus.FAILED).toSound());
                         return;
                     }
-                    plugin.getPaymentService().getPlayerBankingSessionPayment().put(player.getUniqueId(), uuid);
+                    SPPlugin.getService(PaymentService.class).getPlayerBankingSessionPayment().put(player.getUniqueId(), uuid);
 
                 })
                 .register();

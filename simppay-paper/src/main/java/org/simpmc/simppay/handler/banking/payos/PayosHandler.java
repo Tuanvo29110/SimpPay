@@ -3,6 +3,7 @@ package org.simpmc.simppay.handler.banking.payos;
 import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.config.ConfigManager;
 import org.simpmc.simppay.config.types.BankingConfig;
 import org.simpmc.simppay.config.types.banking.PayosConfig;
@@ -18,6 +19,7 @@ import org.simpmc.simppay.model.Payment;
 import org.simpmc.simppay.model.PaymentResult;
 import org.simpmc.simppay.model.detail.BankingDetail;
 import org.simpmc.simppay.model.detail.PaymentDetail;
+import org.simpmc.simppay.service.DatabaseService;
 import org.simpmc.simppay.service.OrderIDService;
 import org.simpmc.simppay.util.GsonUtil;
 import org.simpmc.simppay.util.HashUtils;
@@ -174,7 +176,7 @@ public class PayosHandler implements PaymentHandler {
             }
             String base = "https://api-merchant.payos.vn/v2/payment-requests";
             try {
-                String orderid = String.valueOf(OrderIDService.getNextId());
+                String orderid = String.valueOf(SPPlugin.getService(OrderIDService.class).getNextId());
                 String valuetoBeHashed = MessageFormat.format("amount={0,number,#}&cancelUrl={1}&description={2}&orderCode={3}&returnUrl={4}",
                         bank.getAmount(),
                         RETURN_CANCEL_URl,

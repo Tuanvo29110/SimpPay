@@ -12,6 +12,7 @@ import org.simpmc.simppay.data.card.CardType;
 import org.simpmc.simppay.model.Payment;
 import org.simpmc.simppay.model.detail.CardDetail;
 import org.simpmc.simppay.model.detail.PaymentDetail;
+import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.util.MessageUtil;
 import org.simpmc.simppay.util.SoundUtil;
 
@@ -55,13 +56,13 @@ public class NaptheNhanhCommand {
                             .build();
                     Payment payment = new Payment(uuid, player.getUniqueId(), detail);
 
-                    if (SPPlugin.getInstance().getPaymentService().getPayments().containsKey(payment.getPaymentID())) {
+                    if (SPPlugin.getService(PaymentService.class).getPayments().containsKey(payment.getPaymentID())) {
                         MessageUtil.sendMessage(player, messageConfig.pendingCard);
                         SoundUtil.sendSound(player, messageConfig.soundEffect.get(PaymentStatus.PENDING).toSound());
                         return;
                     }
 
-                    PaymentStatus status = SPPlugin.getInstance().getPaymentService().sendCard(payment);
+                    PaymentStatus status = SPPlugin.getService(PaymentService.class).sendCard(payment);
 
                     if (status == PaymentStatus.FAILED) {
                         MessageUtil.sendMessage(player, messageConfig.failedCard);

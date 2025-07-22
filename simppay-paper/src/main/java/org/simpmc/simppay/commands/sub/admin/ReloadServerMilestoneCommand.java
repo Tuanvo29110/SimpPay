@@ -4,6 +4,8 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.executors.CommandArguments;
 import org.bukkit.command.CommandSender;
 import org.simpmc.simppay.SPPlugin;
+import org.simpmc.simppay.service.DatabaseService;
+import org.simpmc.simppay.service.MilestoneService;
 
 public class ReloadServerMilestoneCommand {
     public static CommandAPICommand commandCreate() {
@@ -13,8 +15,6 @@ public class ReloadServerMilestoneCommand {
     }
 
     public static void execute(CommandSender player, CommandArguments args) {
-        SPPlugin plugin = SPPlugin.getInstance();
-
-        plugin.getMilestoneService().loadServerMilestone();
+        SPPlugin.getService(MilestoneService.class).loadServerMilestone();
     }
 }

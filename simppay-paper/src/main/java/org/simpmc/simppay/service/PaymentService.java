@@ -16,17 +16,22 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
-public class PaymentService {
+public class PaymentService implements IService {
 
 
     private final ConcurrentHashMap<UUID, Payment> pollingPayments = new ConcurrentHashMap<>(); // payment id is key
-    private final HandlerRegistry handlerRegistry;
+    private HandlerRegistry handlerRegistry;
     private final ConcurrentHashMap<UUID, Payment> payments = new ConcurrentHashMap<>(); // payment id is key
     private final ConcurrentHashMap<UUID, UUID> playerBankingSessionPayment = new ConcurrentHashMap<>(); // Store player uuid and payment id
     private final ConcurrentHashMap<UUID, byte[]> playerBankQRCode = new ConcurrentHashMap<>(); // Store player uuid and VietQR map bytew
-
-    public PaymentService() {
+    @Override
+    public void setup() {
         handlerRegistry = new HandlerRegistry();
+    }
+
+    @Override
+    public void shutdown() {
+
     }
 
     // use for storing data and pulling data out of the db later on
@@ -94,5 +99,6 @@ public class PaymentService {
         playerBankingSessionPayment.remove(playerUUID);
         playerBankQRCode.remove(playerUUID);
     }
+
 
 }

@@ -4,6 +4,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.simpmc.simppay.SPPlugin;
+import org.simpmc.simppay.service.DatabaseService;
 import org.simpmc.simppay.service.cache.CacheDataService;
 
 import java.util.UUID;
@@ -40,7 +41,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, @NotNull String identifier) {
 
-        CacheDataService cacheDataService = plugin.getCacheDataService();
+        CacheDataService cacheDataService = SPPlugin.getService(CacheDataService.class);
 
         // get server_total
         // %simppay_server_total%
