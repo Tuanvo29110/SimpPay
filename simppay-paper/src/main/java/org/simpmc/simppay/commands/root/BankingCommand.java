@@ -1,6 +1,7 @@
 package org.simpmc.simppay.commands.root;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.LongArgument;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.commands.sub.banking.CancelCommand;
@@ -22,7 +23,7 @@ import java.util.UUID;
 public class BankingCommand {
     public BankingCommand() {
         new CommandAPICommand("banking")
-                .withPermission("simppay.banking")
+                .withPermission(CommandPermission.NONE)
                 .withAliases("bank")
                 .withSubcommands(
                         CancelCommand.commandCreate()

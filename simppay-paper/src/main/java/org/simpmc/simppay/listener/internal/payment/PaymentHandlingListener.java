@@ -13,7 +13,6 @@ import org.simpmc.simppay.data.PaymentType;
 import org.simpmc.simppay.event.PaymentFailedEvent;
 import org.simpmc.simppay.event.PaymentQueueSuccessEvent;
 import org.simpmc.simppay.event.PaymentSuccessEvent;
-import org.simpmc.simppay.handler.banking.redis.RedisHandler;
 import org.simpmc.simppay.model.PaymentResult;
 import org.simpmc.simppay.model.detail.CardDetail;
 import org.simpmc.simppay.service.PaymentService;
@@ -33,11 +32,6 @@ public class PaymentHandlingListener implements Listener {
             addTaskChecking(event);
         }
         if (event.getPaymentType() == PaymentType.BANKING) {
-            if (SPPlugin.getService(PaymentService.class).getHandlerRegistry().getCardHandler() instanceof RedisHandler) {
-                return; // Skip timer task for redis as it is event based later on
-                // Whatever logic is handling should call PaymentSuccessEvent or PaymentFailedEvent on their own
-                // TODO: added later on in the future
-            }
             addTaskChecking(event);
         }
     }

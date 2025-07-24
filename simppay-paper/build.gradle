@@ -20,6 +20,7 @@ dependencies {
         exclude group: 'me.clip.placeholderapi', module: 'libs'
     }
     compileOnly('org.geysermc.floodgate:api:2.2.4-SNAPSHOT')
+    compileOnly("com.squareup.okhttp3:okhttp:5.0.0-alpha.12")
     implementation("de.exlll:configlib-paper:4.6.0") {
         exclude group: 'org.yaml', module: 'snakeyaml-engine'
     }
@@ -27,7 +28,7 @@ dependencies {
     implementation("com.tcoded:FoliaLib:0.5.1")
     implementation('me.devnatan:inventory-framework-platform-bukkit:3.4.1')
     implementation('me.devnatan:inventory-framework-platform-paper:3.4.1')
-    implementation("com.github.retrooper:packetevents-spigot:2.9.0")
+    implementation("com.github.retrooper:packetevents-spigot:2.9.3")
     implementation('net.wesjd:anvilgui:1.10.6-SNAPSHOT')
 }
 

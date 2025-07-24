@@ -23,7 +23,7 @@ public class CancelCommand {
             MessageUtil.sendMessage(player, messageConfig.noExistBankingSession);
         } else {
             MessageUtil.sendMessage(player, messageConfig.cancelBanking);
-            SPPlugin.getService(PaymentService.class).clearPlayerBankCache(player.getUniqueId());
+            SPPlugin.getService(PaymentService.class).cancelBankPayment(player.getUniqueId());
             player.updateInventory(); // remove qr map
         }
     }

@@ -1,16 +1,15 @@
 package org.simpmc.simppay.handler.data;
 
+import org.simpmc.simppay.handler.BankHandler;
 import org.simpmc.simppay.handler.PaymentHandler;
 import org.simpmc.simppay.handler.banking.payos.PayosHandler;
-import org.simpmc.simppay.handler.banking.redis.RedisHandler;
 
 public enum BankAPI {
-    PAYOS(PayosHandler.class),
-    REDIS(RedisHandler.class);
+    PAYOS(PayosHandler.class);
 
-    public final Class<?> handlerClass;
+    public final Class<? extends BankHandler> handlerClass;
 
-    BankAPI(Class<? extends PaymentHandler> handlerClass) {
+    BankAPI(Class<? extends BankHandler> handlerClass) {
         this.handlerClass = handlerClass;
     }
 }

@@ -11,6 +11,7 @@ import org.simpmc.simppay.data.PaymentStatus;
 import org.simpmc.simppay.data.bank.payos.PayosAdapter;
 import org.simpmc.simppay.event.PaymentBankPromptEvent;
 import org.simpmc.simppay.event.PaymentQueueSuccessEvent;
+import org.simpmc.simppay.handler.BankHandler;
 import org.simpmc.simppay.handler.PaymentHandler;
 import org.simpmc.simppay.handler.banking.data.BankingData;
 import org.simpmc.simppay.handler.banking.payos.data.PayosPayment;
@@ -36,7 +37,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
-public class PayosHandler implements PaymentHandler {
+public class PayosHandler extends BankHandler {
     String RETURN_CANCEL_URl = "https://payos.vn";
 
     @Override

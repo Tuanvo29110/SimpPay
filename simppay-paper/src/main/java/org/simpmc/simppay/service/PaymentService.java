@@ -69,7 +69,7 @@ public class PaymentService implements IService {
         playerBankingSessionPayment.remove(playerUUID);
     }
 
-    public void removePlayerQRSession(UUID playerUUID) {
+    public void cancelBankPayment(UUID playerUUID) {
         UUID paymentID = playerBankingSessionPayment.get(playerUUID);
         int retryCount = 0;
         boolean cancelled = false;

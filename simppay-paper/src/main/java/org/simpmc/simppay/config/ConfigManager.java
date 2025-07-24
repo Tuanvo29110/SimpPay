@@ -13,6 +13,7 @@ import org.simpmc.simppay.config.serializers.KeySerializer;
 import org.simpmc.simppay.config.serializers.SoundComponentSerializer;
 import org.simpmc.simppay.config.types.*;
 import org.simpmc.simppay.config.types.banking.PayosConfig;
+import org.simpmc.simppay.config.types.card.Gachthe1sConfig;
 import org.simpmc.simppay.config.types.card.ThesieutocConfig;
 import org.simpmc.simppay.config.types.menu.PaymentHistoryMenuConfig;
 import org.simpmc.simppay.config.types.menu.ServerPaymentHistoryMenuConfig;
@@ -52,7 +53,8 @@ public class ConfigManager {
             ServerPaymentHistoryMenuConfig.class,
             MocNapConfig.class,
             MocNapServerConfig.class,
-            NaplandauConfig.class
+            NaplandauConfig.class,
+            Gachthe1sConfig.class
     );
     // holds file paths for each config type
     private final Map<Class<?>, Path> configPaths = new HashMap<>();

@@ -1,6 +1,7 @@
 package org.simpmc.simppay.commands.root;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.StringArgument;
 import org.simpmc.simppay.SPPlugin;
@@ -24,7 +25,7 @@ public class NaptheNhanhCommand {
 
     public NaptheNhanhCommand() {
         new CommandAPICommand("napthenhanh")
-                .withPermission("simppay.napthenhanh")
+                .withPermission(CommandPermission.NONE)
                 .withArguments(
                         new StringArgument("serial"),
                         new StringArgument("pin"),

@@ -12,17 +12,9 @@ libraries:
   - com.j256.ormlite:ormlite-jdbc:6.1
   - commons-codec:commons-codec:1.18.0
 #  - redis.clients:jedis:4.3.1
+  - com.squareup.okhttp3:okhttp:5.0.0-alpha.12
 depend:
   - PlaceholderAPI
   - PlayerPoints
 softdepend:
   - floodgate
-permission:
-  simppay.napthe:
-    default: true
-    description: Allow player to use /simppay command
-  simppay.banking:
-    default: op
-  simppay.napthenhanh:
-    default: true
-    description: Allow player to use /napthenhanh command

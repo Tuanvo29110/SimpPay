@@ -10,6 +10,7 @@ import org.simpmc.simppay.data.card.CardType;
 import org.simpmc.simppay.data.card.thesieutoc.TSTCardAdapter;
 import org.simpmc.simppay.event.PaymentQueueSuccessEvent;
 import org.simpmc.simppay.handler.CardAdapter;
+import org.simpmc.simppay.handler.CardHandler;
 import org.simpmc.simppay.handler.PaymentHandler;
 import org.simpmc.simppay.model.Payment;
 import org.simpmc.simppay.model.PaymentResult;
@@ -24,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @NoArgsConstructor
-public class TSTHandler implements PaymentHandler, CardAdapter {
+public class TSTHandler extends CardHandler {
 
     // TODO: Improve to GSON ? All logic copied from thesieutoc39
 
