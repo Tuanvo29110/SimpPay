@@ -109,22 +109,21 @@ public class GT1SHandler extends CardHandler {
             return new PaymentResult(
                     PaymentStatus.SUCCESS,
                     (int) detail.getAmount(),
-                    jsonResponse.get("msg").getAsString()
+                    jsonResponse.get("message").getAsString()
             );
         }
         if (jsonResponse.get("message").getAsString() .equals("INVALID_CARD")) {
             return new PaymentResult(
                     PaymentStatus.FAILED,
                     (int) detail.getAmount(),
-                    jsonResponse.get("msg").getAsString()
+                    jsonResponse.get("message").getAsString()
             );
-
         }
         if (jsonResponse.get("message").getAsString().equals("PENDING")) {
             return new PaymentResult(
                     PaymentStatus.PENDING,
                     (int) detail.getAmount(),
-                    jsonResponse.get("msg").getAsString()
+                    jsonResponse.get("message").getAsString()
             );
         }
         return null;
