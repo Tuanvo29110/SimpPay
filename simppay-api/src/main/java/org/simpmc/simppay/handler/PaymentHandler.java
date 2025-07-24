@@ -9,9 +9,9 @@ import java.util.concurrent.ExecutionException;
 
 public interface PaymentHandler {
 
-    PaymentStatus processPayment(Payment payment) throws ExecutionException, InterruptedException; // should only return pending or exist
+    PaymentStatus processPayment(Payment payment); // should only return pending or exist
 
-    PaymentResult getTransactionResult(PaymentDetail detail) throws ExecutionException, InterruptedException;
+    PaymentResult getTransactionResult(PaymentDetail detail);
 
     PaymentStatus cancel(Payment payment);
 }
