@@ -10,7 +10,7 @@ import java.util.UUID;
 public class SoundUtil {
     public static void sendSound(Player player, Sound sound) {
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAtEntity(player, task -> {
-            player.playSound(sound, Sound.Emitter.self());
+            SPPlugin.getInstance().adventure().player(player).playSound(sound, Sound.Emitter.self());
         });
     }
 
@@ -20,7 +20,7 @@ public class SoundUtil {
             return;
         }
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAtEntity(player, task -> {
-            player.playSound(sound, Sound.Emitter.self());
+            SPPlugin.getInstance().adventure().player(player).playSound(sound, Sound.Emitter.self());
         });
     }
 }

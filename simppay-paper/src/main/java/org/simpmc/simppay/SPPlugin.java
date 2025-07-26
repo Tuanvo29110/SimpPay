@@ -4,7 +4,9 @@ import com.github.retrooper.packetevents.PacketEvents;
 import com.tcoded.folialib.FoliaLib;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import lombok.Getter;
+import lombok.NonNull;
 import me.devnatan.inventoryframework.ViewFrame;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -48,6 +50,14 @@ public final class SPPlugin extends JavaPlugin {
     private ViewFrame viewFrame;
     @Getter
     private boolean floodgateEnabled;
+    private BukkitAudiences adventure;
+
+    public @NonNull BukkitAudiences adventure() {
+        if (this.adventure == null) {
+            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
+        }
+        return this.adventure;
+    }
 
     @Override
     public void onLoad() {
@@ -63,6 +73,7 @@ public final class SPPlugin extends JavaPlugin {
         // Reset config
         PacketEvents.getAPI().init();
         registerMetrics();
+        this.adventure = BukkitAudiences.create(this);
         if (getServer().getPluginManager().getPlugin("floodgate") != null) {
             floodgateEnabled = true;
             getLogger().info("Enabled floodgate support");
@@ -108,6 +119,10 @@ public final class SPPlugin extends JavaPlugin {
                 getLogger().severe("Failed to shutdown service: " + service.getClass().getSimpleName());
                 e.printStackTrace();
             }
+        }
+        if (this.adventure != null) {
+            this.adventure.close();
+            this.adventure = null;
         }
         commandHandler.onDisable();
         instance = null;
@@ -176,4 +191,5 @@ public final class SPPlugin extends JavaPlugin {
         metrics.addCustomChart(new Metrics.SimplePie("had_dotman", () -> String.valueOf(dotManFolder.exists())));
         metrics.addCustomChart(new Metrics.SimplePie("had_hmtopup", () -> String.valueOf(hmtopupFolder.exists())));
     }
+
 }

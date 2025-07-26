@@ -65,7 +65,7 @@ public class MessageUtil {
 
             Component s = mm.deserialize(message);
             Component prefix = mm.deserialize(messageConfig.prefix);
-            player.sendMessage(prefix.append(s));
+            SPPlugin.getInstance().adventure().player(player).sendMessage(prefix.append(s));
         });
     }
 
@@ -79,7 +79,6 @@ public class MessageUtil {
 
     public static void info(String message) {
         SPPlugin.getInstance().getLogger().info(message);
-
     }
 
     /**
