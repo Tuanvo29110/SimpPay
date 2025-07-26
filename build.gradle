@@ -60,6 +60,10 @@ subprojects {
             name = "tcoded-releases"
             url = "https://repo.tcoded.com/releases"
         }
+        maven {
+            name = "nightexpress-releases"
+            url = "https://repo.nightexpressdev.com/releases"
+        }
     }
 }
 

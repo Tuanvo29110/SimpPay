@@ -14,6 +14,7 @@ import org.simpmc.simppay.data.PaymentType;
 import org.simpmc.simppay.data.card.CardPrice;
 import org.simpmc.simppay.event.PaymentQueueSuccessEvent;
 import org.simpmc.simppay.event.PaymentSuccessEvent;
+import org.simpmc.simppay.handler.CoinsHandler;
 import org.simpmc.simppay.model.detail.BankingDetail;
 import org.simpmc.simppay.model.detail.CardDetail;
 import org.simpmc.simppay.service.PaymentService;
@@ -95,10 +96,16 @@ public class SuccessHandlingListener implements Listener {
             }
         }
         long finalGivenCoins = givenCoins;
-        plugin.getFoliaLib().getScheduler().runAsync(task -> {
-            // TODO: Might need change to sync because some plugin will not support running async, for example: CoinsEngine
-            SPPlugin.getService(PaymentService.class).getHandlerRegistry().getCoinHandler().give(playerUUID, (int) finalGivenCoins);
-        });
+        CoinsHandler coinsHandler = SPPlugin.getService(PaymentService.class).getHandlerRegistry().getCoinsHandler();
+        if (coinsHandler.isAsync) {
+            plugin.getFoliaLib().getScheduler().runAsync(task -> {
+                coinsHandler.give(playerUUID, (int) finalGivenCoins);
+            });
+        } else {
+            // sync
+            coinsHandler.give(playerUUID, (int) finalGivenCoins);
+        }
+
     }
 
     @EventHandler

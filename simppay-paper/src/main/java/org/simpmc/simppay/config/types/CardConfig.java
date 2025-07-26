@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Configuration
 @Folder("card")
 public class CardConfig {
-    @Comment("Dịch vụ gạch thẻ: THESIEUTOC, GT1SCOM")
+    @Comment("Dịch vụ gạch thẻ: THESIEUTOC, GT1SCOM, CARD2K")
     public CardAPI cardApi = CardAPI.THESIEUTOC;
 
     @Comment("Các nhà mạng đang bật")

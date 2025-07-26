@@ -1,13 +1,15 @@
 package org.simpmc.simppay.handler.coins;
 
 import org.simpmc.simppay.handler.CoinsHandler;
+import org.simpmc.simppay.handler.ICoins;
 
 import java.util.UUID;
 
-public class PlayerPointsHandler implements CoinsHandler {
+public class PlayerPointsHandler extends CoinsHandler {
     private org.black_ixx.playerpoints.PlayerPointsAPI ppApi;
 
     public PlayerPointsHandler() {
+        this.isAsync = true;
         this.ppApi = org.black_ixx.playerpoints.PlayerPoints.getInstance().getAPI();
     }
 
