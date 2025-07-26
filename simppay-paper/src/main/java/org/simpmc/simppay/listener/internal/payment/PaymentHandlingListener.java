@@ -2,12 +2,14 @@ package org.simpmc.simppay.listener.internal.payment;
 
 import io.papermc.paper.util.Tick;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.config.ConfigManager;
 import org.simpmc.simppay.config.types.MainConfig;
+import org.simpmc.simppay.config.types.MessageConfig;
 import org.simpmc.simppay.data.PaymentStatus;
 import org.simpmc.simppay.data.PaymentType;
 import org.simpmc.simppay.event.PaymentFailedEvent;
@@ -17,6 +19,7 @@ import org.simpmc.simppay.model.PaymentResult;
 import org.simpmc.simppay.model.detail.CardDetail;
 import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.util.MessageUtil;
+import org.simpmc.simppay.util.SoundUtil;
 
 import java.time.Duration;
 
@@ -25,6 +28,13 @@ public class PaymentHandlingListener implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
+    @EventHandler
+    public void onFailedPayment(PaymentFailedEvent event) {
+        MessageConfig messageConfig = ConfigManager.getInstance().getConfig(MessageConfig.class);
+        Player player = Bukkit.getPlayer(event.getPlayerUUID());
+        MessageUtil.sendMessage(player, messageConfig.failedCard);
+        SoundUtil.sendSound(player, messageConfig.soundEffect.get(PaymentStatus.FAILED).toSound());
+    }
     @EventHandler
     public void paymentQueue(PaymentQueueSuccessEvent event) {
 

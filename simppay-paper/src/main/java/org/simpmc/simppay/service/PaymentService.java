@@ -47,20 +47,20 @@ public class PaymentService implements IService {
 
     public PaymentStatus sendCard(Payment payment) {
         PaymentStatus status = handlerRegistry.getCardHandler().processPayment(payment);
-        if (status == PaymentStatus.EXIST) {
+        if (status == PaymentStatus.PENDING) {
+            payments.putIfAbsent(payment.getPaymentID(), payment);
             return status;
         }
-        payments.putIfAbsent(payment.getPaymentID(), payment);
         return status;
     }
 
     public PaymentStatus sendBank(Payment payment) {
 
         PaymentStatus status = handlerRegistry.getBankHandler().processPayment(payment);
-        if (status == PaymentStatus.EXIST) {
+        if (status == PaymentStatus.PENDING) {
+            payments.putIfAbsent(payment.getPaymentID(), payment);
             return status;
         }
-        payments.putIfAbsent(payment.getPaymentID(), payment);
         return status;
     }
 
