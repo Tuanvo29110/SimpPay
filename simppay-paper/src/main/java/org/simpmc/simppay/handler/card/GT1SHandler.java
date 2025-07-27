@@ -126,7 +126,11 @@ public class GT1SHandler extends CardHandler {
                     jsonResponse.get("message").getAsString()
             );
         }
-        return null;
+        return new PaymentResult(
+                PaymentStatus.FAILED,
+                (int) detail.getAmount(),
+                ""
+        );
     }
 
     @Override

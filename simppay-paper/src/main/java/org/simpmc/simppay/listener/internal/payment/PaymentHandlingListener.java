@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.config.ConfigManager;
+import org.simpmc.simppay.config.types.BankingConfig;
 import org.simpmc.simppay.config.types.MainConfig;
 import org.simpmc.simppay.config.types.MessageConfig;
 import org.simpmc.simppay.data.PaymentStatus;
@@ -22,6 +23,7 @@ import org.simpmc.simppay.util.MessageUtil;
 import org.simpmc.simppay.util.SoundUtil;
 
 import java.time.Duration;
+import java.util.Date;
 
 public class PaymentHandlingListener implements Listener {
     public PaymentHandlingListener(SPPlugin plugin) {
@@ -49,9 +51,20 @@ public class PaymentHandlingListener implements Listener {
 
     private void addTaskChecking(PaymentQueueSuccessEvent event) {
         SPPlugin plugin = SPPlugin.getInstance();
-        long interval = (ConfigManager.getInstance().getConfig(MainConfig.class)).intervalApiCall;
+        long interval = ConfigManager.getInstance().getConfig(MainConfig.class).intervalApiCall;
+        int bankingTimeout = ConfigManager.getInstance().getConfig(BankingConfig.class).bankingTimeout;
         plugin.getFoliaLib().getScheduler().runTimerAsync(task -> {
-
+            // self expires after 5 minutes
+            if (System.currentTimeMillis() < event.getPayment().getCreatedAt().getTime() + Duration.ofMinutes(bankingTimeout).toMillis()) {
+                // if payment is created less than 5 minutes ago, continue checking
+            } else {
+                // if payment is created more than 5 minutes ago, cancel the task
+                MessageUtil.debug("[Payment-Poller] Payment created more than 5 minutes ago, cancelling task");
+                callEventSync(new PaymentFailedEvent(event.getPayment()));
+                SPPlugin.getService(PaymentService.class).getPollingPayments().remove(event.getPayment().getPaymentID());
+                task.cancel();
+                return;
+            }
             // check card status
             PaymentStatus status = null;
             PaymentResult result = null;

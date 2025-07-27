@@ -30,6 +30,7 @@ public class CacheUpdaterListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         SPPlugin.getService(CacheDataService.class).clearPlayerCache(event.getPlayer().getUniqueId());
         SPPlugin.getService(PaymentService.class).clearPlayerBankCache(event.getPlayer().getUniqueId());
+        SPPlugin.getService(PaymentService.class).cancelBankPayment(event.getPlayer().getUniqueId());
     }
 
     @EventHandler

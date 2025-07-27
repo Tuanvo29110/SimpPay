@@ -8,6 +8,8 @@ version = getRootProject().version
 dependencies {
     // Include the common module
     implementation project(':simppay-api')
+    implementation project(':simppay-converter')
+
     compileOnly 'org.projectlombok:lombok:1.18.38'
     annotationProcessor 'org.projectlombok:lombok:1.18.38'
     compileOnly 'com.h2database:h2:2.3.232'

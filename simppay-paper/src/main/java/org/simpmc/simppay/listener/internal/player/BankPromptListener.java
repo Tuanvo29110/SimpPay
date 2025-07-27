@@ -25,7 +25,9 @@ public class BankPromptListener implements Listener {
 
         MessageConfig config = ConfigManager.getInstance().getConfig(MessageConfig.class);
         BankingData bankingData = event.getBankingData();
-        MessageUtil.sendMessage(event.getPlayerUUID(), config.promptPaymentLink.replace("<link>", bankingData.getUrl()));
+        if (bankingData.getUrl() != null) {
+            MessageUtil.sendMessage(event.getPlayerUUID(), config.promptPaymentLink.replace("<link>", bankingData.getUrl()));
+        }
 
         // Sending packet map to player
 

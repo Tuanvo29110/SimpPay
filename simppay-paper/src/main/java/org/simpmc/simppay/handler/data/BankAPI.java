@@ -12,4 +12,15 @@ public enum BankAPI {
     BankAPI(Class<? extends BankHandler> handlerClass) {
         this.handlerClass = handlerClass;
     }
+
+    public static String getValues() {
+        StringBuilder values = new StringBuilder();
+        for (BankAPI api : BankAPI.values()) {
+            if (!values.isEmpty()) {
+                values.append(", ");
+            }
+            values.append(api.name());
+        }
+        return values.toString();
+    }
 }
