@@ -1,7 +1,6 @@
 package org.simpmc.simppay.handler.data;
 
 import org.simpmc.simppay.handler.BankHandler;
-import org.simpmc.simppay.handler.PaymentHandler;
 import org.simpmc.simppay.handler.banking.payos.PayosHandler;
 
 public enum BankAPI {

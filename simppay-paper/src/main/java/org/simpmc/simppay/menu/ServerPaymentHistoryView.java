@@ -16,7 +16,6 @@ import org.simpmc.simppay.config.types.menu.ServerPaymentHistoryMenuConfig;
 import org.simpmc.simppay.data.PaymentType;
 import org.simpmc.simppay.database.dto.PaymentRecord;
 import org.simpmc.simppay.service.DatabaseService;
-import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.util.CalendarUtil;
 import org.simpmc.simppay.util.MessageUtil;
 

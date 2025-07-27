@@ -1,7 +1,6 @@
 package org.simpmc.simppay.handler.coins;
 
 import org.simpmc.simppay.handler.CoinsHandler;
-import org.simpmc.simppay.handler.ICoins;
 
 import java.util.UUID;
 

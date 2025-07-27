@@ -20,7 +20,7 @@ public class OrderIDService implements IService {
     /**
      * Call this once from your plugin's onEnable().
      * It will create the data folder/file if needed and load the last saved ID.
-    /**
+     * /**
      * Gets the next unique ID (thread-safe) and immediately persists it.
      *
      * @return the next ID
@@ -70,6 +70,7 @@ public class OrderIDService implements IService {
             System.err.println("Failed to save ID to " + FILE_NAME + ": " + e.getMessage());
         }
     }
+
     @Override
     public void shutdown() {
         saveCurrent();

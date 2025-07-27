@@ -78,7 +78,7 @@ public class CacheDataService implements IService {
         while (!playerQueue.isEmpty()) {
             SPPlugin plugin = SPPlugin.getInstance();
             UUID playerUUID = playerQueue.poll();
-            
+
             SPPlayer player = SPPlugin.getService(DatabaseService.class).getPlayerService().findByUuid(playerUUID);
             if (player == null) {
                 // Player not found, re-add to queue

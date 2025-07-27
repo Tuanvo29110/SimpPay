@@ -8,7 +8,6 @@ import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.database.entities.SPPlayer;
 import org.simpmc.simppay.service.DatabaseService;
 import org.simpmc.simppay.service.MilestoneService;
-import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.util.MessageUtil;
 
 public class ReloadPlayerMilestoneCommand {

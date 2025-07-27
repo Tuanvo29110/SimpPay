@@ -14,7 +14,7 @@ public class CacheUpdaterListener implements Listener {
     public CacheUpdaterListener(SPPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         plugin.getFoliaLib().getScheduler().runLaterAsync(() -> {
-            SPPlugin.getService(CacheDataService.class).updateServerDataCache();
+                    SPPlugin.getService(CacheDataService.class).updateServerDataCache();
                 }, 1
         );
     }

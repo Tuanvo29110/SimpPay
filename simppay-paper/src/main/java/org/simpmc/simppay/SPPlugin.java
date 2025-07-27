@@ -38,19 +38,29 @@ public final class SPPlugin extends JavaPlugin {
 
     @Getter
     private static SPPlugin instance;
+    private final List<IService> services = Collections.synchronizedList(new ArrayList<>());
     @Getter
     private ConfigManager configManager;
     @Getter
     private FoliaLib foliaLib;
     @Getter
     private CommandHandler commandHandler;
-    private final List<IService> services = Collections.synchronizedList(new ArrayList<>());
     private boolean dev = false;
     @Getter
     private ViewFrame viewFrame;
     @Getter
     private boolean floodgateEnabled;
     private BukkitAudiences adventure;
+
+    public static @NotNull <T extends IService> T getService(Class<T> clazz) {
+        for (var service : instance.getServices())
+            if (clazz.isAssignableFrom(service.getClass())) {
+                return clazz.cast(service);
+            }
+
+        instance.getLogger().severe("Service " + clazz.getName() + " not instantiated. Did you forget to create it?");
+        throw new RuntimeException("Service " + clazz.getName() + " not instantiated?");
+    }
 
     public @NonNull BukkitAudiences adventure() {
         if (this.adventure == null) {
@@ -139,6 +149,7 @@ public final class SPPlugin extends JavaPlugin {
             }
         }
     }
+
     private void registerListener() {
         Set<Class<? extends Listener>> listeners = Set.of(
                 PaymentHandlingListener.class,
@@ -159,18 +170,11 @@ public final class SPPlugin extends JavaPlugin {
             }
         }
     }
+
     public Collection<IService> getServices() {
         return services;
     }
-    public static @NotNull <T extends IService> T getService(Class<T> clazz) {
-        for (var service : instance.getServices())
-            if (clazz.isAssignableFrom(service.getClass())) {
-                return clazz.cast(service);
-            }
 
-        instance.getLogger().severe("Service " + clazz.getName() + " not instantiated. Did you forget to create it?");
-        throw new RuntimeException("Service " + clazz.getName() + " not instantiated?");
-    }
     private void registerInventoryFramework() {
         viewFrame = ViewFrame.create(this)
                 .with(

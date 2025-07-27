@@ -2,7 +2,6 @@ package org.simpmc.simppay.handler.banking.web2m;
 
 import org.bukkit.Bukkit;
 import org.simpmc.simppay.config.ConfigManager;
-import org.simpmc.simppay.config.types.BankingConfig;
 import org.simpmc.simppay.config.types.banking.W2MConfig;
 import org.simpmc.simppay.data.PaymentStatus;
 import org.simpmc.simppay.data.bank.BankType;
@@ -17,14 +16,13 @@ import org.simpmc.simppay.model.detail.PaymentDetail;
 import org.simpmc.simppay.util.GsonUtil;
 import org.simpmc.simppay.util.MessageUtil;
 
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class W2MHandler extends BankHandler {
     W2MConfig w2mConfig = ConfigManager.getInstance().getConfig(W2MConfig.class);
 
     String urlBase = "https://api.web2m.com/";
-    
+
     String username = w2mConfig.login;
     String password = w2mConfig.password;
     String token = w2mConfig.token;
@@ -39,7 +37,7 @@ public class W2MHandler extends BankHandler {
         }
         String refId = payment.getPlayerUUID().toString().replace("-", "");
         PaymentDetail detail = payment.getDetail();
-        
+
         detail.setRefID(refId);
 
         BankingData bankData = BankingData.builder()

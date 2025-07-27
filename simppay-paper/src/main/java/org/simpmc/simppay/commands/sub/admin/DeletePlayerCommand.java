@@ -7,8 +7,6 @@ import org.bukkit.entity.Player;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.database.entities.SPPlayer;
 import org.simpmc.simppay.service.DatabaseService;
-import org.simpmc.simppay.service.PaymentService;
-import org.simpmc.simppay.service.database.PlayerService;
 
 public class DeletePlayerCommand {
     public static CommandAPICommand commandCreate() {

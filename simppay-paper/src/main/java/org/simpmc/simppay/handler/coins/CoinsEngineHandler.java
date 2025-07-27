@@ -11,10 +11,12 @@ import java.util.UUID;
 public class CoinsEngineHandler extends CoinsHandler {
 
     private final Currency currency;
+
     public CoinsEngineHandler() {
         this.isAsync = false;
         this.currency = CoinsEngineAPI.getCurrency(ConfigManager.getInstance().getConfig(CoinsConfig.class).coinsEngineCurrency);
     }
+
     @Override
     public void take(UUID uuid, int amount) {
         CoinsEngineAPI.removeBalance(uuid, currency, amount);

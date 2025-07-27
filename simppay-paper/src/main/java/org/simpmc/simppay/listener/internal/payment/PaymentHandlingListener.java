@@ -23,7 +23,6 @@ import org.simpmc.simppay.util.MessageUtil;
 import org.simpmc.simppay.util.SoundUtil;
 
 import java.time.Duration;
-import java.util.Date;
 
 public class PaymentHandlingListener implements Listener {
     public PaymentHandlingListener(SPPlugin plugin) {
@@ -37,6 +36,7 @@ public class PaymentHandlingListener implements Listener {
         MessageUtil.sendMessage(player, messageConfig.failedCard);
         SoundUtil.sendSound(player, messageConfig.soundEffect.get(PaymentStatus.FAILED).toSound());
     }
+
     @EventHandler
     public void paymentQueue(PaymentQueueSuccessEvent event) {
 

@@ -4,7 +4,6 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.simpmc.simppay.SPPlugin;
-import org.simpmc.simppay.service.DatabaseService;
 import org.simpmc.simppay.service.cache.CacheDataService;
 
 import java.util.UUID;

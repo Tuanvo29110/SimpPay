@@ -4,7 +4,6 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.StringArgument;
 import org.bukkit.Bukkit;
 import org.simpmc.simppay.SPPlugin;
-import org.simpmc.simppay.commands.sub.admin.*;
 import org.simpmc.simppay.database.entities.SPPlayer;
 import org.simpmc.simppay.event.PaymentSuccessEvent;
 import org.simpmc.simppay.model.Payment;
@@ -21,7 +20,7 @@ public class ManualChargeCommand {
                         new StringArgument("player"),
                         new StringArgument("amount")
                 )
-                .executes((sender,args) -> {
+                .executes((sender, args) -> {
                     String playerName = (String) args.get("player");
                     String amountStr = (String) args.get("amount");
 

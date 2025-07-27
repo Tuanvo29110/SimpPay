@@ -25,8 +25,7 @@ public class MessageUtil {
     public static void sendMessage(CommandSender sender, String message) {
         if (sender instanceof Player) {
             taskMessage(message, (Player) sender);
-        }
-        else {
+        } else {
             SPPlugin.getInstance().getLogger().info(message);
         }
     }

@@ -9,6 +9,7 @@ public class W2MTransactions {
     private String description;
     private String transactionDate;
     private String type;
+
     @Override
     public String toString() {
         return "Transaction{" +

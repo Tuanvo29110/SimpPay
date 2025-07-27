@@ -112,7 +112,7 @@ public class GT1SHandler extends CardHandler {
                     jsonResponse.get("message").getAsString()
             );
         }
-        if (jsonResponse.get("message").getAsString() .equals("INVALID_CARD")) {
+        if (jsonResponse.get("message").getAsString().equals("INVALID_CARD")) {
             return new PaymentResult(
                     PaymentStatus.FAILED,
                     (int) detail.getAmount(),

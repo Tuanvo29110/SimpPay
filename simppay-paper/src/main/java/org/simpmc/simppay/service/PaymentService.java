@@ -20,19 +20,10 @@ public class PaymentService implements IService {
 
 
     private final ConcurrentHashMap<UUID, Payment> pollingPayments = new ConcurrentHashMap<>(); // payment id is key
-    private HandlerRegistry handlerRegistry;
     private final ConcurrentHashMap<UUID, Payment> payments = new ConcurrentHashMap<>(); // payment id is key
     private final ConcurrentHashMap<UUID, UUID> playerBankingSessionPayment = new ConcurrentHashMap<>(); // Store player uuid and payment id
     private final ConcurrentHashMap<UUID, byte[]> playerBankQRCode = new ConcurrentHashMap<>(); // Store player uuid and VietQR map bytew
-    @Override
-    public void setup() {
-        handlerRegistry = new HandlerRegistry();
-    }
-
-    @Override
-    public void shutdown() {
-
-    }
+    private HandlerRegistry handlerRegistry;
 
     // use for storing data and pulling data out of the db later on
     public static BankAPI getBankAPI() {
@@ -43,6 +34,16 @@ public class PaymentService implements IService {
     public static CardAPI getCardAPI() {
         CardConfig cardConfig = ConfigManager.getInstance().getConfig(CardConfig.class);
         return cardConfig.cardApi;
+    }
+
+    @Override
+    public void setup() {
+        handlerRegistry = new HandlerRegistry();
+    }
+
+    @Override
+    public void shutdown() {
+
     }
 
     public PaymentStatus sendCard(Payment payment) {

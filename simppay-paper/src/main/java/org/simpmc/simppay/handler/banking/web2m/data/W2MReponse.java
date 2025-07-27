@@ -21,6 +21,7 @@ public class W2MReponse {
                 '}';
 
     }
+
     public boolean getStatus() {
         return status;
     }

@@ -1,11 +1,11 @@
 package org.simpmc.simppay.handler;
 
-import com.google.gson.JsonObject;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class BankHandler implements PaymentHandler {

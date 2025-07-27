@@ -1,7 +1,6 @@
 package org.simpmc.simppay.handler.data;
 
 import org.simpmc.simppay.handler.CardHandler;
-import org.simpmc.simppay.handler.PaymentHandler;
 import org.simpmc.simppay.handler.card.Card2KHandler;
 import org.simpmc.simppay.handler.card.GT1SHandler;
 import org.simpmc.simppay.handler.card.TSTHandler;
