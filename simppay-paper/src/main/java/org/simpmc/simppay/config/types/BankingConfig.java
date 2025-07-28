@@ -8,7 +8,7 @@ import org.simpmc.simppay.handler.data.BankAPI;
 @Configuration
 @Folder("banking")
 public class BankingConfig {
-    @Comment("Dịch vụ cổng banking: PAYOS")
+    @Comment("Dịch vụ cổng banking: PAYOS, WEB2M")
     public BankAPI bankApi = BankAPI.PAYOS;
 
     @Comment("Thời gian chờ thanh toán ngân hàng (giây)")
@@ -16,4 +16,7 @@ public class BankingConfig {
 
     @Comment("Số tiền nạp chuyển khoản tối thiểu")
     public int minBanking = 10000;
+
+    @Comment("Hiện QR code trên tay trái của người chơi")
+    public boolean showQrOnLeftHand = false;
 }

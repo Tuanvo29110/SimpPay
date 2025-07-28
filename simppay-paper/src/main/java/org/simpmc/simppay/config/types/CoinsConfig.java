@@ -17,8 +17,10 @@ import java.util.Map;
 public class CoinsConfig {
     @Ignore
     public final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    @Comment("Plugin sử dụng để cộng xu: PLAYERPOINTS")
+    @Comment("Plugin sử dụng để cộng xu: PLAYERPOINTS, COINSENGINE")
     public CoinsAPI pointsProvider = CoinsAPI.PLAYERPOINTS;
+    @Comment("Tên đơn vị xu trong CoinsEngine (Chỉ dùng cho CoinsEngine)")
+    public String coinsEngineCurrency = "coins";
     @Comment("Lượng xu cộng vào tương ứng với giá trị thẻ cào")
     public Map<CardPrice, Long> cardToCoins = Map.of(
             CardPrice._10K, 10L,

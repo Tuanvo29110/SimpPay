@@ -78,7 +78,6 @@ public class MessageUtil {
 
     public static void info(String message) {
         SPPlugin.getInstance().getLogger().info(message);
-
     }
 
     /**

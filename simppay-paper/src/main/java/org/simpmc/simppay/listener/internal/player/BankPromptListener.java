@@ -9,6 +9,7 @@ import org.simpmc.simppay.config.ConfigManager;
 import org.simpmc.simppay.config.types.MessageConfig;
 import org.simpmc.simppay.event.PaymentBankPromptEvent;
 import org.simpmc.simppay.handler.banking.data.BankingData;
+import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.util.MessageUtil;
 import org.simpmc.simppay.util.qrcode.MapQR;
 import org.simpmc.simppay.util.qrcode.vietqr.VietQr;
@@ -24,7 +25,9 @@ public class BankPromptListener implements Listener {
 
         MessageConfig config = ConfigManager.getInstance().getConfig(MessageConfig.class);
         BankingData bankingData = event.getBankingData();
-        MessageUtil.sendMessage(event.getPlayerUUID(), config.promptPaymentLink.replace("<link>", bankingData.getUrl()));
+        if (bankingData.getUrl() != null) {
+            MessageUtil.sendMessage(event.getPlayerUUID(), config.promptPaymentLink.replace("<link>", bankingData.getUrl()));
+        }
 
         // Sending packet map to player
 
@@ -47,7 +50,7 @@ public class BankPromptListener implements Listener {
 
         byte[] mapBytes = MapQR.encodeTextToMapBytes(qrCode);
 
-        SPPlugin.getInstance().getPaymentService().getPlayerBankQRCode().put(event.getPlayerUUID(), mapBytes);
+        SPPlugin.getService(PaymentService.class).getPlayerBankQRCode().put(event.getPlayerUUID(), mapBytes);
         // PacketEvents
         // Forge a fake mapData
         MapQR.sendPacketQRMap(mapBytes, player);

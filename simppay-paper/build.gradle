@@ -8,10 +8,12 @@ version = getRootProject().version
 dependencies {
     // Include the common module
     implementation project(':simppay-api')
+    implementation project(':simppay-converter')
+
     compileOnly 'org.projectlombok:lombok:1.18.38'
     annotationProcessor 'org.projectlombok:lombok:1.18.38'
     compileOnly 'com.h2database:h2:2.3.232'
-    compileOnly "io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT"
+    compileOnly "io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT"
     compileOnly 'com.j256.ormlite:ormlite-jdbc:6.1'
 
     compileOnly 'org.black_ixx:playerpoints:3.3.0'
@@ -20,16 +22,17 @@ dependencies {
         exclude group: 'me.clip.placeholderapi', module: 'libs'
     }
     compileOnly('org.geysermc.floodgate:api:2.2.4-SNAPSHOT')
+    compileOnly("su.nightexpress.coinsengine:CoinsEngine:2.5.0")
+    compileOnly("com.squareup.okhttp3:okhttp:5.0.0-alpha.12")
     implementation("de.exlll:configlib-paper:4.6.0") {
         exclude group: 'org.yaml', module: 'snakeyaml-engine'
     }
-    implementation "dev.jorel:commandapi-bukkit-shade:9.7.0"
-    implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
-    implementation('me.devnatan:inventory-framework-platform-bukkit:3.3.8')
-    implementation 'me.devnatan:inventory-framework-anvil-input:3.3.8'
-    implementation('me.devnatan:inventory-framework-platform-paper:3.3.8')
-    implementation("com.github.retrooper:packetevents-spigot:2.8.0")
-    implementation('net.wesjd:anvilgui:1.10.5-SNAPSHOT')
+    implementation "dev.jorel:commandapi-bukkit-shade:10.1.2"
+    implementation("com.tcoded:FoliaLib:0.5.1")
+    implementation('me.devnatan:inventory-framework-platform-bukkit:3.5.0')
+    implementation('me.devnatan:inventory-framework-platform-paper:3.5.0')
+    implementation("com.github.retrooper:packetevents-spigot:2.9.4")
+    implementation('net.wesjd:anvilgui:1.10.6-SNAPSHOT')
 }
 
 shadowJar {

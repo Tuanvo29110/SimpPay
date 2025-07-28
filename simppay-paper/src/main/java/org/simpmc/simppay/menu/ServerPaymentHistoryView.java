@@ -15,6 +15,7 @@ import org.simpmc.simppay.config.types.data.menu.RoleType;
 import org.simpmc.simppay.config.types.menu.ServerPaymentHistoryMenuConfig;
 import org.simpmc.simppay.data.PaymentType;
 import org.simpmc.simppay.database.dto.PaymentRecord;
+import org.simpmc.simppay.service.DatabaseService;
 import org.simpmc.simppay.util.CalendarUtil;
 import org.simpmc.simppay.util.MessageUtil;
 
@@ -127,7 +128,7 @@ public class ServerPaymentHistoryView extends View {
 
     private CompletableFuture<List<PaymentRecord>> fetchPaymentRecordsAsync(Context context) {
         return CompletableFuture.supplyAsync(() -> {
-            List<PaymentRecord> paymentRecords = SPPlugin.getInstance().getDatabaseService().getPaymentLogService().getEntireServerPayments();
+            List<PaymentRecord> paymentRecords = SPPlugin.getService(DatabaseService.class).getPaymentLogService().getEntireServerPayments();
             return paymentRecords;
         });
     }

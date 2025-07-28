@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class MilestoneService {
+public class MilestoneService implements IService {
     //     NOTE: BossBar are static, changing bossbar reflect the changes to player who are added to it
 //     Design a central bossbar of the plugin
 //     Use one for player
@@ -41,11 +41,9 @@ public class MilestoneService {
     public List<MilestoneConfig> serverCurrentMilestones = new ArrayList<>();
     public List<ObjectObjectMutablePair<MilestoneConfig, BossBar>> serverBossbars = new ArrayList<>(); // contains all valid loaded milestones
 
-    public MilestoneService() {
-        loadAllMilestones();
-    }
 
-    public void loadAllMilestones() {
+    @Override
+    public void setup() {
         playerCurrentMilestones.clear();
         playerBossBars.clear();
         serverCurrentMilestones.clear();
@@ -56,12 +54,20 @@ public class MilestoneService {
         }
     }
 
+    @Override
+    public void shutdown() {
+        playerCurrentMilestones.clear();
+        playerBossBars.clear();
+        serverCurrentMilestones.clear();
+        serverBossbars.clear();
+    }
+
     // all milestones should be reloaded upon a milestone complete event
     public void loadServerMilestone() {
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
-            PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
+            PaymentLogService paymentLogService = SPPlugin.getService(DatabaseService.class).getPaymentLogService();
 
-            long entireServerAmount = SPPlugin.getInstance().getDatabaseService().getPaymentLogService().getEntireServerAmount();
+            long entireServerAmount = SPPlugin.getService(DatabaseService.class).getPaymentLogService().getEntireServerAmount();
             MocNapServerConfig mocNapServerConfig = ConfigManager.getInstance().getConfig(MocNapServerConfig.class);
 
             for (Map.Entry<MilestoneType, List<MilestoneConfig>> entry : mocNapServerConfig.mocnap.entrySet()) {
@@ -110,10 +116,10 @@ public class MilestoneService {
         playerCurrentMilestones.remove(uuid);
         playerBossBars.remove(uuid);
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
-            PaymentLogService paymentLogService = SPPlugin.getInstance().getDatabaseService().getPaymentLogService();
+            PaymentLogService paymentLogService = SPPlugin.getService(DatabaseService.class).getPaymentLogService();
 
-            SPPlayer player = SPPlugin.getInstance().getDatabaseService().getPlayerService().findByUuid(uuid);
-            double playerChargedAmount = SPPlugin.getInstance().getDatabaseService().getPaymentLogService().getPlayerTotalAmount(player);
+            SPPlayer player = SPPlugin.getService(DatabaseService.class).getPlayerService().findByUuid(uuid);
+            double playerChargedAmount = SPPlugin.getService(DatabaseService.class).getPaymentLogService().getPlayerTotalAmount(player);
 
             MocNapConfig mocNapConfig = ConfigManager.getInstance().getConfig(MocNapConfig.class);
             MessageUtil.debug("Loading MocNap For Player " + player.getName());

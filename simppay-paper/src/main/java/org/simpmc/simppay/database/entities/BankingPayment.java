@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.handler.data.BankAPI;
 import org.simpmc.simppay.model.Payment;
+import org.simpmc.simppay.service.DatabaseService;
 import org.simpmc.simppay.service.PaymentService;
 
 import java.time.Instant;
@@ -40,7 +41,7 @@ public class BankingPayment {
     public BankingPayment(Payment payment) {
         this.paymentID = payment.getPaymentID();
         // may cause trouble if null, but player should already be created on join
-        this.player = SPPlugin.getInstance().getDatabaseService().getPlayerService().findByUuid(payment.getPlayerUUID());
+        this.player = SPPlugin.getService(DatabaseService.class).getPlayerService().findByUuid(payment.getPlayerUUID());
         this.amount = payment.getDetail().getAmount();
         this.refID = payment.getDetail().getRefID();
         this.apiProvider = PaymentService.getBankAPI();

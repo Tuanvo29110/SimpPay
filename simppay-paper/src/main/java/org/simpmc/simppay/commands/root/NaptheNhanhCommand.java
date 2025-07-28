@@ -1,6 +1,7 @@
 package org.simpmc.simppay.commands.root;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.StringArgument;
 import org.simpmc.simppay.SPPlugin;
@@ -12,6 +13,7 @@ import org.simpmc.simppay.data.card.CardType;
 import org.simpmc.simppay.model.Payment;
 import org.simpmc.simppay.model.detail.CardDetail;
 import org.simpmc.simppay.model.detail.PaymentDetail;
+import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.util.MessageUtil;
 import org.simpmc.simppay.util.SoundUtil;
 
@@ -23,7 +25,7 @@ public class NaptheNhanhCommand {
 
     public NaptheNhanhCommand() {
         new CommandAPICommand("napthenhanh")
-                .withPermission("simppay.napthenhanh")
+                .withPermission(CommandPermission.NONE)
                 .withArguments(
                         new StringArgument("serial"),
                         new StringArgument("pin"),
@@ -55,13 +57,13 @@ public class NaptheNhanhCommand {
                             .build();
                     Payment payment = new Payment(uuid, player.getUniqueId(), detail);
 
-                    if (SPPlugin.getInstance().getPaymentService().getPayments().containsKey(payment.getPaymentID())) {
+                    if (SPPlugin.getService(PaymentService.class).getPayments().containsKey(payment.getPaymentID())) {
                         MessageUtil.sendMessage(player, messageConfig.pendingCard);
                         SoundUtil.sendSound(player, messageConfig.soundEffect.get(PaymentStatus.PENDING).toSound());
                         return;
                     }
 
-                    PaymentStatus status = SPPlugin.getInstance().getPaymentService().sendCard(payment);
+                    PaymentStatus status = SPPlugin.getService(PaymentService.class).sendCard(payment);
 
                     if (status == PaymentStatus.FAILED) {
                         MessageUtil.sendMessage(player, messageConfig.failedCard);

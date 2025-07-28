@@ -10,6 +10,7 @@ import org.simpmc.simppay.data.card.CardType;
 import org.simpmc.simppay.handler.data.CardAPI;
 import org.simpmc.simppay.model.Payment;
 import org.simpmc.simppay.model.detail.CardDetail;
+import org.simpmc.simppay.service.DatabaseService;
 import org.simpmc.simppay.service.PaymentService;
 
 import java.time.Instant;
@@ -56,7 +57,7 @@ public class CardPayment {
     public CardPayment(Payment payment) {
         this.paymentID = payment.getPaymentID();
         // may cause trouble if null, but player should already be created on join
-        this.player = SPPlugin.getInstance().getDatabaseService().getPlayerService().findByUuid(payment.getPlayerUUID());
+        this.player = SPPlugin.getService(DatabaseService.class).getPlayerService().findByUuid(payment.getPlayerUUID());
         this.pin = ((CardDetail) payment.getDetail()).getPin();
         this.serial = ((CardDetail) payment.getDetail()).getSerial();
         this.priceValue = ((CardDetail) payment.getDetail()).getPrice().getValue();

@@ -14,7 +14,7 @@ public class HandlerRegistry {
     private PaymentHandler cardHandler;
     private PaymentHandler bankHandler;
 
-    private CoinsHandler coinHandler;
+    private CoinsHandler coinsHandler;
 
     public HandlerRegistry() {
         try {
@@ -34,7 +34,16 @@ public class HandlerRegistry {
 
         cardHandler = (PaymentHandler) cardConfig.cardApi.handlerClass.getDeclaredConstructor().newInstance();
         bankHandler = (PaymentHandler) bankingConfig.bankApi.handlerClass.getDeclaredConstructor().newInstance();
-        coinHandler = (CoinsHandler) coinsConfig.pointsProvider.handlerClass.getDeclaredConstructor().newInstance();
+        coinsHandler = (CoinsHandler) coinsConfig.pointsProvider.handlerClass.getDeclaredConstructor().newInstance();
+    }
+
+    public void reload() {
+        try {
+            init();
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                 IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

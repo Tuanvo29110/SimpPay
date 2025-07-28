@@ -8,6 +8,7 @@ import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.config.types.NaplandauConfig;
 import org.simpmc.simppay.database.entities.SPPlayer;
 import org.simpmc.simppay.event.PaymentSuccessEvent;
+import org.simpmc.simppay.service.DatabaseService;
 import org.simpmc.simppay.service.database.PlayerService;
 
 import java.sql.SQLException;
@@ -21,11 +22,11 @@ public class NaplandauListener implements Listener {
     @EventHandler
     public void onFirstPayment(PaymentSuccessEvent event) {
         SPPlugin.getInstance().getFoliaLib().getScheduler().runAsync(task -> {
-            PlayerService playerService = SPPlugin.getInstance().getDatabaseService().getPlayerService();
+            PlayerService playerService = SPPlugin.getService(DatabaseService.class).getPlayerService();
             SPPlayer player = playerService.findByUuid(event.getPlayerUUID());
             String value;
             try {
-                value = SPPlugin.getInstance().getDatabaseService().getPlayerDataService().getValue(player, "first_charge");
+                value = SPPlugin.getService(DatabaseService.class).getPlayerDataService().getValue(player, "first_charge");
             } catch (SQLException e) {
                 e.printStackTrace();
                 value = null;

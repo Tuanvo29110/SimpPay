@@ -2,7 +2,7 @@ package org.simpmc.simppay.handler;
 
 import java.util.UUID;
 
-public interface CoinsHandler {
+public interface ICoins {
     void take(UUID uuid, int amount);
 
     int look(UUID uuid);

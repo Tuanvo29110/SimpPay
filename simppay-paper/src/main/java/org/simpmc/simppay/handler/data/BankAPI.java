@@ -1,16 +1,27 @@
 package org.simpmc.simppay.handler.data;
 
-import org.simpmc.simppay.handler.PaymentHandler;
+import org.simpmc.simppay.handler.BankHandler;
 import org.simpmc.simppay.handler.banking.payos.PayosHandler;
-import org.simpmc.simppay.handler.banking.redis.RedisHandler;
+import org.simpmc.simppay.handler.banking.web2m.W2MHandler;
 
 public enum BankAPI {
     PAYOS(PayosHandler.class),
-    REDIS(RedisHandler.class);
+    WEB2M(W2MHandler.class);
 
-    public final Class<?> handlerClass;
+    public final Class<? extends BankHandler> handlerClass;
 
-    BankAPI(Class<? extends PaymentHandler> handlerClass) {
+    BankAPI(Class<? extends BankHandler> handlerClass) {
         this.handlerClass = handlerClass;
+    }
+
+    public static String getValues() {
+        StringBuilder values = new StringBuilder();
+        for (BankAPI api : BankAPI.values()) {
+            if (!values.isEmpty()) {
+                values.append(", ");
+            }
+            values.append(api.name());
+        }
+        return values.toString();
     }
 }

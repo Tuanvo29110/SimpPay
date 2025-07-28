@@ -5,6 +5,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.event.PaymentSuccessEvent;
+import org.simpmc.simppay.service.DatabaseService;
+import org.simpmc.simppay.service.cache.CacheDataService;
 
 // fking ass class name, longgg
 public class SuccessDatabaseHandlingListener implements Listener {
@@ -17,7 +19,7 @@ public class SuccessDatabaseHandlingListener implements Listener {
         SPPlugin plugin = SPPlugin.getInstance();
 
         plugin.getFoliaLib().getScheduler().runAsync(task -> {
-            plugin.getDatabaseService().getPaymentLogService().addPayment(event.getPayment());
+            SPPlugin.getService(DatabaseService.class).getPaymentLogService().addPayment(event.getPayment());
         });
     }
 
@@ -26,7 +28,7 @@ public class SuccessDatabaseHandlingListener implements Listener {
         SPPlugin plugin = SPPlugin.getInstance();
 
         plugin.getFoliaLib().getScheduler().runAsync(task -> {
-            plugin.getCacheDataService().addPlayerToQueue(event.getPlayerUUID());
+            SPPlugin.getService(CacheDataService.class).addPlayerToQueue(event.getPlayerUUID());
         });
     }
 }

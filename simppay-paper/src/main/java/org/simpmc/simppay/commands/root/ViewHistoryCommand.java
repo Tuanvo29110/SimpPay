@@ -1,6 +1,7 @@
 package org.simpmc.simppay.commands.root;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.CommandPermission;
 import org.bukkit.entity.Player;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.menu.PaymentHistoryView;
@@ -8,7 +9,7 @@ import org.simpmc.simppay.menu.PaymentHistoryView;
 public class ViewHistoryCommand {
     public ViewHistoryCommand() {
         new CommandAPICommand("lichsunapthe")
-                .withPermission("simppay.lichsunapthe")
+                .withPermission(CommandPermission.NONE)
                 .withAliases("napthehistory", "xemgdnapthe")
                 .executesPlayer((player, args) -> {
                     boolean isFloodgateUUID = player.getUniqueId().getMostSignificantBits() == 0;

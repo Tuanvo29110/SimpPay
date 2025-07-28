@@ -1,6 +1,7 @@
 package org.simpmc.simppay.commands.root;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.CommandPermission;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.menu.card.CardListView;
 
@@ -8,7 +9,7 @@ public class NaptheCommand {
 
     public NaptheCommand() {
         new CommandAPICommand("napthe")
-                .withPermission("simppay.napthe")
+                .withPermission(CommandPermission.NONE)
                 .executesPlayer((player, args) -> {
                     // start a new napthe session
                     boolean isFloodgateUUID = player.getUniqueId().getMostSignificantBits() == 0;

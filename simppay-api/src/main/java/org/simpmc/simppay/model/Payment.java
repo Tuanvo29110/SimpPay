@@ -7,6 +7,7 @@ import org.simpmc.simppay.data.PaymentType;
 import org.simpmc.simppay.model.detail.CardDetail;
 import org.simpmc.simppay.model.detail.PaymentDetail;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Accessors(chain = true)
@@ -18,12 +19,14 @@ public class Payment {
     private final PaymentType paymentType;
     private PaymentDetail detail;
     private PaymentStatus status;
+    private Date createdAt; // The time when the payment was created
 
 
     public Payment(UUID paymentID, UUID playerUUID, PaymentDetail detail) {
         this.paymentID = paymentID;
         this.playerUUID = playerUUID;
         this.detail = detail;
+        this.createdAt = new Date();
         if (detail instanceof CardDetail) {
             this.paymentType = PaymentType.CARD;
         } else {

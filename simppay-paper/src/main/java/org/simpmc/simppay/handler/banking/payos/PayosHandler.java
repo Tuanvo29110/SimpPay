@@ -3,6 +3,7 @@ package org.simpmc.simppay.handler.banking.payos;
 import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.config.ConfigManager;
 import org.simpmc.simppay.config.types.BankingConfig;
 import org.simpmc.simppay.config.types.banking.PayosConfig;
@@ -10,7 +11,7 @@ import org.simpmc.simppay.data.PaymentStatus;
 import org.simpmc.simppay.data.bank.payos.PayosAdapter;
 import org.simpmc.simppay.event.PaymentBankPromptEvent;
 import org.simpmc.simppay.event.PaymentQueueSuccessEvent;
-import org.simpmc.simppay.handler.PaymentHandler;
+import org.simpmc.simppay.handler.BankHandler;
 import org.simpmc.simppay.handler.banking.data.BankingData;
 import org.simpmc.simppay.handler.banking.payos.data.PayosPayment;
 import org.simpmc.simppay.handler.banking.payos.data.PayosResponse;
@@ -34,7 +35,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
-public class PayosHandler implements PaymentHandler {
+public class PayosHandler extends BankHandler {
     String RETURN_CANCEL_URl = "https://payos.vn";
 
     @Override
@@ -174,7 +175,7 @@ public class PayosHandler implements PaymentHandler {
             }
             String base = "https://api-merchant.payos.vn/v2/payment-requests";
             try {
-                String orderid = String.valueOf(OrderIDService.getNextId());
+                String orderid = String.valueOf(SPPlugin.getService(OrderIDService.class).getNextId());
                 String valuetoBeHashed = MessageFormat.format("amount={0,number,#}&cancelUrl={1}&description={2}&orderCode={3}&returnUrl={4}",
                         bank.getAmount(),
                         RETURN_CANCEL_URl,

@@ -7,6 +7,7 @@ import org.geysermc.cumulus.form.SimpleForm;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.database.dto.PaymentRecord;
 import org.simpmc.simppay.database.entities.SPPlayer;
+import org.simpmc.simppay.service.DatabaseService;
 
 import java.util.List;
 
@@ -25,9 +26,9 @@ public class ViewHistoryForm {
 
     private static List<PaymentRecord> fetchPaymentRecordsAsync(Player player) {
         SPPlayer spPlayer;
-        spPlayer = SPPlugin.getInstance().getDatabaseService().getPlayerService().findByUuid(player.getUniqueId());
+        spPlayer = SPPlugin.getService(DatabaseService.class).getPlayerService().findByUuid(player.getUniqueId());
         Preconditions.checkNotNull(spPlayer, "Player not found");
-        List<PaymentRecord> paymentRecords = SPPlugin.getInstance().getDatabaseService().getPaymentLogService().getPaymentsByPlayer(spPlayer);
+        List<PaymentRecord> paymentRecords = SPPlugin.getService(DatabaseService.class).getPaymentLogService().getPaymentsByPlayer(spPlayer);
         return paymentRecords;
     }
 }

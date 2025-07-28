@@ -11,6 +11,7 @@ import org.simpmc.simppay.config.types.menu.card.anvil.CardPinMenuConfig;
 import org.simpmc.simppay.data.PaymentStatus;
 import org.simpmc.simppay.model.Payment;
 import org.simpmc.simppay.model.detail.CardDetail;
+import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.util.MessageUtil;
 import org.simpmc.simppay.util.SoundUtil;
 
@@ -39,7 +40,7 @@ public class CardPINInput {
                         return Collections.emptyList();
                     }
                     String pin = stateSnapshot.getText();
-                    if (pin == null || pin.isEmpty() || !pin.matches("\\d+")) {
+                    if (pin == null || pin.isEmpty() || !pin.matches("^[A-Za-z0-9]+$")) {
                         MessageConfig config = SPPlugin.getInstance().getConfigManager().getConfig(MessageConfig.class);
                         MessageUtil.sendMessage(player, config.invalidParam);
                         return Collections.emptyList();
@@ -56,13 +57,13 @@ public class CardPINInput {
 
                                     MessageConfig messageConfig = ConfigManager.getInstance().getConfig(MessageConfig.class);
 
-                                    if (SPPlugin.getInstance().getPaymentService().getPayments().containsKey(payment.getPaymentID())) {
+                                    if (SPPlugin.getService(PaymentService.class).getPayments().containsKey(payment.getPaymentID())) {
                                         MessageUtil.sendMessage(player, messageConfig.pendingCard);
                                         SoundUtil.sendSound(player, messageConfig.soundEffect.get(PaymentStatus.PENDING).toSound());
                                         return;
                                     }
 
-                                    PaymentStatus status = SPPlugin.getInstance().getPaymentService().sendCard(payment);
+                                    PaymentStatus status = SPPlugin.getService(PaymentService.class).sendCard(payment);
 
                                     if (status == PaymentStatus.FAILED) {
                                         MessageUtil.sendMessage(player, messageConfig.failedCard);

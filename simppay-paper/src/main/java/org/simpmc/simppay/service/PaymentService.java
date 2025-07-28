@@ -16,18 +16,14 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
-public class PaymentService {
+public class PaymentService implements IService {
 
 
     private final ConcurrentHashMap<UUID, Payment> pollingPayments = new ConcurrentHashMap<>(); // payment id is key
-    private final HandlerRegistry handlerRegistry;
     private final ConcurrentHashMap<UUID, Payment> payments = new ConcurrentHashMap<>(); // payment id is key
     private final ConcurrentHashMap<UUID, UUID> playerBankingSessionPayment = new ConcurrentHashMap<>(); // Store player uuid and payment id
     private final ConcurrentHashMap<UUID, byte[]> playerBankQRCode = new ConcurrentHashMap<>(); // Store player uuid and VietQR map bytew
-
-    public PaymentService() {
-        handlerRegistry = new HandlerRegistry();
-    }
+    private HandlerRegistry handlerRegistry;
 
     // use for storing data and pulling data out of the db later on
     public static BankAPI getBankAPI() {
@@ -40,22 +36,32 @@ public class PaymentService {
         return cardConfig.cardApi;
     }
 
+    @Override
+    public void setup() {
+        handlerRegistry = new HandlerRegistry();
+    }
+
+    @Override
+    public void shutdown() {
+
+    }
+
     public PaymentStatus sendCard(Payment payment) {
         PaymentStatus status = handlerRegistry.getCardHandler().processPayment(payment);
-        if (status == PaymentStatus.EXIST) {
+        if (status == PaymentStatus.PENDING) {
+            payments.putIfAbsent(payment.getPaymentID(), payment);
             return status;
         }
-        payments.putIfAbsent(payment.getPaymentID(), payment);
         return status;
     }
 
     public PaymentStatus sendBank(Payment payment) {
 
         PaymentStatus status = handlerRegistry.getBankHandler().processPayment(payment);
-        if (status == PaymentStatus.EXIST) {
+        if (status == PaymentStatus.PENDING) {
+            payments.putIfAbsent(payment.getPaymentID(), payment);
             return status;
         }
-        payments.putIfAbsent(payment.getPaymentID(), payment);
         return status;
     }
 
@@ -64,7 +70,7 @@ public class PaymentService {
         playerBankingSessionPayment.remove(playerUUID);
     }
 
-    public void removePlayerQRSession(UUID playerUUID) {
+    public void cancelBankPayment(UUID playerUUID) {
         UUID paymentID = playerBankingSessionPayment.get(playerUUID);
         int retryCount = 0;
         boolean cancelled = false;
@@ -86,7 +92,6 @@ public class PaymentService {
 
         if (!cancelled) {
             SPPlugin.getInstance().getLogger().info("[PaymentService-Cancel] Max retries reached for " + payments.get(paymentID));
-            return;
         }
 
         payments.remove(paymentID); // remove payment from existing payment on the server

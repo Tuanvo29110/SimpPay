@@ -40,7 +40,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, @NotNull String identifier) {
 
-        CacheDataService cacheDataService = plugin.getCacheDataService();
+        CacheDataService cacheDataService = SPPlugin.getService(CacheDataService.class);
 
         // get server_total
         // %simppay_server_total%
@@ -68,7 +68,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         UUID uuid = player.getUniqueId();
         if (!cacheDataService.getPlayerTotalValue().containsKey(uuid)) {
             cacheDataService.addPlayerToQueue(uuid);
-            return "Đang load...";
+            return "0";
         }
 
         // %simppay_total%

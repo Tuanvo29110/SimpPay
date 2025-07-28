@@ -6,6 +6,7 @@ import dev.jorel.commandapi.executors.CommandArguments;
 import org.bukkit.entity.Player;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.database.entities.SPPlayer;
+import org.simpmc.simppay.service.DatabaseService;
 
 public class DeletePlayerCommand {
     public static CommandAPICommand commandCreate() {
@@ -22,8 +23,8 @@ public class DeletePlayerCommand {
 
         String playerTarget = (String) args.get("player");
         plugin.getFoliaLib().getScheduler().runAsync(task -> {
-            SPPlayer targetPlayer = plugin.getDatabaseService().getPlayerService().findByName(playerTarget);
-            SPPlugin.getInstance().getDatabaseService().getPaymentLogService().resetPlayerPaymentLog(targetPlayer);
+            SPPlayer targetPlayer = SPPlugin.getService(DatabaseService.class).getPlayerService().findByName(playerTarget);
+            SPPlugin.getService(DatabaseService.class).getPaymentLogService().resetPlayerPaymentLog(targetPlayer);
         });
     }
 }

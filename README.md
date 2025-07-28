@@ -26,31 +26,33 @@ Usage Guide
   [PlayerPoints](https://www.spigotmc.org/resources/playerpoints.80745/)
   and [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) to function
 - Download the plugin [here](https://github.com/SimpMC-Studio/SimpPay/releases/), and place it in the `plugins` folder
-- You need to install floodgate to use the card recharge interface for Bedrock players, download it [here](https://geysermc.org/download?project=floodgate)
+- You need to install floodgate to use the card recharge interface for Bedrock players, download
+  it [here](https://geysermc.org/download?project=floodgate)
 
 **Command List:**
 
-| Command                     | Function                                | Permission                |
-|-----------------------------|-----------------------------------------|---------------------------|
-| /napthe                     | Open recharge card menu                 | simppay.napthe            |
-| /simppayadmin lichsu        | View server-wide recharge history       | simppay.admin.viewhistory |
-| /simppayadmin lichsu <name> | View recharge history of specific player| simppay.admin.viewhistory |
-| /lichsunapthe               | View recharge history                   | simppay.lichsunapthe      |
-| /bank <amount>              | Bank deposit via QR code                | simppay.banking           |
+| Command                     | Function                                 | Permission                |
+|-----------------------------|------------------------------------------|---------------------------|
+| /napthe                     | Open recharge card menu                  | simppay.napthe            |
+| /simppayadmin lichsu        | View server-wide recharge history        | simppay.admin.viewhistory |
+| /simppayadmin lichsu <name> | View recharge history of specific player | simppay.admin.viewhistory |
+| /lichsunapthe               | View recharge history                    | simppay.lichsunapthe      |
+| /bank <amount>              | Bank deposit via QR code                 | simppay.banking           |
 
 **Placeholders:**
 
 Placeholders can be used to display top rechargers using
-[ajLeaderboards](https://www.spigotmc.org/resources/ajleaderboards.85548/) or [topper](https://www.spigotmc.org/resources/topper.101325/)
+[ajLeaderboards](https://www.spigotmc.org/resources/ajleaderboards.85548/)
+or [topper](https://www.spigotmc.org/resources/topper.101325/)
 
-| Placeholder                      | Function                                             | Notes |
-|----------------------------------|------------------------------------------------------|-------|
-| %simppay_total%                  | Returns total recharge of that player                |       |
-| %simppay_total_formatted%        | Returns player's recharge amount in xxx.xxxđ format  |       |
-| %simppay_server_total%           | Returns total server recharge                        |       |
-| %simppay_server_total_formatted% | Returns server recharge amount in xxx.xxxđ format    |       |
-| %simppay_bank_total_formatted%   | Returns bank recharge amount in xxx.xxxđ format      |       |
-| %simppay_card_total_formatted%   | Returns card recharge amount in xxx.xxxđ format      |       |
+| Placeholder                      | Function                                            | Notes |
+|----------------------------------|-----------------------------------------------------|-------|
+| %simppay_total%                  | Returns total recharge of that player               |       |
+| %simppay_total_formatted%        | Returns player's recharge amount in xxx.xxxđ format |       |
+| %simppay_server_total%           | Returns total server recharge                       |       |
+| %simppay_server_total_formatted% | Returns server recharge amount in xxx.xxxđ format   |       |
+| %simppay_bank_total_formatted%   | Returns bank recharge amount in xxx.xxxđ format     |       |
+| %simppay_card_total_formatted%   | Returns card recharge amount in xxx.xxxđ format     |       |
 
 **Plugin Configuration:**
 

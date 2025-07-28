@@ -4,6 +4,7 @@ import com.j256.ormlite.dao.Dao;
 import org.bukkit.entity.Player;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.database.entities.SPPlayer;
+import org.simpmc.simppay.service.DatabaseService;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -116,7 +117,7 @@ public class PlayerService {
     public void setFirstCharge(SPPlayer spPlayer) {
         try {
             // check if key is true
-            SPPlugin.getInstance().getDatabaseService().getPlayerDataService().upsertKeyValue(spPlayer, "first_charge", "true");
+            SPPlugin.getService(DatabaseService.class).getPlayerDataService().upsertKeyValue(spPlayer, "first_charge", "true");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -125,7 +126,7 @@ public class PlayerService {
     public boolean hasFirstCharge(SPPlayer spPlayer) {
         try {
             // check if key is true
-            String value = SPPlugin.getInstance().getDatabaseService().getPlayerDataService().getValue(spPlayer, "first_charge");
+            String value = SPPlugin.getService(DatabaseService.class).getPlayerDataService().getValue(spPlayer, "first_charge");
             if (value != null && value.equals("true")) {
                 return true;
             }

@@ -10,6 +10,8 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerMa
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetSlot;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapPalette;
+import org.simpmc.simppay.config.ConfigManager;
+import org.simpmc.simppay.config.types.BankingConfig;
 import org.simpmc.simppay.util.qrcode.fastqrcodegen.QrCode;
 
 import java.util.Arrays;
@@ -74,10 +76,11 @@ public class MapQR {
         // TODO: Check server verison => create respective packet, nbt or component
         NBTCompound compound = new NBTCompound();
         compound.setTag("map", new NBTInt(999));
+        int slotIndex = ConfigManager.getInstance().getConfig(BankingConfig.class).showQrOnLeftHand ? 45 : 36; // 45 for left hand, 36 for main hand
         WrapperPlayServerSetSlot setSlotPacket = new WrapperPlayServerSetSlot(
                 0,
                 0,
-                36,
+                slotIndex,
                 ItemStack.builder().type(ItemTypes.FILLED_MAP).nbt(compound).component(ComponentTypes.MAP_ID, 999).build()
         );
         PacketEvents.getAPI().getPlayerManager().sendPacket(player, setSlotPacket);

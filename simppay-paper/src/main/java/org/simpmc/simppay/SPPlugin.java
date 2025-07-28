@@ -7,6 +7,7 @@ import lombok.Getter;
 import me.devnatan.inventoryframework.ViewFrame;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.simpmc.simppay.api.DatabaseSettings;
 import org.simpmc.simppay.commands.CommandHandler;
 import org.simpmc.simppay.config.ConfigManager;
@@ -24,42 +25,40 @@ import org.simpmc.simppay.menu.PaymentHistoryView;
 import org.simpmc.simppay.menu.ServerPaymentHistoryView;
 import org.simpmc.simppay.menu.card.CardListView;
 import org.simpmc.simppay.menu.card.CardPriceView;
-import org.simpmc.simppay.service.DatabaseService;
-import org.simpmc.simppay.service.MilestoneService;
-import org.simpmc.simppay.service.OrderIDService;
-import org.simpmc.simppay.service.PaymentService;
+import org.simpmc.simppay.service.*;
 import org.simpmc.simppay.service.cache.CacheDataService;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.Set;
+import java.util.*;
 
 public final class SPPlugin extends JavaPlugin {
 
     @Getter
     private static SPPlugin instance;
+    private final List<IService> services = Collections.synchronizedList(new ArrayList<>());
     @Getter
     private ConfigManager configManager;
     @Getter
     private FoliaLib foliaLib;
-    private Database database;
-
     @Getter
     private CommandHandler commandHandler;
-
-    @Getter
-    private PaymentService paymentService;
-    @Getter
-    private CacheDataService cacheDataService;
-    @Getter
-    private MilestoneService milestoneService;
-    @Getter
-    private DatabaseService databaseService;
     private boolean dev = false;
     @Getter
     private ViewFrame viewFrame;
     @Getter
     private boolean floodgateEnabled;
+
+    public static @NotNull <T extends IService> T getService(Class<T> clazz) {
+        for (var service : instance.getServices())
+            if (clazz.isAssignableFrom(service.getClass())) {
+                return clazz.cast(service);
+            }
+
+        instance.getLogger().severe("Service " + clazz.getName() + " not instantiated. Did you forget to create it?");
+        throw new RuntimeException("Service " + clazz.getName() + " not instantiated?");
+    }
+
 
     @Override
     public void onLoad() {
@@ -80,25 +79,30 @@ public final class SPPlugin extends JavaPlugin {
             getLogger().info("Enabled floodgate support");
         }
         // Thanks CHATGPT, qua met r
-        OrderIDService.init(this);
         instance = this;
         foliaLib = new FoliaLib(this);
         // Plugin startup logic
         configManager = new ConfigManager(this);
+
+        Database database = null;
         try {
             DatabaseSettings databaseConf = ConfigManager.getInstance().getConfig(DatabaseConfig.class);
             database = new Database(databaseConf);
         } catch (RuntimeException | SQLException e) {
-            getLogger().warning("ChuyenXu failed to connect to database");
+            getLogger().warning("SimpPay failed to connect to database");
             this.getServer().getPluginManager().disablePlugin(this);
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        cacheDataService = CacheDataService.getInstance();
+        services.add(new OrderIDService());
+        services.add(new CacheDataService());
+        services.add(new DatabaseService(database));
+        services.add(new PaymentService());
+        services.add(new MilestoneService());
+
+        registerServices();
+
         new HookManager(this);
-        databaseService = new DatabaseService(database);
-        paymentService = new PaymentService();
-        milestoneService = new MilestoneService();
         registerListener();
         commandHandler.onEnable();
         registerInventoryFramework();
@@ -108,14 +112,28 @@ public final class SPPlugin extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         PacketEvents.getAPI().terminate();
-        this.getCacheDataService().clearAllCache();
-
-        if (database != null) {
-            database.close();
+        for (var service : services) {
+            try {
+                service.shutdown();
+            } catch (Exception e) {
+                getLogger().severe("Failed to shutdown service: " + service.getClass().getSimpleName());
+                e.printStackTrace();
+            }
         }
         commandHandler.onDisable();
-        OrderIDService.saveCurrent();
         instance = null;
+    }
+
+    private void registerServices() {
+        for (var service : services) {
+            service.setup();
+            getLogger().info(service.getClass().getSimpleName() + " service successfully enabled!");
+
+            if (service instanceof Listener listener) {
+                getServer().getPluginManager().registerEvents(listener, instance);
+                getLogger().info(service.getClass().getSimpleName() + " is now listening to events.");
+            }
+        }
     }
 
     private void registerListener() {
@@ -137,6 +155,10 @@ public final class SPPlugin extends JavaPlugin {
                 e.printStackTrace();
             }
         }
+    }
+
+    public Collection<IService> getServices() {
+        return services;
     }
 
     private void registerInventoryFramework() {
