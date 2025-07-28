@@ -104,33 +104,7 @@ public class GT1SHandler extends CardHandler {
             MessageUtil.debug("[GT1S-GetTransactionResult] Error while getting transaction result: " + e.getMessage());
             return new PaymentResult(PaymentStatus.FAILED, (int) detail.getAmount(), "Error while processing request");
         }
-        JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
-        if (jsonResponse.get("message").getAsString().equals("VALID_CARD")) {
-            return new PaymentResult(
-                    PaymentStatus.SUCCESS,
-                    (int) detail.getAmount(),
-                    jsonResponse.get("message").getAsString()
-            );
-        }
-        if (jsonResponse.get("message").getAsString().equals("INVALID_CARD")) {
-            return new PaymentResult(
-                    PaymentStatus.FAILED,
-                    (int) detail.getAmount(),
-                    jsonResponse.get("message").getAsString()
-            );
-        }
-        if (jsonResponse.get("message").getAsString().equals("PENDING")) {
-            return new PaymentResult(
-                    PaymentStatus.PENDING,
-                    (int) detail.getAmount(),
-                    jsonResponse.get("message").getAsString()
-            );
-        }
-        return new PaymentResult(
-                PaymentStatus.FAILED,
-                (int) detail.getAmount(),
-                ""
-        );
+        return getNencerAPIResult(detail, response);
     }
 
     @Override

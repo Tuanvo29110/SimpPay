@@ -3,6 +3,7 @@ package org.simpmc.simppay.handler.card;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 import org.simpmc.simppay.config.ConfigManager;
 import org.simpmc.simppay.config.types.card.Card2KConfig;
 import org.simpmc.simppay.data.PaymentStatus;
@@ -34,7 +35,7 @@ public class Card2KHandler extends CardHandler {
             case VIETTEL -> "VIETTEL";
             case MOBIFONE -> "MOBIFONE";
             case VINAPHONE -> "VINAPHONE";
-            case VIETNAMOBILE -> "VNMOBI    ";
+            case VIETNAMOBILE -> "VNMOBI";
             case GATE -> "GATE";
             case ZING -> "ZING";
             case GARENA -> "GARENA";
@@ -104,34 +105,7 @@ public class Card2KHandler extends CardHandler {
             MessageUtil.debug("[Card2K-GetTransactionResult] Error while getting transaction result: " + e.getMessage());
             return new PaymentResult(PaymentStatus.FAILED, (int) detail.getAmount(), "Error while processing request");
         }
-        JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
-        if (jsonResponse.get("status").getAsInt() == 1) {
-            return new PaymentResult(
-                    PaymentStatus.SUCCESS,
-                    (int) detail.getAmount(),
-                    jsonResponse.get("message").getAsString()
-            );
-        }
-        if (jsonResponse.get("status").getAsInt() == 3) {
-            return new PaymentResult(
-                    PaymentStatus.FAILED,
-                    (int) detail.getAmount(),
-                    jsonResponse.get("message").getAsString()
-            );
-        }
-        if (jsonResponse.get("status").getAsInt() == 99) {
-            return new PaymentResult(
-                    PaymentStatus.PENDING,
-                    (int) detail.getAmount(),
-                    jsonResponse.get("message").getAsString()
-            );
-        }
-
-        return new PaymentResult(
-                PaymentStatus.FAILED,
-                (int) detail.getAmount(),
-                ""
-        );
+        return getNencerAPIResult(detail, response);
     }
 
     @Override
