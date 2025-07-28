@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.simpmc.simppay.SPPlugin;
 import org.simpmc.simppay.config.ConfigManager;
 import org.simpmc.simppay.config.types.MessageConfig;
+import org.simpmc.simppay.service.PaymentService;
 import org.simpmc.simppay.util.MessageUtil;
 
 public class ReloadCommand {
@@ -20,6 +21,7 @@ public class ReloadCommand {
         plugin.getFoliaLib().getScheduler().runAsync(task -> {
             plugin.getConfigManager().reloadAll();
             MessageConfig messageConfig = ConfigManager.getInstance().getConfig(MessageConfig.class);
+            SPPlugin.getService(PaymentService.class).getHandlerRegistry().reload();
             MessageUtil.sendMessage(player, messageConfig.configReloaded);
         });
     }

@@ -37,4 +37,13 @@ public class HandlerRegistry {
         coinsHandler = (CoinsHandler) coinsConfig.pointsProvider.handlerClass.getDeclaredConstructor().newInstance();
     }
 
+    public void reload() {
+        try {
+            init();
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                 IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
