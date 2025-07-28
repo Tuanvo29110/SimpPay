@@ -16,6 +16,7 @@ import org.simpmc.simppay.config.types.banking.PayosConfig;
 import org.simpmc.simppay.config.types.banking.Web2mConfig;
 import org.simpmc.simppay.config.types.card.Card2KConfig;
 import org.simpmc.simppay.config.types.card.Gachthe1sConfig;
+import org.simpmc.simppay.config.types.card.ThesieureConfig;
 import org.simpmc.simppay.config.types.card.ThesieutocConfig;
 import org.simpmc.simppay.config.types.menu.PaymentHistoryMenuConfig;
 import org.simpmc.simppay.config.types.menu.ServerPaymentHistoryMenuConfig;
@@ -58,7 +59,8 @@ public class ConfigManager {
             NaplandauConfig.class,
             Gachthe1sConfig.class,
             Card2KConfig.class,
-            Web2mConfig.class
+            Web2mConfig.class,
+            ThesieureConfig.class
     );
     // holds file paths for each config type
     private final Map<Class<?>, Path> configPaths = new HashMap<>();
