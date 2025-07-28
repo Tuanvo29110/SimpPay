@@ -42,7 +42,7 @@ public class MessageConfig {
 
     public String invalidAmount = "<color:#ff0000>Số tiền nạp tối thiểu là <white>{amount}<color:#ff0000>!";
 
-    public String invalidParam = "<color:#ff0000>>Serial hoặc mã thẻ nhập vào chưa chính xác!";
+    public String invalidParam = "<color:#ff0000>Serial hoặc mã thẻ nhập vào chưa chính xác!";
 
     public String playerNotFound = "<color:#ff0000>Không tìm thấy người chơi nào với tên <white>{name}<color:#ff0000>!";
 
