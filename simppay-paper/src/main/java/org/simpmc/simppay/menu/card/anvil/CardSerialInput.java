@@ -34,7 +34,7 @@ public class CardSerialInput {
                         return Collections.emptyList();
                     }
                     String serial = stateSnapshot.getText();
-                    if (serial == null || serial.isEmpty() || !serial.matches("\\d+")) {
+                    if (serial == null || serial.isEmpty() || !serial.matches("^[A-Za-z0-9]+$")) {
                         MessageConfig config = SPPlugin.getInstance().getConfigManager().getConfig(MessageConfig.class);
                         MessageUtil.sendMessage(player, config.invalidParam);
                         return Collections.emptyList();

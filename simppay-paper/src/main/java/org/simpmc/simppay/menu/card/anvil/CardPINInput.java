@@ -40,7 +40,7 @@ public class CardPINInput {
                         return Collections.emptyList();
                     }
                     String pin = stateSnapshot.getText();
-                    if (pin == null || pin.isEmpty() || !pin.matches("\\d+")) {
+                    if (pin == null || pin.isEmpty() || !pin.matches("^[A-Za-z0-9]+$")) {
                         MessageConfig config = SPPlugin.getInstance().getConfigManager().getConfig(MessageConfig.class);
                         MessageUtil.sendMessage(player, config.invalidParam);
                         return Collections.emptyList();
