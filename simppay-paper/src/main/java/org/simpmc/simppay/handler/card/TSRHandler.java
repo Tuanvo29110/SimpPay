@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.bukkit.Bukkit;
 import org.simpmc.simppay.config.ConfigManager;
-import org.simpmc.simppay.config.types.card.Gachthe1sConfig;
 import org.simpmc.simppay.config.types.card.ThesieureConfig;
 import org.simpmc.simppay.data.PaymentStatus;
 import org.simpmc.simppay.data.card.CardType;
