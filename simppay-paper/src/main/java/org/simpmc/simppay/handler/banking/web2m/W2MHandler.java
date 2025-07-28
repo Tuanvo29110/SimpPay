@@ -2,9 +2,9 @@ package org.simpmc.simppay.handler.banking.web2m;
 
 import org.bukkit.Bukkit;
 import org.simpmc.simppay.config.ConfigManager;
-import org.simpmc.simppay.config.types.banking.W2MConfig;
+import org.simpmc.simppay.config.types.banking.Web2mConfig;
 import org.simpmc.simppay.data.PaymentStatus;
-import org.simpmc.simppay.data.bank.BankType;
+import org.simpmc.simppay.data.bank.web2m.BankType;
 import org.simpmc.simppay.event.PaymentBankPromptEvent;
 import org.simpmc.simppay.event.PaymentQueueSuccessEvent;
 import org.simpmc.simppay.handler.BankHandler;
@@ -19,19 +19,16 @@ import org.simpmc.simppay.util.MessageUtil;
 import java.util.concurrent.ExecutionException;
 
 public class W2MHandler extends BankHandler {
-    W2MConfig w2mConfig = ConfigManager.getInstance().getConfig(W2MConfig.class);
 
     String urlBase = "https://api.web2m.com/";
 
-    String username = w2mConfig.login;
-    String password = w2mConfig.password;
-    String token = w2mConfig.token;
-
-    BankType bank = w2mConfig.bankType;
-    String accountNumber = w2mConfig.accountNumber;
 
     @Override
     public PaymentStatus processPayment(Payment payment) {
+        Web2mConfig w2mConfig = ConfigManager.getInstance().getConfig(Web2mConfig.class);
+        BankType bank = w2mConfig.bankType;
+        String accountNumber = w2mConfig.accountNumber;
+
         if (accountNumber.equals("123123123")) { // default value
             return PaymentStatus.FAILED;
         }
@@ -57,12 +54,20 @@ public class W2MHandler extends BankHandler {
 
     @Override
     public PaymentResult getTransactionResult(PaymentDetail detail) {
+        Web2mConfig w2mConfig = ConfigManager.getInstance().getConfig(Web2mConfig.class);
+
+        String username = w2mConfig.login;
+        String password = w2mConfig.password;
+        String token = w2mConfig.token;
         String url;
+        // 1 check if banktype only require token or not
         if (w2mConfig.bankType.isOneParam) {
-            url = urlBase + w2mConfig.bankType.web2mPath + "/" + password + "/" + username + "/" + token;
-        } else {
             url = urlBase + w2mConfig.bankType.web2mPath + "/" + token;
+        } else {
+            url = urlBase + w2mConfig.bankType.web2mPath + "/" + password + "/" + username + "/" + token;
         }
+
+        // 2 get web2m transaction result
         String response;
         try {
             response = get(url).get();
@@ -75,7 +80,15 @@ public class W2MHandler extends BankHandler {
                     ""
             );
         }
-        W2MReponse w2mResponse = GsonUtil.getGson().fromJson(response, W2MReponse.class);
+        // 3 parse the response
+        W2MReponse w2mResponse;
+        try {
+            w2mResponse = GsonUtil.getGson().fromJson(response, W2MReponse.class);
+        } catch (Exception ex) {
+            MessageUtil.debug("[W2M-GetTransactionResult] Invalid JSON response: " + ex.getMessage());
+            w2mResponse = null;
+        }
+        // 4 check if response is valid
         if (w2mResponse == null) {
             MessageUtil.debug("[W2M-GetTransactionResult] Response is not valid");
             return new PaymentResult(
@@ -83,7 +96,9 @@ public class W2MHandler extends BankHandler {
                     (int) detail.getAmount(),
                     ""
             );
+
         }
+        // 5 check if response status is true
         if (!w2mResponse.getStatus()) {
             MessageUtil.debug("[W2M-GetTransactionResult] Invalid login or token");
             MessageUtil.debug("[W2M-GetTransactionResult] " + w2mResponse);
@@ -93,6 +108,7 @@ public class W2MHandler extends BankHandler {
                     ""
             );
         }
+        // 6 if there is returned data, proceed
         if (w2mResponse.getStatus()) {
             boolean matched = w2mResponse.getTransactions().stream().anyMatch(tx -> tx.getDescription().contains(detail.getRefID()));
             if (matched) {
@@ -121,6 +137,6 @@ public class W2MHandler extends BankHandler {
 
     @Override
     public PaymentStatus cancel(Payment payment) {
-        return null;
+        return PaymentStatus.CANCELLED;
     }
 }

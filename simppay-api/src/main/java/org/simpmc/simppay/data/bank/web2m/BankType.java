@@ -1,4 +1,4 @@
-package org.simpmc.simppay.data.bank;
+package org.simpmc.simppay.data.bank.web2m;
 
 public enum BankType {
     VCB("970436", "historyapivcbv3", false),

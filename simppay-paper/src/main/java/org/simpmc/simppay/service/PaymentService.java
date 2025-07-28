@@ -92,7 +92,6 @@ public class PaymentService implements IService {
 
         if (!cancelled) {
             SPPlugin.getInstance().getLogger().info("[PaymentService-Cancel] Max retries reached for " + payments.get(paymentID));
-            return;
         }
 
         payments.remove(paymentID); // remove payment from existing payment on the server
@@ -100,6 +99,5 @@ public class PaymentService implements IService {
         playerBankingSessionPayment.remove(playerUUID);
         playerBankQRCode.remove(playerUUID);
     }
-
 
 }

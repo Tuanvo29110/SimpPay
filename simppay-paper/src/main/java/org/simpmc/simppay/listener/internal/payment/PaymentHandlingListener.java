@@ -65,6 +65,13 @@ public class PaymentHandlingListener implements Listener {
                 task.cancel();
                 return;
             }
+
+            // check if payment is still in pollingPayments
+            if (!SPPlugin.getService(PaymentService.class).getPollingPayments().containsKey(event.getPaymentID())) {
+                MessageUtil.debug("[Payment-Poller] Payment is not in pollingPayments, cancelling task");
+                task.cancel();
+                return;
+            }
             // check card status
             PaymentStatus status = null;
             PaymentResult result = null;
