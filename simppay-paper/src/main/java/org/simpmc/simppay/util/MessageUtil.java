@@ -64,7 +64,7 @@ public class MessageUtil {
 
             Component s = mm.deserialize(message);
             Component prefix = mm.deserialize(messageConfig.prefix);
-            SPPlugin.getInstance().adventure().player(player).sendMessage(prefix.append(s));
+            player.sendMessage(prefix.append(s));
         });
     }
 

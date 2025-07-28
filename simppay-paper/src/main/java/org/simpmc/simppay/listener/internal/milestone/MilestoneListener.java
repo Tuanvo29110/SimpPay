@@ -2,7 +2,6 @@ package org.simpmc.simppay.listener.internal.milestone;
 
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -45,16 +44,14 @@ public class MilestoneListener implements Listener {
                 List<BossBar> playerBossbars = service.playerBossBars.get(uuid).stream().map(ObjectObjectMutablePair::right).toList();
                 for (BossBar bar : playerBossbars) {
                     SPPlugin.getInstance().getFoliaLib().getScheduler().runAtEntity(event.getPlayer(), task2 -> {
-                        Audience audience = SPPlugin.getInstance().adventure().player(event.getPlayer());
-                        bar.addViewer(audience);
+                        bar.addViewer(event.getPlayer());
                     });
                 }
             });
 
-            Audience audience = SPPlugin.getInstance().adventure().player(event.getPlayer());
             // have to load after player milestone is loaded
             for (BossBar bar : serverBossbars) {
-                bar.addViewer(audience);
+                bar.addViewer(event.getPlayer());
             }
 
         }, 20);
@@ -145,8 +142,7 @@ public class MilestoneListener implements Listener {
                 // Milestone complete
                 iter.remove();
                 SPPlugin.getInstance().getFoliaLib().getScheduler().runLater(() -> {
-                    Audience audience = SPPlugin.getInstance().adventure().player(event.getPlayerUUID());
-                    bar.removeViewer(audience);
+                    bar.removeViewer(Bukkit.getPlayer(event.getPlayerUUID()));
                     Bukkit.getPluginManager().callEvent(new PlayerMilestoneEvent(event.getPlayerUUID()));
                 }, 1);
 
@@ -252,8 +248,7 @@ public class MilestoneListener implements Listener {
                 iter.remove();
                 SPPlugin.getInstance().getFoliaLib().getScheduler().runNextTick(task -> {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        Audience audience = SPPlugin.getInstance().adventure().player(player);
-                        bar.removeViewer(audience);
+                        bar.removeViewer(player);
                     }
                 });
             } else {
