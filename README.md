@@ -1,4 +1,5 @@
-Simp Pay [![Discord](https://img.shields.io/discord/1353293624238145626.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.typicalsmc.me/discord) ![Supported server version](https://img.shields.io/badge/minecraft-1.13%20--_1.21.4-green)
+
+Simp Pay [![Discord](https://img.shields.io/discord/1353293624238145626.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.typicalsmc.me/discord) ![Supported server version](https://img.shields.io/badge/minecraft-1.13%20--_1.21.4-green) [![wakatime](https://wakatime.com/badge/user/a9b10cc4-84e7-4a4d-9952-09cd1d1d7750/project/35b700a7-bd03-4fef-96c8-4ea2c0988f46.svg)](https://wakatime.com/badge/user/a9b10cc4-84e7-4a4d-9952-09cd1d1d7750/project/35b700a7-bd03-4fef-96c8-4ea2c0988f46)
 ===========
 Language: [Vietnamese](README_VN.md), **[English](README.md)** <br><br>
 Automated QR payment and prepaid mobile card recharge solution for Vietnamese Minecraft Servers <br> <br>
