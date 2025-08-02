@@ -5,6 +5,7 @@ import org.simpmc.simppay.config.ConfigManager;
 import org.simpmc.simppay.config.types.BankingConfig;
 import org.simpmc.simppay.config.types.CardConfig;
 import org.simpmc.simppay.config.types.CoinsConfig;
+import org.simpmc.simppay.util.MessageUtil;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -35,6 +36,10 @@ public class HandlerRegistry {
         cardHandler = (PaymentHandler) cardConfig.cardApi.handlerClass.getDeclaredConstructor().newInstance();
         bankHandler = (PaymentHandler) bankingConfig.bankApi.handlerClass.getDeclaredConstructor().newInstance();
         coinsHandler = (CoinsHandler) coinsConfig.pointsProvider.handlerClass.getDeclaredConstructor().newInstance();
+        MessageUtil.info("Registered handlers: ");
+        MessageUtil.info("Card Handler: " + cardHandler.getClass().getSimpleName());
+        MessageUtil.info("Bank Handler: " + bankHandler.getClass().getSimpleName());
+        MessageUtil.info("Coins Handler: " + coinsHandler.getClass().getSimpleName());
     }
 
     public void reload() {
