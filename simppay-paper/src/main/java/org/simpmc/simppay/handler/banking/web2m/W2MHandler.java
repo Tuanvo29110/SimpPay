@@ -16,6 +16,7 @@ import org.simpmc.simppay.model.detail.PaymentDetail;
 import org.simpmc.simppay.util.GsonUtil;
 import org.simpmc.simppay.util.MessageUtil;
 
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class W2MHandler extends BankHandler {
@@ -32,7 +33,7 @@ public class W2MHandler extends BankHandler {
         if (accountNumber.equals("123123123")) { // default value
             return PaymentStatus.FAILED;
         }
-        String refId = payment.getPlayerUUID().toString().replace("-", "");
+        String refId = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
         PaymentDetail detail = payment.getDetail();
 
         detail.setRefID(refId);
