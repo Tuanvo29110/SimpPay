@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class W2MTransactions {
-    private int transactionID;
-    private int amount;
+    private String transactionID;
+    private String amount;
     private String description;
     private String transactionDate;
     private String type;
