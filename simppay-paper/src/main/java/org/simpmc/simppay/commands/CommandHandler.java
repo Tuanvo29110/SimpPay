@@ -16,12 +16,14 @@ public class CommandHandler {
     public CommandHandler(SPPlugin plugin) {
         this.plugin = plugin;
     }
+    public boolean enabled;
 
     public void onLoad() {
         CommandAPI.onLoad(new CommandAPIBukkitConfig(plugin).shouldHookPaperReload(true).silentLogs(true));
     }
 
     public void onEnable() {
+        enabled = true;
         CommandAPI.onEnable();
         new ManualChargeCommand();
         new SimpPayAdminCommand();
@@ -32,6 +34,7 @@ public class CommandHandler {
     }
 
     public void onDisable() {
+        enabled = false;
         CommandAPI.onDisable();
     }
 

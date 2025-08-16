@@ -54,17 +54,20 @@ public class Database {
             config.addDataSourceProperty("cachePrepStmts", "true");
             config.addDataSourceProperty("prepStmtCacheSize", "250");
             config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            config.setUsername(username);
+            config.setPassword(password);
         } else if (dbType.equalsIgnoreCase("h2")) {
             jdbcUrl = "jdbc:h2:file:" + SPPlugin.getInstance().getDataFolder().getAbsolutePath() + "/simppay.db;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=TRUE";
             driverClassName = "org.h2.Driver";
+            config.setUsername("root");
+            config.setPassword("password");
         } else {
             throw new RuntimeException("Unsupported database type: " + dbType);
         }
 
         config.setJdbcUrl(jdbcUrl);
         config.setDriverClassName(driverClassName);
-        config.setUsername(username);
-        config.setPassword(password);
+
         // General HikariCP settings
         config.setMaximumPoolSize(10);
         config.setMinimumIdle(2);

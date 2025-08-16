@@ -120,7 +120,9 @@ public final class SPPlugin extends JavaPlugin {
                 e.printStackTrace();
             }
         }
-        commandHandler.onDisable();
+        if (commandHandler.enabled) {
+            commandHandler.onDisable();
+        }
         instance = null;
     }
 
