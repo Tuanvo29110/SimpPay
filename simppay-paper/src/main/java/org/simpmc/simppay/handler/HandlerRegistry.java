@@ -5,6 +5,7 @@ import org.simpmc.simppay.config.ConfigManager;
 import org.simpmc.simppay.config.types.BankingConfig;
 import org.simpmc.simppay.config.types.CardConfig;
 import org.simpmc.simppay.config.types.CoinsConfig;
+import org.simpmc.simppay.handler.coins.DefaultCoinsHandler;
 import org.simpmc.simppay.util.MessageUtil;
 
 import java.lang.reflect.InvocationTargetException;
@@ -33,9 +34,14 @@ public class HandlerRegistry {
         BankingConfig bankingConfig = ConfigManager.getInstance().getConfig(BankingConfig.class);
         CoinsConfig coinsConfig = ConfigManager.getInstance().getConfig(CoinsConfig.class);
 
-        cardHandler = (PaymentHandler) cardConfig.cardApi.handlerClass.getDeclaredConstructor().newInstance();
-        bankHandler = (PaymentHandler) bankingConfig.bankApi.handlerClass.getDeclaredConstructor().newInstance();
-        coinsHandler = (CoinsHandler) coinsConfig.pointsProvider.handlerClass.getDeclaredConstructor().newInstance();
+        cardHandler = cardConfig.cardApi.handlerClass.getDeclaredConstructor().newInstance();
+        bankHandler = bankingConfig.bankApi.handlerClass.getDeclaredConstructor().newInstance();
+        try {
+            coinsHandler = (CoinsHandler) coinsConfig.pointsProvider.handlerClass.getDeclaredConstructor().newInstance();
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            MessageUtil.warn("Unable to find any compatible Points plugin provider, voiding all coins manipulation");
+            coinsHandler = new DefaultCoinsHandler();
+        }
         MessageUtil.info("Registered handlers: ");
         MessageUtil.info("Card Handler: " + cardHandler.getClass().getSimpleName());
         MessageUtil.info("Bank Handler: " + bankHandler.getClass().getSimpleName());

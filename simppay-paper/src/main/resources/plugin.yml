@@ -15,6 +15,7 @@ libraries:
   - com.squareup.okhttp3:okhttp:5.0.0-alpha.12
 depend:
   - PlaceholderAPI
-  - PlayerPoints
 softdepend:
   - floodgate
+  - PlayerPoints
+  - CoinsEngine

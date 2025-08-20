@@ -79,6 +79,9 @@ public class MessageUtil {
     public static void info(String message) {
         SPPlugin.getInstance().getLogger().info(message);
     }
+    public static void warn(String message) {
+        SPPlugin.getInstance().getLogger().warning(message);
+    }
 
     /**
      * Creates a tag resolver capable of resolving PlaceholderAPI tags for a given player.
