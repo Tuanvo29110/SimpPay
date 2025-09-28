@@ -97,7 +97,9 @@ public class PaymentHandlingListener implements Listener {
                     // handle failed
                     callEventSync(new PaymentFailedEvent(event.getPayment()));
                     SPPlugin.getService(PaymentService.class).getPollingPayments().remove(event.getPayment().getPaymentID());
-                    SPPlugin.getService(PaymentService.class).cancelBankPayment(event.getPayment().getPlayerUUID());
+                    if (event.getPaymentType() == PaymentType.BANKING) {
+                        SPPlugin.getService(PaymentService.class).cancelBankPayment(event.getPayment().getPlayerUUID());
+                    }
                     task.cancel();
                 }
                 case PENDING -> {

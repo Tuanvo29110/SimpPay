@@ -97,29 +97,29 @@ public abstract class CardHandler implements CardAdapter, PaymentHandler {
 
     protected PaymentResult getNencerAPIResult(CardDetail detail, String response) {
         JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
-        if (jsonResponse.get("message").getAsString().equals("VALID_CARD")) {
-            if (jsonResponse.get("declared_value").getAsInt() != jsonResponse.get("value").getAsInt()) {
-                return new PaymentResult(
-                        PaymentStatus.WRONG_PRICE,
-                        jsonResponse.get("value").getAsInt(),
-                        "Sai menh gia, menh gia thuc la: " + jsonResponse.get("declared_value").getAsString()
-                );
-            } else {
+        if (jsonResponse.get("status").getAsInt() == 1) {
                 return new PaymentResult(
                         PaymentStatus.SUCCESS,
                         (int) detail.getAmount(),
                         jsonResponse.get("message").getAsString()
                 );
-            }
+
         }
-        if (jsonResponse.get("message").getAsString().equals("INVALID_CARD")) {
+        if (jsonResponse.get("status").getAsInt() == 2) {
+            return new PaymentResult(
+                    PaymentStatus.WRONG_PRICE,
+                    jsonResponse.get("value").getAsInt(),
+                    "Sai menh gia, menh gia thuc la: " + jsonResponse.get("declared_value").getAsString()
+            );
+        }
+        if (jsonResponse.get("status").getAsInt() == 3) {
             return new PaymentResult(
                     PaymentStatus.FAILED,
                     (int) detail.getAmount(),
                     jsonResponse.get("message").getAsString()
             );
         }
-        if (jsonResponse.get("message").getAsString().equals("PENDING")) {
+        if (jsonResponse.get("status").getAsInt() == 99) {
             return new PaymentResult(
                     PaymentStatus.PENDING,
                     (int) detail.getAmount(),
