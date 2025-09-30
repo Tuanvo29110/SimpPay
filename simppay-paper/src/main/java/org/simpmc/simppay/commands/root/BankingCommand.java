@@ -24,7 +24,7 @@ public class BankingCommand {
     public BankingCommand() {
         new CommandAPICommand("banking")
                 .withPermission(CommandPermission.NONE)
-                .withAliases("bank")
+                .withAliases("bank", "napbank")
                 .withSubcommands(
                         CancelCommand.commandCreate()
                 )
