@@ -13,7 +13,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.38'
     annotationProcessor 'org.projectlombok:lombok:1.18.38'
     compileOnly 'com.h2database:h2:2.3.232'
-    compileOnly "io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT"
+    compileOnly "io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT"
     compileOnly 'com.j256.ormlite:ormlite-jdbc:6.1'
 
     compileOnly 'org.black_ixx:playerpoints:3.3.0'
@@ -29,9 +29,9 @@ dependencies {
     }
     implementation "dev.jorel:commandapi-bukkit-shade:10.1.2"
     implementation("com.tcoded:FoliaLib:0.5.1")
-    implementation('me.devnatan:inventory-framework-platform-bukkit:3.5.0')
-    implementation('me.devnatan:inventory-framework-platform-paper:3.5.0')
-    implementation("com.github.retrooper:packetevents-spigot:2.9.4")
+    implementation('me.devnatan:inventory-framework-platform-bukkit:3.5.4')
+    implementation('me.devnatan:inventory-framework-platform-paper:3.5.4')
+    implementation("com.github.retrooper:packetevents-spigot:2.9.5")
     implementation('net.wesjd:anvilgui:1.10.6-SNAPSHOT')
 }
 
